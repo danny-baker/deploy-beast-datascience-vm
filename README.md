@@ -1,13 +1,13 @@
-# Deploy ANY virtual machine on Azure using code 
+# Deploy ANY virtual machine on Azure using code like a boss
 This guide will help you customise and deploy any virtual machine from Microsoft Azure, preconfigured for data science applications.
 
-This is an example of deploying cloud infrastructure-as-code using a new domain specific language called Bicep. The [OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro) is Linux Ubuntu 18.04 and is specially setup with 150GB of goodies including native support for Python, R, Julia, SQL, C#, Java, Node.js, F#. If you don't know linux, don't worry: out of the box it autoruns a Jupyter Hub server giving you instant (secure) access to Jhub notebooks from the browser of your local machine. Deploying in seconds, you will have access to beast VMs with up to 416 cores, 11000+ GB RAM and 1500+ MBit/s internet speeds. Pricing for VMs ranges from 1 cent to 120 $USD/hr and a free trial gets you $200 USD of credit for 30 days, with some important caveats.
+This is an example of deploying cloud infrastructure-as-code using a new domain specific language called Bicep. The [OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro) is Linux Ubuntu 18.04 and is specially setup with 150GB of goodies including native support for Python, R, Julia, SQL, C#, Java, Node.js, F#. If you don't know linux, don't worry: out of the box it autoruns a Jupyter Hub server giving you instant (secure) access to Jhub notebooks from the browser of your local machine, running remotely on your VM. Deploying in seconds, you will have access to beast VMs with up to 416 cores, 11000+ GB RAM and 1500+ MBit/s internet speeds. Pricing for VMs ranges from 1 cent to 120 $USD/hr and a free trial gets you $200 USD of credit for 30 days, with some important caveats.
 
 This is designed for one-off time-constrained tasks where you need a monster of a VM to run for a few hours or days to get the job done. You can then export any data, and tear the whole resource down. 
 
 ## Quickstart
 
-If you know what you are doing with deploying Azure resources (and Bicep), simply open the `vmtemplate.bicep` file , configure your VM specs, create a resource group and deploy in the Az CLI with a single command:
+If you know what you are doing with deploying Azure resources using JSON templates (and Bicep), simply open the `vmtemplate.bicep` file , configure your VM specs, create a resource group and deploy in the Az CLI with a single command:
 
 `az deployment group create -f vmtemplate.bicep -g <RESOURCE GROUP> --parameters adminUsername=<USERNAME> adminPassword=<PASSWORD> adminPublicKey=<INSERT FULL ASCII PUB KEY HERE>` 
 
@@ -20,16 +20,13 @@ Note:
 
 ## Guide for Beginners
 
-If you are new to cloud infrastructure and scared at this point, worry not. Follow the guide below and you will be up and running in no time with a a fully dedicated VM. I've also published an article **INSERT LINK** that provides a full explanatory overview with much more detail. In a single command you will compiling a Bicep file (high level language describing the infrastructure) into an Azure Resource Manager (ARM) template (a lower level abstraction in JSON) and then building the resources in Azure. It takes about 1-2 mins to deploy and you can be running JHub notebooks on your new vm. For newbies I'd recommend getting a free Microsoft Azure account, so you can play around within the limitations of the trial at zero cost.
+If you are new to cloud infrastructure and scared at this point, worry not. Follow this crash course below and you will be up and running in no time with a a fully dedicated VM. I've also published an article **INSERT LINK** that provides a full explanatory overview with much more detail. Here's what you're going to do: in a single command you will compile a Bicep file (high level language describing the infrastructure) into an Azure Resource Manager (ARM) template (a lower level abstraction in JSON) and then build the resources needed in Azure. It takes about 2 mins to deploy and you can be running JHub notebooks over the internet on your remote vm. For newbies I'd recommend getting a free Microsoft Azure account, so you can play around within the limitations of the trial at zero cost.
 
 This example demonstrates how to build cloud infrastucture-as-code like a boss. It's important to understand when you provision a virtual machine there are other cloud resources that are also needed in the ecosystem; it's not just the VM that gets provisioned in isolation. To deploy a VM with some ports exposed to the internet, for example, what you are doing in reality is building a virtual network, subnet within the network, virtual network interface card, network security group (controls things like which ports to open/close), storage account with persistent disk (preloaded with an operating system), the virtual machine itself (which is really the compute cpu-ram component) and a public facing IP to bind to the network interface card so you can access the VM over the internet. Yes it's slightly terrifying at first but I promise it's not too bad once you get the basics. All this magic happens in one step so you don't need to worry about the complexity and can focus on what you do best: the science of data :)
 
 Here is the network topography just to give you a picture of the end product
 
-### Why virtual machines?
-1. Scalability and choice: access hundreds of cores and thousands of GBs of RAM.
-2. Pay for just what you use (billed per second)
-3. Insane internet speed (I've clocked 1,540 MBit/second download speed with a typical 4 core VM)
+For the Python JHub users, you might be used to running JHub from your local machine (and being constrained by hardware limitations) or from Google Colab (and sharing resources with annoying timeouts). This VM IS YOUR OWN PRIVATE JHUB SERVER, with all the horsepower you are willing to pay for, by the second. Need 500GB Ram and 64 cores for 3 hours? Just deploy the VM in seconds and get the job done like a pro.
 
 ### Use this project when
 - You need raw horsepower to get the job done (e.g. 256GB+ RAM, 16+ cores)
@@ -41,6 +38,11 @@ Here is the network topography just to give you a picture of the end product
 - Google Colab
 - Azure Notebooks (quite similar to this and have a free/paid tier for VMs. You don't have FULL access to your vm though)
 <<MORE>>
+
+### Why virtual machines?
+1. Scalability and choice: access hundreds of cores and thousands of GBs of RAM.
+2. Pay for just what you use (billed per second)
+3. Insane internet speed (I've clocked 1,540 MBit/second download speed with a typical 4 core VM)
 
 ### Making sense of VM Machine Types in Azure
 I think most heavy weight data science applications require high in-memory processing, and parallel core processing either with CPU or GPU. As a result I think the VM types of most interest are D/E/N Series. The D/E series get you a solid non-GPU setup for example, an 'E16as_v4' will get you 16 x 2.35Ghz cores, 128GiB RAM and 256GB of temporary SSD storage for about $1USD/hr. Not bad if you just need to run it for 6 hours to finish an experiment.
@@ -61,9 +63,12 @@ More info [here](https://azure.microsoft.com/en-gb/pricing/details/virtual-machi
 
 It's worth noting that on a standard PAYG account you won't be able to provision a beast out of the box. All Azure accounts have soft and hard vcpu (core) quotas, so if you want anything beyond about 32 cores you will need to lodge a service desk request for a quota increase, which can take 48hrs to process.
 
+### Where does my VM live?
+Microsoft has datacenters across the world which you can visualise on a [map](https://azure.microsoft.com/en-gb/global-infrastructure/geographies/).Your VM will live in a datacenter of your choosing based on the location of the 'resource group' that you will set. There are marginal price differences between regions, but in this application, the most important factor is to choose the closest zone to your present location, to minimise latency between you and the machine. For example "Central US" or "UK South".
+
 ### Can I just build a datascience VM in the Azure portal?
 YES. 
-In fact, I'd recommend you first build a VM use the portal, selecting the [data science OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro ). This is exactly the same OS image as I'm using in this build template. There are a few limitations to using the portal so you can't specify as many options but you can definitely get it up and access it on JHub etc. I hope this guide shows you how easy it can be to deploy infrastructure as code which is what is actually happening behind the scenes when you deploy from the Portal anyway.
+In fact, I'd recommend build your first VM using the [Azure portal](http://portal.azure.com), selecting the [data science OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro ). This is exactly the same OS image as I'm using in this build template. There are a few limitations to using the portal so you can't specify as many options but you can definitely get it up and access your vm on JHub etc. I hope this guide shows you how easy it can be to deploy infrastructure as code which is what is actually happening behind the scenes when you deploy from the Azure Portal anyway.
 
 ### How you are billed for VMs?
 You pay by the second. And yes, leaving the VM on will rack up your credit card in a way you will not like (you are protected on the Free Account, don't worry).
@@ -72,19 +77,26 @@ Most of the other infrastructure is essentially free (the virtual network, subne
 
 Note the hourly rate is PAYG and if you have an ongoing demand for a vm, you can usually reduce the on-demand price by 60-70% on a 3yr reservation (which you can cancel at any time). Many VMs are also available on spot pricing which is alarmingly attractive. Don't fall for this. I don't think this is a good idea for data science applications because you typically require long uninterrupted processing. On the spot market, your VM can be pulled without warning. PAYG is the only way to get guaranteed exclusivity while using the resource.
 
-### What is the best VM available on the free trial?
-The 30 day free trial gets you 200 USD of credit, but note some important limitations below:
-- Max cores: 4 per region (meaning no big VMs on free account)
-- No access: GPU VM series (upgrade to PAYG account to access, starting at about 0.5USD/hr)
+**Golden rule is: always remember to turn you vm off or tear down all resources** You can temporarily deprovision it, preserving the OS disk but saving on the run-time instance of your VM,  or you can delete the whole resource group when you are finished. More on this later.
 
-Most beastly setup on free account: 'Standard E4s_v4' (setup as default in template)
-- 4 cores (Intel Xeon Platinum 8272CL base core clock 2.5GHz which can increase to 3.4Ghz)
+### What is the best VM available on the free trial?
+The 30 day free trial gets you 200 USD of credit which is great, but note some important limitations below:
+- Max cores: 4 per region (meaning no big bad wolf VMs on free account)
+- No access: GPU VM series (upgrade to PAYG account to access N-Series GPU optimised vms, starting at about 1USD/hr)
+
+Most beastly setup on free account: 'Standard E4s_v4' (the default in my template)
+- 4 cores (Intel Xeon Platinum 8272CL base core clock 2.5GHz which can increase to 3.4Ghz all cores)
 - 32GB ram
 - 1TiB Premium SSD disk (Fastest OS disk type)
 - Insane internet speeds (Typically 1000 MBit/second)
 
 This package will burn ~$10USD credit/day and you can run it full throttle 24-7, uninterrupted with no cpu constraints for 20 days until credit depletes.
 
+### How does storage work with vms?
+All VMs need a managed persistent disk for the OS image. You can attach additional disk (several usually) and mount them on the filesystem but note this is fidly if you are not comfortable with linux. By far, the quickest and easiest option is to just beef up the OS disk size to what you need for the task.
+
+### How do I transfer data to and from my VM?
+This is a little trickier than you think, but I have few standard recommendations.
 
 ## Instructions
 
