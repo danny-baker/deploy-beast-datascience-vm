@@ -24,7 +24,7 @@ If you are new to cloud infrastructure and scared at this point, worry not. Foll
 
 This example demonstrates how to build cloud infrastucture-as-code like a boss. It's important to understand when you provision a virtual machine there are other cloud resources that are also needed in the ecosystem; it's not just the VM that gets provisioned in isolation. To deploy a VM with some ports exposed to the internet, for example, what you are doing in reality is building a virtual network, subnet within the network, virtual network interface card, network security group (controls things like which ports to open/close), storage account with persistent disk (preloaded with an operating system), the virtual machine itself (which is really the compute cpu-ram component) and a public facing IP to bind to the network interface card so you can access the VM over the internet. Yes it's slightly terrifying at first but I promise it's not too bad once you get the basics. All this magic happens in one step so you don't need to worry about the complexity and can focus on what you do best: the science of data :)
 
-<Here is the network topography just to give you a picture of the end product>
+Here is the network topography just to give you a picture of the end product
 
 ### Why virtual machines?
 1. Scalability and choice: access hundreds of cores and thousands of GBs of RAM.
