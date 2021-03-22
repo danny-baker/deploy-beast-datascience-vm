@@ -48,13 +48,13 @@ I think most heavy weight data science applications require high in-memory proce
 The quick and dirty profile of machine types and what to care about for data science applications. There are many subvariants so this is just a flavour.
 - A Series: Testing. 1-8 core, 2-64 GiB RAM, 0.05-0.786USD/hr. Not suitable.
 - B Series: Burstable with CPU compute credits. 1-20 core, 4-80 GiB RAM, 0.0059-0.944USD/hr. Not suitable.
-- D Series: All rounder. 2-96 core, 4-384GiB RAM, 0.1-5.3USD/hr. Suitable. 
+- **D Series: All rounder. 2-96 core, 4-384GiB RAM, 0.1-5.3USD/hr. Suitable. **
 - **E Series: Memory optimised (higher memory:cpu ratio) 2-96 core, 16-672GiB RAM, 0.1-$7USD/hr. Highly Suitable for data engineering (No GPU).**
 - F Series: Compute optimised (higher cpu:memory ratio). Not suitable.
 - G Series: Compute optimised (Big data type databases). Not suitable.
 - H Series: High Performance Compute (Only accessible via cyclecloud and more suited for weather prediction models etc). Not suitable.
 - L Series: High Throughput (I/O Optimised). 8 - 80 cores, 6-640GiB RAM, 0.7-7 USD/hr. Suitable.
-- M Series: Beasty. 8 - 416 cores, 220 - 11,400GiB RAM, 2-120 USD/hr. Suitable only for the brave.
+- **M Series: Beasty. 8 - 416 cores, 220 - 11,400GiB RAM, 2-120 USD/hr. Suitable only for the bravest.**
 - **N Series: [GPU optimised family](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-gpu). 4-64 cores, 0-4 GPU cores (Nvidia Tesla T4 or M60), 28-440 GiB RAM, 1 - 20 USD/hr. Highly Suitable for deep learning and other M/L.**
 
 More info [here](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/). Useful website [azurepricenet](https://azureprice.net/) allows you to zero in on the VM family and model you need, with pricing. 
