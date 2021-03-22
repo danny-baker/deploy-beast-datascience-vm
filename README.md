@@ -50,30 +50,19 @@ Here is the network topography just to give you a picture of the end product tha
 I think most heavy weight data science applications require high in-memory processing, and parallel core processing either with CPU or GPU. As a result I think the VM types of most interest are D/E/N Series. The D/E series get you a solid non-GPU setup for example, an 'E16as_v4' will get you 16 x 2.35Ghz cores, 128GiB RAM and 256GB of temporary SSD storage for about $1USD/hr. Not bad if you just need to run it for 6 hours to finish an experiment.
 
 The quick and dirty profile of machine types and what to care about for data science applications. There are many subvariants so this is just a flavour.
-- A Series: Testing. 1-8 core, 2-64 GiB RAM, 0.05-0.786USD/hr. Not suitable.
-- B Series: Burstable with CPU compute credits. 1-20 core, 4-80 GiB RAM, 0.0059-0.944USD/hr. Not suitable.
-- **D Series: All rounder. 2-96 core, 4-384GiB RAM, 0.1-5.3USD/hr. Suitable. **
-- **E Series: Memory optimised (higher memory:cpu ratio) 2-96 core, 16-672GiB RAM, 0.1-$7USD/hr. Highly Suitable for data engineering (No GPU).**
-- F Series: Compute optimised (higher cpu:memory ratio). Not suitable.
-- G Series: Compute optimised (Big data type databases). Not suitable.
-- H Series: High Performance Compute (Only accessible via cyclecloud and more suited for weather prediction models etc). Not suitable.
-- L Series: High Throughput (I/O Optimised). 8 - 80 cores, 6-640GiB RAM, 0.7-7 USD/hr. Suitable.
-- **M Series: Beasty. 8 - 416 cores, 220 - 11,400GiB RAM, 2-120 USD/hr. Suitable only for the bravest.**
-- **N Series: [GPU optimised family](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-gpu). 4-64 cores, 0-4 GPU cores (Nvidia Tesla T4 or M60), 28-440 GiB RAM, 1 - 20 USD/hr. Highly Suitable for deep learning and other M/L.**
 
-| Series   | Profile                                        | CPU Cores | GPU Cores | RAM (GiB)    | Cost ($US/hr) | Verdict                                                                  |
-|:--------:|:----------------------------------------------:|:---------:|:---------:|:------------:|:-------------:|:------------------------------------------------------------------------:|
-| A series | Testing/Dev                                    | 1 - 8     | -         | 2 - 64       | 0.05 - 0.8    | Not suitable                                                             |
-| B series | Burstable (CPU credits)                        | 1 - 20    | -         | 4 - 80       | 0.05 - 1      | Not suitable                                                             |
-| D series | All rounder                                    | 2 - 96    | -         | 4 - 384      | 0.1 - 5       | Suitable                                                                 |
-| E series | Memory optimised (high mem:cpu ratio)          | 2 - 96    | -         | 16 - 672     | 0.1 - 7       | Highly suitable for data eng. & non-GPU M/L                              |
-| F series | Compute optimised (high cpu:mem ratio)         | 2 - 72    | -         | 4 - 144      | 0.1 - 3       | Not suitable                                                             |
-| G series | Hardcore Compute optimised (Big data)          | hidden    | -         | -            | -             | Not suitable                                                             |
-| H series | High Performance Compute (supercomputing)      | -         | -         | -            | -             | Not suitable                                                             |
-| L series | High Thoughput (I/O optimised)                 | 8 - 80    | -         | 6 - 640      | 0.7 - 7       | Suitable                                                                 |
-| M series | Absolute Beast                                 | 8 - 416   | -         | 220 - 11,400 | 2 - 120       | Suitable for the brave                                                   |
-| N series | GPU Optimised (fractional to multi GPU access) | 4 - 64    | 0.25 - 4  | 28 - 400     | 1 - 20        | Highly suitable for deep learning and other M/L (Nvidia Tesla T4 or M60) |
-
+| Series | Profile                                            | CPU Cores   | GPU Cores    | RAM (GiB)        | Cost ($US/hr) | Verdict                                                                      |
+|:------:|:--------------------------------------------------:|:-----------:|:------------:|:----------------:|:-------------:|:----------------------------------------------------------------------------:|
+| A      | Testing/Dev                                        | 1 - 8       | -            | 2 - 64           | 0.05 - 0.8    | Not suitable                                                                 |
+| B      | Burstable (CPU credits)                            | 1 - 20      | -            | 4 - 80           | 0.05 - 1      | Not suitable                                                                 |
+| D      | All rounder                                        | 2 - 96      | -            | 4 - 384          | 0.1 - 5       | Suitable                                                                     |
+| **E**  | **Memory optimised (high mem:cpu ratio)**          | **2 - 96**  | -            | **16 - 672**     | **0.1 - 7**   | **Highly suitable for data eng. & non-GPU M/L**                              |
+| F      | Compute optimised (high cpu:mem ratio)             | 2 - 72      | -            | 4 - 144          | 0.1 - 3       | Not suitable                                                                 |
+| G      | Hardcore Compute optimised (Big data)              | hidden      | -            | -                | -             | Not suitable                                                                 |
+| H      | High Performance Compute (supercomputing)          | -           | -            | -                | -             | Not suitable                                                                 |
+| L      | High Thoughput (I/O optimised)                     | 8 - 80      | -            | 6 - 640          | 0.7 - 7       | Suitable                                                                     |
+| **M**  | **Absolute Beast**                                 | **8 - 416** | -            | **220 - 11,400** | **2 - 120**   | **Suitable for the brave**                                                   |
+| **N**  | **GPU Optimised (fractional to multi GPU access)** | **4 - 64**  | **0.25 - 4** | **28 - 400**     | **1 - 20**    | **Highly suitable for deep learning and other M/L (Nvidia Tesla T4 or M60)** |
 
 More info [here](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/). Useful website [azurepricenet](https://azureprice.net/) allows you to zero in on the VM family and model you need, with pricing. 
 
