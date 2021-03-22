@@ -1,7 +1,7 @@
 # Deploy ANY virtual machine on Azure 
 This guide will help you customise and deploy any virtual machine from Microsoft Azure, preconfigured for data science applications.
 
-The OS image is Linux Ubuntu 18.04 and is specially setup with 150GB of goodies including native support for Python, R, Julia, SQL, C#, Java, Node.js, F#. If you don't know linux, don't worry: out of the box it autoruns a Jupyter Hub server giving you instant secure access to Jupyter Hub from the browser of your local machine, for all your notebook fun. Deploying in seconds, you will have access to beast VMs with up to 416 cores, 11000+ GB RAM and 1500 MBit/s internet speeds. Pricing for VMs ranges from 1 cent to 120 $USD/hr and a free trial gets you $200 USD of credit for 30 days with some important caveats.
+The OS image is Linux Ubuntu 18.04 and is specially setup with 150GB of goodies including native support for Python, R, Julia, SQL, C#, Java, Node.js, F#. If you don't know linux, don't worry: out of the box it autoruns a Jupyter Hub server giving you instant secure access to Jhub from the browser of your local machine for notebook fun. Deploying in seconds, you will have access to beast VMs with up to 416 cores, 11000+ GB RAM and 1500 MBit/s internet speeds. Pricing for VMs ranges from 1 cent to 120 $USD/hr and a free trial gets you $200 USD of credit for 30 days with some important caveats.
 
 This is designed for one off time-constrained tasks where you need a monster of a VM to run for a few hours or days to get the job done. You can then export any data, and tear the whole resource down. https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro 
 
@@ -15,14 +15,14 @@ If you know what you are doing with deploying Azure resources, simply open the v
 
 Note:
 - password needs to be decent (1 capital, 1 number, 1 special etc) 
-- you must also pass a valid public ssh key as a parameter aswell. 
+- you must also pass a valid public ssh key as a parameter aswell. **[TO FIX]**
 - Once deployed, either SSH into the VM directly or access JHUB in the browser via `https://xxx.xxx.xxx.xxx:8000` once you have the public IP address of the VM (from Portal or Az CLI)
 
 ## Guide for Beginners
 
-If you are new to VMs, Azure and scared at this point. Worry not: follow the guide below and you will be up and running in no time with a a fully dedicated VM. I've also published an article <INSERT LINK> that provides a full explanatory overview with much more detail. In a single command you will compiling a Bicep file (high level language describing the infrastructure) into an Azure Resource Manager (ARM) template (a lower level abstraction in JSON) and then building the resources in Azure. It takes about 1-2 mins to deploy and you can be running JHub notebooks on your new vm. For newbies I'd recommend getting a free Microsoft Azure account, so you can play around within the limitations of the trial at zero cost.
+If you are new to cloud infrastructure and scared at this point, worry not. Follow the guide below and you will be up and running in no time with a a fully dedicated VM. I've also published an article **INSERT LINK** that provides a full explanatory overview with much more detail. In a single command you will compiling a Bicep file (high level language describing the infrastructure) into an Azure Resource Manager (ARM) template (a lower level abstraction in JSON) and then building the resources in Azure. It takes about 1-2 mins to deploy and you can be running JHub notebooks on your new vm. For newbies I'd recommend getting a free Microsoft Azure account, so you can play around within the limitations of the trial at zero cost.
 
-This example demonstrates how to build cloud infrastucture-as-code like a boss. It's important to understand when you provision a virtual machine there are other cloud resources that are also needed in the ecosystem; it's not just the VM that gets provisioned in isolation. To deploy a VM with some ports exposed to the internet, for example, what you are doing in reality is building a virtual network, subnet within the network, virtual network interface card, network security group (controls things like which ports to open/close), storage account with persistent disk, the virtual machine itself (which is really the compute cpu-ram component) and a public facing IP to bind to the network interface card so you can access the VM over the internet. Yes it's slightly terrifying at first but I promise it's not too bad once you get the basics. All this magic happens in one step so you don't need to worry about the complexity and can focus on what you do best: the science of data :)
+This example demonstrates how to build cloud infrastucture-as-code like a boss. It's important to understand when you provision a virtual machine there are other cloud resources that are also needed in the ecosystem; it's not just the VM that gets provisioned in isolation. To deploy a VM with some ports exposed to the internet, for example, what you are doing in reality is building a virtual network, subnet within the network, virtual network interface card, network security group (controls things like which ports to open/close), storage account with persistent disk (preloaded with an operating system), the virtual machine itself (which is really the compute cpu-ram component) and a public facing IP to bind to the network interface card so you can access the VM over the internet. Yes it's slightly terrifying at first but I promise it's not too bad once you get the basics. All this magic happens in one step so you don't need to worry about the complexity and can focus on what you do best: the science of data :)
 
 <Here is the network topography just to give you a picture of the end product>
 
@@ -34,8 +34,7 @@ This example demonstrates how to build cloud infrastucture-as-code like a boss. 
 ### Use this project when
 - You need raw horsepower to get the job done (e.g. 256GB+ RAM, 16+ cores)
 - You want total control of your hardware (no managed services etc)
-- Your local machine or any of the Colab cloud notebook environments is simply not up to the task
-- You want to experiment with direct VM access using a free account
+- Your local machine or any of the Colab cloud notebook environments are simply not up to the task
 - You want to say: "just call me bad ass..." 
 
 ### Alternatives
@@ -43,46 +42,35 @@ This example demonstrates how to build cloud infrastucture-as-code like a boss. 
 - Azure Notebooks (quite similar to this and have a free/paid tier for VMs. You don't have FULL access to your vm though)
 <<MORE>>
 
-
-
 ### Making sense of VM Machine Types in Azure
-It's worth noting that on a standard PAYG account you won't be able to provision a beast out of the box. All Azure accounts have soft and hard vcpu (core) quotas, so if you want anything beyond about 32 cores you will need to lodge a service desk request for a quota increase, which can take 36hrs to process.
-
 I think most heavy weight data science applications require high in-memory processing, and parallel core processing either with CPU or GPU. As a result I think the VM types of most interest are D/E/N Series. The D/E series get you a solid non-GPU setup for example, an 'E16as_v4' will get you 16 x 2.35Ghz cores, 128GiB RAM and 256GB of temporary SSD storage for about $1USD/hr. Not bad if you just need to run it for 6 hours to finish an experiment.
 
 The quick and dirty profile of machine types and what to care about for data science applications. There are many subvariants so this is just a flavour.
 - A Series: Testing. 1-8 core, 2-64 GiB RAM, 0.05-0.786USD/hr. Not suitable.
 - B Series: Burstable with CPU compute credits. 1-20 core, 4-80 GiB RAM, 0.0059-0.944USD/hr. Not suitable.
 - D Series: All rounder. 2-96 core, 4-384GiB RAM, 0.1-5.3USD/hr. Suitable. 
-- **E Series: Memory optimised (higher memory:cpu ratio) 2-96 core, 16-672GiB RAM, 0.1-$7USD/hr. Highly Suitable.**
+- **E Series: Memory optimised (higher memory:cpu ratio) 2-96 core, 16-672GiB RAM, 0.1-$7USD/hr. Highly Suitable for data engineering (No GPU).**
 - F Series: Compute optimised (higher cpu:memory ratio). Not suitable.
 - G Series: Compute optimised (Big data type databases). Not suitable.
 - H Series: High Performance Compute (Only accessible via cyclecloud and more suited for weather prediction models etc). Not suitable.
 - L Series: High Throughput (I/O Optimised). 8 - 80 cores, 6-640GiB RAM, 0.7-7 USD/hr. Suitable.
 - M Series: Beasty. 8 - 416 cores, 220 - 11,400GiB RAM, 2-120 USD/hr. Suitable only for the brave.
-- N Series: 
+- **N Series: [GPU optimised family](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-gpu). 4-64 cores, 0-4 GPU cores (Nvidia Tesla T4 or M60), 28-440 GiB RAM, 1 - 20 USD/hr. Highly Suitable for deep learning and other M/L.**
 
+More info [here](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/). Useful website [azurepricenet](https://azureprice.net/) allows you to zero in on the VM family and model you need, with pricing. 
 
+It's worth noting that on a standard PAYG account you won't be able to provision a beast out of the box. All Azure accounts have soft and hard vcpu (core) quotas, so if you want anything beyond about 32 cores you will need to lodge a service desk request for a quota increase, which can take 48hrs to process.
 
 ### Can I just build a datascience VM in the Azure portal?
 YES. 
-In fact, I'd recommend you first build a VM via the portal, selecting the data science OS image (follow guide link). This is exactly the same OS image as I'm using in my build template. https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro 
-
-You can practically setup a one-off VM using the exact same OS image but you can't provision the ssh key and admin password at the same time. And it can also become annoying to go through the GUI every time you want to build. I hope this guide shows you how easy it can be to deploy infrastructure as code which is what is actually happening behind the scenes from the browser anyway.
-
-
-https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/
+In fact, I'd recommend you first build a VM use the portal, selecting the [data science OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro ). This is exactly the same OS image as I'm using in this build template. There are a few limitations to using the portal so you can't specify as many options but you can definitely get it up and access it on JHub etc. I hope this guide shows you how easy it can be to deploy infrastructure as code which is what is actually happening behind the scenes when you deploy from the Portal anyway.
 
 ### How you are billed for VMs?
-You pay by the second. And yes, leaving the VM on will rack up your credit card in a way you will not like.
+You pay by the second. And yes, leaving the VM on will rack up your credit card in a way you will not like (you are protected on the Free Account, don't worry).
 
-Note the hourly rate is PAYG and with an account you can typically get this reduced by 60% on a 3yr reservation if you have a full-time demand need. Many VMs are also available on spot pricing which is alarmingly attractive. I don't think this is a good idea for data science applications because you typically require long uninterrupted processing. On the spot market, your VM can be pulled without warning. PAYG is the only way to get guaranteed exclusivity while using the resource.
+Most of the other infrastructure is essentially free (the virtual network, subnet, public IP, etc). The key costs are the COMPUTE (the virtual machine) and STORAGE (the persistent disk attached to it).
 
-
-### How does deployment work?
-vm instance + storage acc etc.
-
-
+Note the hourly rate is PAYG and if you have an ongoing demand for a vm, you can usually reduce the on-demand price by 60-70% on a 3yr reservation (which you can cancel at any time). Many VMs are also available on spot pricing which is alarmingly attractive. Don't fall for this. I don't think this is a good idea for data science applications because you typically require long uninterrupted processing. On the spot market, your VM can be pulled without warning. PAYG is the only way to get guaranteed exclusivity while using the resource.
 
 ### What is the best VM available on the free trial?
 The 30 day free trial gets you 200 USD of credit, but note some important limitations below:
@@ -98,12 +86,12 @@ Most beastly setup on free account: 'Standard E4s_v4' (setup as default in templ
 This will burn ~$10USD credit/day and you can run it full throttle, uninterrupted with no cpu constraints, for 20 days until credit depletes.
 
 
+## Instructions
 
+Finally, here you go.
 
 ### Prerequisites
 - Microsoft Azure account (e.g. [Free Trial](https://azure.microsoft.com/en-gb/free/) or pay-as-you-go)
-
-## Instructions
 
 ### 1. Install VS Code and Bicep/ARM extensions
 Microsoft Visual Studio code is great for this project as it is open source and has downloadable extensions for bicep and ARM templates, meaning it colours the code really nicely to make it more readable. Download and install [VS Code](https://code.visualstudio.com/) with [ARM Tools](https://marketplace.visualstudio.com/items?itemName=msazurermtools.azurerm-vscode-tools) and [Bicep](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-bicep) extensions. Note the extensions can be easily installed from within VS Code once it's running.
