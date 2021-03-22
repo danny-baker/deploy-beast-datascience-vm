@@ -22,23 +22,83 @@ Note:
 
 If you are new to VMs, Azure and scared at this point. Worry not: follow the guide below and you will be up and running in no time with a a fully dedicated VM. I've also published an article <INSERT LINK> that provides a full explanatory overview with much more detail. In a single command you will compiling a Bicep file (high level language describing the infrastructure) into an Azure Resource Manager (ARM) template (a lower level abstraction in JSON) and then building the resources in Azure. It takes about 1-2 mins to deploy and you can be running JHub notebooks on your new vm. For newbies I'd recommend getting a free Microsoft Azure account, so you can play around within the limitations of the trial at zero cost.
 
-This example demonstrates how to build cloud infrastucture-as-code like a boss. For newcomers, it's important to understand when you provision a virtual machine there are other cloud resources that are also needed in the ecosystem; it's not just the VM that gets provisioned in isolation. To deploy a VM with some ports exposed to the internet, for example, what you are doing in reality is building a virtual network, subnet within the network, virtual network interface card, network security group (controls things like which ports to open/close), storage account with persistent disk, the virtual machine itself (which is really the compute cpu-ram component) and a public facing IP to bind to the network interface card so you can access the VM over the internet. Yes it's slightly terrifying at first but I promise it's not too bad once you get the basics. All this magic happens in one step so you don't need to worry about the complexity and can focus on what you do best: the science of data :)
-
-### What VM can I get on the free trial?
-The 30 day free trial gets you 200 USD of credit, but note some important limitations below:
-- Max cores: 4 per region (meaning no big VMs on free account)
-- No access: GPU VM series
-
-Most beastly setup on free account: 'Standard E4ds_v4' 
-- 4 cores
-- 32GB ram
-- 150GiB SSD temp (lasts a few days)
-- TiB Premium SSD disk 
-
-This will burn $10USD credit/day and you can run it full throttle (no cpu constraints, full exclusive access) for 20 days until credit depletes.
-
+This example demonstrates how to build cloud infrastucture-as-code like a boss. It's important to understand when you provision a virtual machine there are other cloud resources that are also needed in the ecosystem; it's not just the VM that gets provisioned in isolation. To deploy a VM with some ports exposed to the internet, for example, what you are doing in reality is building a virtual network, subnet within the network, virtual network interface card, network security group (controls things like which ports to open/close), storage account with persistent disk, the virtual machine itself (which is really the compute cpu-ram component) and a public facing IP to bind to the network interface card so you can access the VM over the internet. Yes it's slightly terrifying at first but I promise it's not too bad once you get the basics. All this magic happens in one step so you don't need to worry about the complexity and can focus on what you do best: the science of data :)
 
 <Here is the network topography just to give you a picture of the end product>
+
+### Why virtual machines?
+1. Scalability and choice: access hundreds of cores and thousands of GBs of RAM.
+2. Pay for just what you use (billed per second)
+3. Insane internet speed (I've clocked 1,540 MBit/second download speed with a typical 4 core VM)
+
+### Use this project when
+- You need raw horsepower to get the job done (e.g. 256GB+ RAM, 16+ cores)
+- You want total control of your hardware (no managed services etc)
+- Your local machine or any of the Colab cloud notebook environments is simply not up to the task
+- You want to experiment with direct VM access using a free account
+- You want to say: "just call me bad ass..." 
+
+### Alternatives
+- Google Colab
+- Azure Notebooks (quite similar to this and have a free/paid tier for VMs. You don't have FULL access to your vm though)
+<<MORE>>
+
+
+
+### Making sense of VM Machine Types in Azure
+It's worth noting that on a standard PAYG account you won't be able to provision a beast out of the box. All Azure accounts have soft and hard vcpu (core) quotas, so if you want anything beyond about 32 cores you will need to lodge a service desk request for a quota increase, which can take 36hrs to process.
+
+I think most heavy weight data science applications require high in-memory processing, and parallel core processing either with CPU or GPU. As a result I think the VM types of most interest are D/E/N Series. The D/E series get you a solid non-GPU setup for example, an 'E16as_v4' will get you 16 x 2.35Ghz cores, 128GiB RAM and 256GB of temporary SSD storage for about $1USD/hr. Not bad if you just need to run it for 6 hours to finish an experiment.
+
+The quick and dirty profile of machine types and what to care about for data science applications. There are many subvariants so this is just a flavour.
+- A Series: Testing. 1-8 core, 2-64 GiB RAM, 0.05-0.786USD/hr. Not suitable.
+- B Series: Burstable with CPU compute credits. 1-20 core, 4-80 GiB RAM, 0.0059-0.944USD/hr. Not suitable.
+- D Series: All rounder. 2-96 core, 4-384GiB RAM, 0.1-5.3USD/hr. Suitable. 
+- **E Series: Memory optimised (higher memory:cpu ratio) 2-96 core, 16-672GiB RAM, 0.1-$7USD/hr. Highly Suitable.**
+- F Series: Compute optimised (higher cpu:memory ratio). Not suitable.
+- G Series: Compute optimised (Big data type databases). Not suitable.
+- H Series: High Performance Compute (Only accessible via cyclecloud and more suited for weather prediction models etc). Not suitable.
+- L Series: High Throughput (I/O Optimised). 8 - 80 cores, 6-640GiB RAM, 0.7-7 USD/hr. Suitable.
+- M Series: Beasty. 8 - 416 cores, 220 - 11,400GiB RAM, 2-120 USD/hr. Suitable only for the brave.
+- N Series: 
+
+
+
+### Can I just build a datascience VM in the Azure portal?
+YES. 
+In fact, I'd recommend you first build a VM via the portal, selecting the data science OS image (follow guide link). This is exactly the same OS image as I'm using in my build template. https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro 
+
+You can practically setup a one-off VM using the exact same OS image but you can't provision the ssh key and admin password at the same time. And it can also become annoying to go through the GUI every time you want to build. I hope this guide shows you how easy it can be to deploy infrastructure as code which is what is actually happening behind the scenes from the browser anyway.
+
+
+https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/
+
+### How you are billed for VMs?
+You pay by the second. And yes, leaving the VM on will rack up your credit card in a way you will not like.
+
+Note the hourly rate is PAYG and with an account you can typically get this reduced by 60% on a 3yr reservation if you have a full-time demand need. Many VMs are also available on spot pricing which is alarmingly attractive. I don't think this is a good idea for data science applications because you typically require long uninterrupted processing. On the spot market, your VM can be pulled without warning. PAYG is the only way to get guaranteed exclusivity while using the resource.
+
+
+### How does deployment work?
+vm instance + storage acc etc.
+
+
+
+### What is the best VM available on the free trial?
+The 30 day free trial gets you 200 USD of credit, but note some important limitations below:
+- Max cores: 4 per region (meaning no big VMs on free account)
+- No access: GPU VM series (upgrade to PAYG account to access, starting at about 0.5USD/hr)
+
+Most beastly setup on free account: 'Standard E4s_v4' (setup as default in template)
+- 4 cores (Intel Xeon Platinum 8272CL base core clock 2.5GHz which can increase to 3.4Ghz)
+- 32GB ram
+- TiB Premium SSD disk 
+- Insane internet speeds (Typically 1000 MBit/second)
+
+This will burn ~$10USD credit/day and you can run it full throttle, uninterrupted with no cpu constraints, for 20 days until credit depletes.
+
+
+
 
 ### Prerequisites
 - Microsoft Azure account (e.g. [Free Trial](https://azure.microsoft.com/en-gb/free/) or pay-as-you-go)
@@ -169,58 +229,6 @@ Enjoy.
 
 
 
-
-
-#=== More articcle stuff..
-
-### Why virtual machines?
-1. Scalability and choice: access hundreds of cores and thousands of GBs of RAM
-2. Pay for just what you use (billed per second)
-3. Insane internet speed (I've clocked 1,540MBit/second download speed with a typical 4 core VM)
-
-### Use this project when
-- You need raw horsepower to get the job done (e.g. 256GB+ RAM, 16+ cores)
-- Your local machine or any of the Colab cloud notebook environments is simply not up to the task
-- You want to experiment with direct VM access using a free account
-- You want to say: "just call me bad ass..." 
-
-### Can I just do this in the Azure portal?
-YES.
-You can practically setup a one-off VM using the exact same OS image but you can't provision the ssh key and admin password at the same time. And it can also become annoying to go through the GUI. I hope this guide shows you how easy it can be to deploy infrastructure as code which is what is actually happening behind the scenes from the browser anyway.
-
-
-### What is a VM instance?
-other lingo like vcpu, vcores, 
-
-### Making sense of VM Machine Types in Azure
-The quick and dirty profile of machine types and what to care about for data science applications. There are many subvariants so this is just a flavour.
-- A Series: Testing. 1-8 core, 2-64 GiB RAM, 0.05-0.786USD/hr. Not suitable.
-- B Series: Burstable with CPU compute credits. 1-20 core, 4-80 GiB RAM, 0.0059-0.944USD/hr. Not suitable.
-- D Series: All rounder. 2-96 core, 4-384GiB RAM, 0.1-5.3USD/hr. Suitable. 
-- **E Series: Memory optimised (higher memory:cpu ratio) 2-96 core, 16-672GiB RAM, 0.1-$7USD/hr. Highly Suitable.**
-- F Series: Compute optimised (higher cpu:memory ratio). Not suitable.
-- G Series: Compute optimised (Big data type databases). Not suitable.
-- H Series: High Performance Compute (Only accessible via cyclecloud and more suited for weather prediction models etc). Not suitable.
-- L Series: High Throughput (I/O Optimised). 8 - 80 cores, 6-640GiB RAM, 0.7-7 USD/hr. Suitable.
-- M Series: Beasty. 8 - 416 cores, 220 - 11,400GiB RAM, 2-120 USD/hr. Suitable only for the brave.
-- N Series: 
-
-It's worth noting that on a standard PAYG account you won't be able to provision a beast out of the box. All Azure accounts have soft and hard vcpu quotas, so if you want anything beyond about 32 cores you will need to lodge a service desk request for a quota increase, which can take 36hrs to process.
-
-I think most heavy weight data science applications require high in-memory processing, and parallel core processing either with CPU or GPU. As a result I think the VM types of most interest are D/E/N Series. The D/E series get you a solid non-GPU setup for example, an 'E16as_v4' will get you 16 x 2.35Ghz cores, 128GiB RAM and 256GB of temporary SSD storage for about $1USD/hr.
-
-
-
-https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/
-
-### How you are billed for VMs?
-You pay by the second. And yes, leaving the VM on will rack up your credit card in a way you will not like.
-
-Note the hourly rate is PAYG and with an account you can typically get this reduced by 60% on a 3yr reservation if you have a full-time demand need. Many VMs are also available on spot pricing which is alarmingly attractive. I don't think this is a good idea for data science applications because you typically require long uninterrupted processing. On the spot market, your VM can be pulled without warning. PAYG is the only way to get guaranteed exclusivity while using the resource.
-
-
-### How does deployment work?
-vm instance + storage acc etc.
 
 
 
