@@ -80,35 +80,42 @@ The 30 day free trial gets you 200 USD of credit, but note some important limita
 Most beastly setup on free account: 'Standard E4s_v4' (setup as default in template)
 - 4 cores (Intel Xeon Platinum 8272CL base core clock 2.5GHz which can increase to 3.4Ghz)
 - 32GB ram
-- TiB Premium SSD disk 
+- 1TiB Premium SSD disk (Fastest OS disk type)
 - Insane internet speeds (Typically 1000 MBit/second)
 
-This will burn ~$10USD credit/day and you can run it full throttle, uninterrupted with no cpu constraints, for 20 days until credit depletes.
+This package will burn ~$10USD credit/day and you can run it full throttle 24-7, uninterrupted with no cpu constraints for 20 days until credit depletes.
 
 
 ## Instructions
 
-Finally, here you go.
+Now that the crash course is complete, we can start with the step by step guide to deploy your vm infrastructure as code.
 
 ### Prerequisites
 - Microsoft Azure account (e.g. [Free Trial](https://azure.microsoft.com/en-gb/free/) or pay-as-you-go)
+- Strong cup of coffee
 
 ### 1. Install VS Code and Bicep/ARM extensions
 Microsoft Visual Studio code is great for this project as it is open source and has downloadable extensions for bicep and ARM templates, meaning it colours the code really nicely to make it more readable. Download and install [VS Code](https://code.visualstudio.com/) with [ARM Tools](https://marketplace.visualstudio.com/items?itemName=msazurermtools.azurerm-vscode-tools) and [Bicep](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-bicep) extensions. Note the extensions can be easily installed from within VS Code once it's running.
 
 ### 2. Install Azure CLI
-What the hell is the Azure CLI? It's a dedicated program that provides a command line for interacting directly with Azure resources. This means you can build and tear down infrastructure at command line like a boss, rather than doing it from the web browser portal. The most straight forward way is to run the Azure CLI which can run on Windows, MacOS, Linux. https://docs.microsoft.com/en-us/cli/azure/install-azure-cli
+What the hell is the Azure CLI? It's a dedicated program that provides a command line interface (i.e. CLI) for interacting directly with Azure resources. This means you can build and tear down infrastructure at command line like a boss, rather than doing it from the web browser portal. The most straight forward way is to [install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) which can run on Windows, MacOS, and Linux. 
 
-Do I absolutely need to us the Azure CLI?
-For this complete example, Yes. Because there are some limitations with the portal interface. In general: No. If you just want to build a VM using a username/password with the datascience OS image, you can in fact do it all from the portal as a one-off if you need to. (GUIDE WITH SCREENSHOTS IN THE ARTICLE)
+**Do I absolutely need to us the Azure CLI?**
+For this complete example, Yes. Because there are some limitations with the portal interface. In general: No. If you just want to build a VM using a username/password with the datascience OS image, you can in fact do it all from the portal as a one-off if you need to.
 
 ### 3. Install Bicep
-Bicep is a cool new domain-specific-language for deploying Azure resources in a much more simplified way than using ARM templates, which are in JSON and can be painful. Bicep files compile into Azure Resource Manager (ARM) templates, which can then be directly ingested by Azure to build infrastructure. It only takes a few mins to install. Follow the installation guide https://github.com/Azure/bicep 
+Bicep is a cool new domain-specific-language for deploying Azure resources in a much more simplified way than using ARM templates, which are in JSON format and can be painful to read when you start adding multiple pieces of infrastructure. Bicep files compile into Azure Resource Manager (ARM) templates, which can then be directly ingested by Azure to build infrastructure. Bicep scripts, therefore are a high-level abstraction that simplify the description of the infrastructure you want to build. It only takes a few mins to install Bicep. Follow the installation guide [here](https://github.com/Azure/bicep). 
 
 ### 4. Clone this repo
-Clone this project repo to your local machine either from Github over browser as a straight download, or via git clone etc. If you are not familiar with github and git, really, you just need to get the `vmtemplate.bicep` file.
+Copy this project repo to your local machine either from Github over browser as a straight download, or via git clone etc. If you are not familiar with github and git, really, you just need to get the `vmtemplate.bicep` file to your local machine.
 
-### 5. Login to Azure
+### 5. Configure VM specs and access (the fun part)
+
+Open the vmtemplate.bicep file in visual studio code. Here you can set the VM type (defining no. cores, and ram), you can choose the persistent OS disk size and type (SSD or HDD). 
+
+You will also need to decide on a username/password which you will use in the next step at deployment.
+
+### 6. Login to Azure
 
 From the azure CLI:
 
@@ -124,7 +131,7 @@ Set subscription (if default is not correct)
 
 `az account set --subscription <name>`
 
-### 6. Create Azure resource group
+### 7. Create Azure resource group
 
 In this example I'm creating a resource group called "beast" in the "Central US" region
 
@@ -135,12 +142,6 @@ Check by typing
 `az group list --output table`
 
 After a few seconds, it should appear. You can check in portal.azure.com directly by searching for 'resource groups'
-
-### 7. Configure VM specs and access (the fun part)
-
-Open the vmtemplate.bicep file in visual studio code. Here you can set the VM type (defining no. cores, and ram), you can choose the persistent OS disk size and type (SSD or HDD). 
-
-You will also need to decide on a username/password which you will use in the next step at deployment.
 
 ### 7a (OPTIONAL) Create SSH keypair
 
