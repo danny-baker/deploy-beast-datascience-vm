@@ -3,11 +3,11 @@ This guide will help you customise and deploy any virtual machine from Microsoft
 
 This is an example of deploying cloud infrastructure-as-code using a new domain specific language called Bicep. The [OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro) is Linux Ubuntu 18.04 and is specially setup with 150GB of goodies including native support for Python, R, Julia, SQL, C#, Java, Node.js, F#. If you don't know linux, don't worry: out of the box it autoruns a Jupyter Hub server giving you instant (secure) access to Jhub notebooks from the browser of your local machine, running remotely on your VM. Deploying in seconds, you will have access to beast VMs with up to 416 cores, 11000+ GB RAM and 1500+ MBit/s internet speeds. Pricing for VMs ranges from 1 cent to 120 $USD/hr and a free trial gets you $200 USD of credit for 30 days, with some important caveats.
 
-This is designed for one-off time-constrained tasks where you need a monster of a VM to run for a few hours or days to get the job done. You can then export any data, and tear the whole resource down. 
+This is designed for one-off time-constrained tasks where you need a monster of a VM to run for a few hours or days to get the job done. You can then export any data, and tear the whole resource down when you're finished.
 
 ## Quickstart
 
-If you know what you are doing with deploying Azure resources using JSON templates (and Bicep), simply open the `vmtemplate.bicep` file , configure your VM specs, create a resource group and deploy in the Az CLI with a single command:
+If you know what you are doing with deploying Azure resources using ARM templates (and Bicep), simply open the `vmtemplate.bicep` file , configure your VM specs, create a resource group and deploy in the Az CLI with a single command:
 
 `az deployment group create -f vmtemplate.bicep -g <RESOURCE GROUP> --parameters adminUsername=<USERNAME> adminPassword=<PASSWORD> adminPublicKey=<INSERT FULL ASCII PUB KEY HERE>` 
 
@@ -20,17 +20,19 @@ Note:
 
 ## Guide for Beginners
 
-If you are new to cloud infrastructure and scared at this point, worry not. Follow this crash course below and you will be up and running in no time with a a fully dedicated VM. I've also published an article **INSERT LINK** that provides a full explanatory overview with much more detail. Here's what you're going to do: in a single command you will compile a Bicep file (high level language describing the infrastructure) into an Azure Resource Manager (ARM) template (a lower level abstraction in JSON) and then build the resources needed in Azure. It takes about 2 mins to deploy and you can be running JHub notebooks over the internet on your remote vm. For newbies I'd recommend getting a free Microsoft Azure account, so you can play around within the limitations of the trial at zero cost.
+If you are new to cloud infrastructure and scared at this point, worry not. Follow this crash course below and you will be up and running in no time with a a fully dedicated VM. I've also published an article **INSERT LINK** that provides a full explanatory overview with much more detail. Here's what you're going to do: in a single command you will compile a Bicep file (high level language describing the infrastructure) into an Azure Resource Manager (ARM) template (a lower level abstraction in JSON) and then build the resources needed in Azure. It takes about 2 mins to deploy and you can be running JHub notebooks over the internet on your remote vm. If you are new to Microsoft cloud, I'd recommend getting a [free Microsoft Azure account](https://azure.microsoft.com/en-gb/free/), so you can play around within the limitations of the trial at zero cost.
 
-This example demonstrates how to build cloud infrastucture-as-code like a boss. It's important to understand when you provision a virtual machine there are other cloud resources that are also needed in the ecosystem; it's not just the VM that gets provisioned in isolation. To deploy a VM with some ports exposed to the internet, for example, what you are doing in reality is building a virtual network, subnet within the network, virtual network interface card, network security group (controls things like which ports to open/close), storage account with persistent disk (preloaded with an operating system), the virtual machine itself (which is really the compute cpu-ram component) and a public facing IP to bind to the network interface card so you can access the VM over the internet. Yes it's slightly terrifying at first but I promise it's not too bad once you get the basics. All this magic happens in one step so you don't need to worry about the complexity and can focus on what you do best: the science of data :)
+For the Python JHub users, you might be used to running JHub from your local machine (and being constrained by crappy laptop hardware) or from Google Colab (and sharing resources with annoying timeouts). THIS VM IS YOUR OWN PRIVATE JHUB SERVER, with all the horsepower you are willing to pay for. Need 500GB Ram and 64 cores for 3 hours? Just deploy the VM in seconds and get the job done like a pro.
 
-Here is the network topography just to give you a picture of the end product
+This example demonstrates how to build cloud infrastucture-as-code. It's important to understand that when you provision a virtual machine there are other cloud resources that are also needed in the ecosystem; it's not just the VM that gets provisioned in isolation. To deploy a VM with some ports exposed to the internet, for example, what you are doing in reality within Azure is building a virtual network, subnet within the network, virtual network interface card, network security group (controls things like which ports to open/close), storage account with persistent disk (preloaded with an operating system), the virtual machine itself (which is really the compute cpu-ram component) and a public facing IP to bind to the network interface card so you can access the VM over the internet. Yes it's slightly terrifying at first but I promise it's not too bad once you get the basics. All this magic happens in one elegant step so you don't need to worry about the complexity and can focus on what you do best: the _science_ of data :)
 
-For the Python JHub users, you might be used to running JHub from your local machine (and being constrained by hardware limitations) or from Google Colab (and sharing resources with annoying timeouts). This VM IS YOUR OWN PRIVATE JHUB SERVER, with all the horsepower you are willing to pay for, by the second. Need 500GB Ram and 64 cores for 3 hours? Just deploy the VM in seconds and get the job done like a pro.
+Here is the network topography just to give you a picture of the end product that is built from this template.
 
-### Use this project when
+
+
+### Use this template when
 - You need raw horsepower to get the job done (e.g. 256GB+ RAM, 16+ cores)
-- You want total control of your hardware (no managed services etc)
+- You want total and exclusive control of your hardware (no managed services etc)
 - Your local machine or any of the Colab cloud notebook environments are simply not up to the task
 - You want to say: "just call me bad ass..." 
 
