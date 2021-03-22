@@ -61,6 +61,18 @@ The quick and dirty profile of machine types and what to care about for data sci
 - **M Series: Beasty. 8 - 416 cores, 220 - 11,400GiB RAM, 2-120 USD/hr. Suitable only for the bravest.**
 - **N Series: [GPU optimised family](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-gpu). 4-64 cores, 0-4 GPU cores (Nvidia Tesla T4 or M60), 28-440 GiB RAM, 1 - 20 USD/hr. Highly Suitable for deep learning and other M/L.**
 
+| 1 | 2 | 3 |
+|---|---|---|
+| 1 | 2 | 3 |
+| 1 | 2 | 3 |
+| 1 | 2 | 3 |
+| 1 | 2 | 3 |
+| 1 | 2 | 3 |
+| 1 | 2 | 3 |
+| 1 | 2 | 3 |
+| 1 | 2 | 3 |
+
+
 More info [here](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/). Useful website [azurepricenet](https://azureprice.net/) allows you to zero in on the VM family and model you need, with pricing. 
 
 It's worth noting that on a standard PAYG account you won't be able to provision a beast out of the box. All Azure accounts have soft and hard vcpu (core) quotas, so if you want anything beyond about 32 cores you will need to lodge a service desk request for a quota increase, which can take 48hrs to process.
