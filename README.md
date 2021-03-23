@@ -13,10 +13,13 @@ If you know what you are doing with deploying Azure resources using ARM template
 
 **[have option without public key]**
 
-Note:
+Once deployed, grab the public IP address of the new vm (from Portal or CLI) and either SSH into the VM directly or access the Jupyter Hub server in the browser via `https://xxx.xxx.xxx.xxx:8000`. 
+
+Notes:
 - password needs to be decent (1 capital, 1 number, 1 special etc) 
 - you must also pass a valid public ssh key as a parameter aswell. **[TO FIX]**
-- Once deployed, either SSH into the VM directly or access JHUB in the browser via `https://xxx.xxx.xxx.xxx:8000` once you have the public IP address of the VM (from Portal or Az CLI)
+- For JHub and other services exposed to the internet, the vm creates a self-signed certificates for HTTPS (TLS/SSL). When you try to connect, modern browsers will still throw a tanty. Just click through the security warnings and you can connect ok, and be confident that you are accessing the services over an encrypted protocol (HTTPS).
+
 
 ## Guide for Beginners
 
