@@ -50,7 +50,13 @@ Here is the network topography just to give you a picture of the end product tha
 3. Insane internet speed (I've clocked 1,540 MBit/second download speed with a typical 4 core VM)
 
 ### Making sense of VM Machine Types in Azure
-I think most heavy weight data science applications require high in-memory processing, and parallel core processing either with CPU or GPU. As a result I think the VM types of most interest are D/E/N Series. The D/E series get you a solid non-GPU setup for example, an 'E16as_v4' will get you 16 x 2.35Ghz cores, 128GiB RAM and 256GB of temporary SSD storage for about $1USD/hr. Not bad if you just need to run it for 6 hours to finish an experiment.
+I think most heavy-weight data science applications require high in-memory processing, and parallel core processing either with CPU or GPU. As a result I think the VM types of most interest are D/E/M/N Series. 
+
+For non-GPU applications in data engineering and M/L, I think the D/E series get you a solid all-rounder setup with up to 96 cores and 672GiB RAM in a single instance, plus many options to suite a specific project. For example, an 'E16as_v4' will get you 16 x 2.35Ghz cores, 128GiB RAM and 256GB of temporary SSD storage for about $1USD/hr.
+
+If you are doing something crazy, the M series are straight out beasts and single instances can clock out to 416 cores and 11,400Gb RAM. I mean I don't know what you would use these for in datascience and they are, to be fair, more suited to hardcore enterprise applications. But they are there.
+
+And for the rapidly evolving deep-learning folk, the new [N-series](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-gpu?context=/azure/virtual-machines/context/context) are for you. There are a number of variants and classess within but in essence you can customise the VM to get fractional access to GPU (e.g. 0.25GPU core) to 4 dedicated GPU cores per node. And you have access to Nvidia Tesla T4 and M60, Volta V100, AMD Radion Mi25 bolted to vms with latest generation CPU core banks from 4-64 cpu cores. I should note these are not available in the Free Trial, you must go to a paid plan.
 
 The quick and dirty profile of machine types and what to care about for data science applications. There are many subvariants so this is just a flavour.
 
