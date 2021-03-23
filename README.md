@@ -143,12 +143,14 @@ At the beginning of the file I've summarised all the knobs and dials you might w
 
 Key decision points:
 - VM Type - This is critical as it determines the number of cores, RAM, temporary storage, and other limitations in relation to I/O. Lookup what you want either on [Azure docs](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/) or on [azurenet](https://azureprice.net/). Modify the variable field as you need
-- OS disk size - Default to 1TiB, you can choose anything really. Take special note there are 3 distinct classes of storage 'Premium_LRS' which is SSD, 'StandardSSD_LRS' which is constrained SSD media, then the good old fashioned hard disk drive 'Standard_LRS'. Standard SSD is half the price of premium ssd, and standard HDD is 1/4 the price of premium ssd. Refer to docs [here](https://azure.microsoft.com/en-gb/pricing/details/managed-disks/).
-- 
+- OS disk size - Default to 1TiB premium SSD, but you can choose anything up to 32TiB as a single disk.
+- OS disk type Take special note there are 3 distinct classes of storage 'Premium_LRS' which is SSD, 'StandardSSD_LRS' which is constrained SSD media, then the good old fashioned hard disk drive 'Standard_LRS'. Standard SSD is half the price of premium ssd, and standard HDD is 1/4 the price of premium ssd. Refer to docs [here](https://azure.microsoft.com/en-gb/pricing/details/managed-disks/). In all datascience applications, I'd use nothing other than "Premium_LRS" for maximum performance. 
 
-Here you can set the VM type (defining no. cores, and ram), you can choose the persistent OS disk size and type (SSD or HDD). 
+You will also need to decide on a username/password which you will use in the next step at deployment. This data will be passed a paramters at deployment-time and stored as secure strings by Azure.
 
-You will also need to decide on a username/password which you will use in the next step at deployment.
+Security settings:
+- admin username: blah
+- admin password: blah
 
 ### 6. Login to Azure
 
@@ -184,7 +186,7 @@ If you are running linux (WSL in Windows or MacOSX) you can create public/privat
 
 Create SSH keypair have have public key ready to pass in as paramater.
 
-### 8. The build
+### 8. The great build
 
 This is the moment you have been waiting for. Assuming you decided on username: jamesbond / password: G0|den3y3
 
