@@ -1,9 +1,9 @@
-# Deploy ANY virtual machine on Azure using code (like a boss)
+# Deploy ANY virtual machine on Azure using code 
 This guide will help you customise and deploy any virtual machine from Microsoft Azure, preconfigured for data science applications.
 
 This is an example of deploying cloud infrastructure-as-code using a new domain specific language called Bicep. The [OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro) is Linux Ubuntu 18.04 and is specially setup with 150GB of goodies including native support for Python, R, Julia, SQL, C#, Java, Node.js, F#. If you don't know linux, don't worry: out of the box it autoruns a Jupyter Hub server giving you instant (secure) access to Jhub notebooks from the browser of your local machine, running remotely on your VM. Deploying in seconds, you will have access to beast VMs with up to 416 cores, 11000+ GB RAM and 1500+ MBit/s internet speeds. Pricing for VMs ranges from 1 cent to 120 $USD/hr and a free trial gets you $200 USD of credit for 30 days, with some important caveats.
 
-This is designed for one-off time-constrained tasks where you need a monster of a VM to run for a few hours or days to get the job done. You can then export any data, and tear the whole resource down when you're finished.
+This is designed for one-off time-constrained tasks where you need a dedicated monster of a VM to run for a few hours or days to get the job done. You can then export any data, and tear the whole resource down when you're finished.
 
 ## Quickstart
 
@@ -30,8 +30,6 @@ For the Python JHub users, you might be used to running JHub from your local mac
 This example demonstrates how to build cloud infrastucture-as-code. It's important to understand that when you provision a virtual machine there are other cloud resources that are also needed in the ecosystem; it's not just the VM that gets provisioned in isolation. To deploy a VM with some ports exposed to the internet, for example, what you are doing in reality within Azure is building a virtual network, subnet within the network, virtual network interface card, network security group (controls things like which ports to open/close), storage account with persistent disk (preloaded with an operating system), the virtual machine itself (which is really the compute cpu-ram component) and a public facing IP to bind to the network interface card so you can access the VM over the internet. Yes it's slightly terrifying at first but I promise it's not too bad once you get the basics. All this magic happens in one elegant step so you don't need to worry about the complexity and can focus on what you do best: the _science_ of data :)
 
 Here is the network topography just to give you a picture of the end product that is built from this template.
-
-
 
 ### Use this template when
 - You need raw horsepower to get the job done (e.g. 256GB+ RAM, 16+ cores)
@@ -200,28 +198,30 @@ Or the same deploy, with the optional public ssh key
 
 If it worked you should see something that looks like this
 
-### 9. Connect to the machine on JHub
+### 9. Connect to the machine over the browser via Jupyter Hub!
 
-First get the IP address of the machine. 
+Your new VM has a bunch of services preconfigured, so after deployment, it immediately runs a range of containerised services (via Docker) including a Jupyter Hub service, exposed on port 8000. Jupyter Hub is (in part) a webserver and so you can directly connect to it from any browser over the internet. 
 
-From azure portal:, click resource groups, navigate to the group. Then click on the VM (or public IP)
+First get the IP address of your new vm:
+- From Azure Portal: search for resource group, navigate to the correct group, click on the VM (and you can see the public IP top right)
+- From Azure CLI: `az vm show -d -g <RESOURCE GROUP NAME> -n <VM NAME> --query publicIps -o tsv`
 
-Or from Az CLI like a pro
+Open a browser and access Jupyter Hub webserver (which is running as a container service on your vm exposed via port 8000):
 
+`https://xxx.xxx.xxx.xxx:8000`
 
-`az vm show -d -g beast -n <name> --query publicIps -o tsv` (Needs tweaking.... no name)
-
-Open a browser and type in:
-
-https://xxx.xxx.xxx.xxx:8000
-
-Where the IP address is substituted for the x's. Now as the server has generated it's own self signed SSL certificates, the browser will often kick up a concern. Don't worry and you can usually click accept the risk, and 'go to site'. You should then see a Jupyter hub login screen:
+Where the IP address is substituted for the x's. Your vm has generated it's own self signed SSL certificate to allow encrypted browser traffic (HTTPS). However, as this is not a public certificate, the browser will often kick up a warning when you first connect. Don't worry and you can usually click accept the risk, and 'go to site'. You should then see a Jupyter hub login screen:
 
 <IMAGE>
 
-user your username and password  to login!
+Login to Jupyter Hub with the username and password you supplied for the VM at deployment
+
+If it has worked, you will see the Jhub session that looks like this :D
+
 
 ## 10. Test the beast
+
+Now are you are connected to your VM securely, it's time to test a few things. It's super important to note that connecting to your VM via JHub gives you full superuser access; you can open a linux terminal from within Jhub and do literally anything you as if you had connected via SSH.
 
 new-> terminal
 
@@ -233,20 +233,21 @@ Check available disk space
 
 Check internet speed
 
-Install speedtest 
+Install a well loved program to check speed on linux
 
 `sudo apt install speedtest-cli`
 
 Run `speedtest`
+
+Open a notebook
+
+Download data
 
 
 You now have a beast. Well if you are on the free account it's probably only 4 cores. But the same applies whether you have 4 cores or 400. It's all running the same OS so i you get familiar with this now, you will be ready to upgrade when the free trial is over.
 
 
 Enjoy.
-
-
-
 
 ## 11. Importing and exporting data? Rsync? Can you download from jhub?
 
