@@ -137,7 +137,16 @@ Copy this project repo to your local machine either from Github over browser as 
 
 ### 5. Configure VM specs and access (the fun part)
 
-Open the vmtemplate.bicep file in visual studio code. Here you can set the VM type (defining no. cores, and ram), you can choose the persistent OS disk size and type (SSD or HDD). 
+Open the `vmtemplate.bicep` file in visual studio code. 
+
+At the beginning of the file I've summarised all the knobs and dials you might want to turn to select and tweak your VM settings. By default, I've chosen the toughest setup I could find within the limits of a Free Account (This is an E4s_v4 with 128GB RAM, and a 1TB Premium SSD OS Drive). But of course you can mix and match practically any VM up to 4 cores on free account, and experiment with different HDD sizes and types. In brief, if you are on a free account, the default settings are optimised for the best 4 cores, most ram and best disk I could find. If you are on a PAYG account, you can go crazy.
+
+Key decision points:
+- VM Type - This is critical as it determines the number of cores, RAM, temporary storage, and other limitations in relation to I/O. Lookup what you want either on [Azure docs](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/) or on [azurenet](https://azureprice.net/). Modify the variable field as you need
+- OS disk size - Default to 1TiB, you can choose anything really. Take special note there are 3 distinct classes of storage 'Premium_LRS' which is SSD, 'StandardSSD_LRS' which is constrained SSD media, then the good old fashioned hard disk drive 'Standard_LRS'. Standard SSD is half the price of premium ssd, and standard HDD is 1/4 the price of premium ssd. Refer to docs [here](https://azure.microsoft.com/en-gb/pricing/details/managed-disks/).
+- 
+
+Here you can set the VM type (defining no. cores, and ram), you can choose the persistent OS disk size and type (SSD or HDD). 
 
 You will also need to decide on a username/password which you will use in the next step at deployment.
 
