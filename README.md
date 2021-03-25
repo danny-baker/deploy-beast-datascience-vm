@@ -298,6 +298,10 @@ Open a notebook and get to work. Easily collaborate
 
 You now have a beast. Well if you are on the free account it's probably only 4 cores. But the same applies whether you have 4 cores or 400. It's all running the same OS so if you get familiar with this now, you will be ready to upgrade when the free trial is over.
 
+**Follow the microsoft documentation to show you more options to connect and use the new vm**
+https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro
+https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/linux-dsvm-walkthrough
+
 
 Enjoy.
 
