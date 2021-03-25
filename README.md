@@ -1,7 +1,7 @@
-# Deploy ANY virtual machine on Azure using Bicep (like a boss)
+# Deploy ANY virtual machine on Azure using Bicep
 This guide will help you customise and deploy (almost) any virtual machine from Microsoft Azure, preconfigured for data science applications, with a running Jupyter Hub and R Studio server out-of-the-box.
 
-This is an example of deploying cloud infrastructure-as-code using a new domain specific language called Bicep. The [OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro) is Linux Ubuntu 18.04 and is specially setup with 150GB of goodies including native support for Python, R, Julia, SQL, C#, Java, Node.js, F#. If you don't know linux, don't worry: out of the box it autoruns a Jupyter Hub server giving you instant (secure) access to Jhub from the browser of your local machine, running remotely on your VM. Deploying in seconds, you will have access to beast VMs with up to 416 cores, 11000+ GB RAM and 1500+ MBit/s internet speeds. Pricing for VMs ranges from 1 cent to 120 $USD/hr and a free trial gets you $200 USD of credit for 30 days, with some important caveats.
+This is an example of deploying cloud infrastructure-as-code using a new domain specific language called Bicep. The [OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro) is Linux Ubuntu 18.04 and is specially setup with 150GB of goodies including native support for Python, R, Julia, SQL, C#, Java, Node.js, F#. If you don't know linux, don't worry: out of the box it autoruns a Jupyter Hub server giving you instant (secure) access to Jhub from the browser of your local machine, running remotely on your VM. Deploying in seconds, you will have access to beast VMs with up to 416 cores, 11000+ GB RAM, 32TB SSD disks, and 1500+ MBit/s internet speeds. Pricing for VMs ranges from 1 cent to 120 $USD/hr and a free trial gets you $200 USD of credit for 30 days, with some important caveats.
 
 This is designed for one-off time-constrained tasks where you need a dedicated beefy VM to run for a few hours or days to get the job done. You can then export any data, and tear the whole resource down when you're finished. This is specifically for when you need more hardware than your local machine or the free/premium note-book-as-a-service platforms like Google Colab can provide.
 
@@ -9,7 +9,13 @@ This is designed for one-off time-constrained tasks where you need a dedicated b
 
 If you know what you are doing with deploying Azure resources using ARM templates (and Bicep), simply open the `vmtemplate.bicep` file , set your VM specs, create a resource group and deploy in the Az CLI with a single command:
 
+**With username/pass only**
+
 `az deployment group create -f vmtemplate.bicep -g <RESOURCE GROUP NAME> --parameters adminUsername='USERNAME' adminPassword='PASSWORD'` 
+
+**With username/pass and SSH key**
+
+`az deployment group create -f vmtemplate_ssh.bicep -g <RESOURCE GROUP NAME> --parameters adminUsername='USERNAME' adminPassword='PASSWORD' adminPublicKey="INSERT PUBLIC SSH KEY HERE"` 
 
 This will build your VM along with all the components needed in around 90 seconds. Once deployed, grab the public IP address of the new vm (from Portal or CLI) and either SSH into the VM directly or access the Jupyter Hub server in the browser via `https://xxx.xxx.xxx.xxx:8000`. 
 
@@ -17,7 +23,7 @@ Notes:
 - Bicep templates deploy just like ARM .json templates (you just need to install Bicep first)
 - username and password should be wrapped in quotations '' or special characters don't detect properly
 - password needs to be decent (1 capital, 1 number, 1 special char) 
-- OPTIONAL SSH key. If you also plan to connect directly to your VM via ssh you can add an optional 3rd parameter to the deploy command `adminPublicKey='YOUR FULL PUBLIC KEY'`
+- OPTIONAL SSH key. If you also plan to connect directly to your VM via ssh you can use the secondary template which is setup to accept the key as a 3rd parameter.
 - For JHub and other services exposed to the internet, the vm creates a self-signed certificates for HTTPS (TLS/SSL). When you try to connect, modern browsers will still throw a tanty. Just click through the security warnings and you can connect ok, and be confident that you are accessing the services over an encrypted protocol.
 
 
@@ -33,7 +39,7 @@ For the Python JHub users, you might be used to running JHub from your local mac
 
 **What is infrastructure-as-code?**
 
-This example demonstrates how to build cloud infrastucture-as-code, which is a way of describing the components you want from a script file. All the big players have some kind of API that they use to interpret the infrastructure to deploy. Whether you are building a machine from the browser or direct from 'code', it's all being turned into a common domain specific format for the provider to ingest, like a blueprint, in order to build the components and wire them up. Microsoft Azure use things called ARM Templates, which are are .json representation of all the infrastructure you want to build. AWS use a .json and .yaml like interface. I'm not sure about Google and the others. If you have heard of Terraform, this is an even higher abstraction that allows you to build cloud-infrastructure-as-code in a completely vendor agnostic way, so from one script you can deploy infrastructure from multiple different cloud providers. For this use case, we are just building infrastructure with one vendor, Azure, so it makes sense to keep things simple and use their vendor specific tools. Most notably, Microsoft has released a new language called Bicep in August 2020 which drastically simplifies the way you describe the infrastructure. It is really awesome and we're going to be using it!
+This example demonstrates how to build cloud infrastucture-as-code, which is a way of describing the components you want from a script file. All the big players have some kind of API that they use to interpret the infrastructure to deploy. Whether you are building a machine from the browser or direct from 'code', it's all being turned into a common domain specific format for the provider to ingest, like a blueprint, in order to build the components and wire them up. Microsoft Azure use things called ARM Templates, which  are .json representation of all the infrastructure you want to build. AWS use a .json and .yaml like interface. I'm not sure about Google and the others. Notably, Microsoft has released a new language called [Bicep](https://github.com/Azure/bicep) (August 2020) which drastically simplifies the way you describe the infrastructure. It is really awesome and we're going to be using it!
 
 **What is actually built when I deploy a virtual machine??**
 
@@ -49,8 +55,8 @@ Here is the network topography just to give you a picture of the end product tha
 
 ### Alternatives
 - Google Colab
-- Azure Notebooks (quite similar to this and have a free/paid tier for VMs. You don't have FULL access to your vm though)
-<<MORE>>
+- Azure Notebooks (quite similar to this and have a free/paid tier for VMs. You don't have FULL access to your vm though) **<<CHECK>>**
+**<<MORE>>**
 
 ### Why virtual machines?
 1. Scalability and choice: access hundreds of cores,  thousands of GBs of RAM and massive storage.
@@ -130,7 +136,6 @@ This is a little trickier than you think because the machine is running linux an
 - small (<30GB): use the JHub file download feature in browser (the simplest)
 - medium: (<1TB): use a linux data transfer application like `rsync` (requires linux on your local machine, native for MacOS but Windows you will need WSL)
 - large: (+1TB): transfer direct to a cloud data storage service like Azure Blob, or Network File System (NFS). This will allow you to rapdidly get data out of the VM and shut it down (to save $$), then you can connect directly to the cloud storage service to either download or store the data more long term.
-
 
 ## Instructions
 
@@ -215,7 +220,7 @@ After a few seconds, it should appear. You can check in portal.azure.com directl
 
 ### 8. Setup access methods
 
-We are almost ready to construct the resource. The final thing we need to do is setup how you will access the machine. There are two main ways you can do this: username/password credentials and/or SSH public/private key encryption. You can do user/pass only, or user/pass & SSH.
+We are almost ready to construct the resource. The final thing we need to do is setup how you will access the machine. There are two main ways you can do this: username/password credentials and/or SSH public/private key encryption. You can do user/pass only, or user/pass & SSH and I have a separate bicep template file for each option.
 
 **Choose a username and password**
 - Note passwords must contain at least 1 uppercase, 1 number and 1 special character.
@@ -227,7 +232,7 @@ If you are running linux, WSL in Windows or MacOSX and you have basically a linu
 
 ### 9. The great build
 
-This is the moment you have been waiting for: we are ready to build the infrastructure. From the Azure CLI ensure you navigate to the current working directory where the `vmdeploy.bicep` file resides. You must also be logged into your account via the Az CLI (step 6). Compile and deploy the VM, passing in the paramaters. Let's assume you decide on username: jamesbond / password: G0|den3y3
+This is the moment you have been waiting for: we are ready to build the infrastructure. From the Azure CLI ensure you navigate to the current working directory where the `vmdeploy.bicep` files reside. You must also be logged into your account via the Az CLI (step 6). Compile and deploy the VM, passing in the paramaters. Let's assume you decide on username: jamesbond / password: G0|den3y3
 
 **Build with username/password only**
 
@@ -235,11 +240,11 @@ This is the moment you have been waiting for: we are ready to build the infrastr
 
 **Build with username/password AND SSH public key**
 
-`az deployment group create -f vmtemplate.bicep --resource-group beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3" adminPublicKey="INSERT FULL ASCII PUBLIC KEY HERE"`
+`az deployment group create -f vmtemplate_ssh.bicep --resource-group beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3" adminPublicKey="INSERT FULL ASCII PUBLIC KEY HERE"`
 
 Notes
-- Always encase the username and password in inverted commas to ensure special characters parse properly. Sometimes you will get an error without them.
-- Same goes for the public key.
+- For SSH, there you are calling a different bicep template file called `vmtemplate_ssh.bicep` that accepts 3 parameters instead of 2.
+- Always encase the username and password (and public key) in inverted commas to ensure special characters parse properly. Sometimes you will get an error without them.
 
 If it worked you should see something that looks like this
 
@@ -268,15 +273,17 @@ If it has worked, you will see the Jhub session that looks like this :D
 
 Now are you are connected to your VM securely, it's time to test a few things. It's super important to note that connecting to your VM via JHub gives you full superuser access; you can open a linux terminal from within Jhub and do literally anything you as if you had connected via SSH.
 
-new-> terminal
+Open a terminal from the Jupyter Hub main screen (new -> terminal)
 
-Check no. processors and ram
+**Check no. processors, ram, and uptime**
+
 `htop`
 
-Check available disk space
+**Check available disk space**
+
 `df -h`
 
-Check internet speed
+**Check internet speed**
 
 Install a well loved program to check speed on linux
 
@@ -286,10 +293,9 @@ Run `speedtest`
 
 Open a notebook
 
-Download data
 
 
-You now have a beast. Well if you are on the free account it's probably only 4 cores. But the same applies whether you have 4 cores or 400. It's all running the same OS so i you get familiar with this now, you will be ready to upgrade when the free trial is over.
+You now have a beast. Well if you are on the free account it's probably only 4 cores. But the same applies whether you have 4 cores or 400. It's all running the same OS so if you get familiar with this now, you will be ready to upgrade when the free trial is over.
 
 
 Enjoy.
