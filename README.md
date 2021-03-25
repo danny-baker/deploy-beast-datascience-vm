@@ -9,11 +9,11 @@ This is designed for one-off time-constrained tasks where you need a dedicated b
 
 If you know what you are doing with deploying Azure resources using ARM templates (and Bicep), simply open the `vmtemplate.bicep` file , set your VM specs, create a resource group and deploy in the Az CLI with a single command:
 
-**With username/pass only**
+**Deploy with username/pass only**
 
 `az deployment group create -f vmtemplate.bicep -g <RESOURCE GROUP NAME> --parameters adminUsername='USERNAME' adminPassword='PASSWORD'` 
 
-**With username/pass and SSH key**
+**Deploy with username/pass and SSH public key**
 
 `az deployment group create -f vmtemplate_ssh.bicep -g <RESOURCE GROUP NAME> --parameters adminUsername='USERNAME' adminPassword='PASSWORD' adminPublicKey="INSERT PUBLIC SSH KEY HERE"` 
 
@@ -23,7 +23,6 @@ Notes:
 - Bicep templates deploy just like ARM .json templates (you just need to install Bicep first)
 - username and password should be wrapped in quotations '' or special characters don't detect properly
 - password needs to be decent (1 capital, 1 number, 1 special char) 
-- OPTIONAL SSH key. If you also plan to connect directly to your VM via ssh you can use the secondary template which is setup to accept the key as a 3rd parameter.
 - For JHub and other services exposed to the internet, the vm creates a self-signed certificates for HTTPS (TLS/SSL). When you try to connect, modern browsers will still throw a tanty. Just click through the security warnings and you can connect ok, and be confident that you are accessing the services over an encrypted protocol.
 
 
