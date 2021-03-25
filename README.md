@@ -265,11 +265,14 @@ Open a browser and access Jupyter Hub webserver (which is running as a container
 
 Where the IP address is substituted for the x's. Your vm has generated it's own self signed SSL certificate to allow encrypted browser traffic (HTTPS). However, as this is not a public certificate, the browser will often kick up a warning when you first connect. Don't worry and you can usually click accept the risk, and 'go to site'. You should then see a Jupyter hub login screen:
 
-<IMAGE>
+![jhub login screen](https://user-images.githubusercontent.com/12868840/112557759-18dad380-8dc5-11eb-998c-73490dcd92c5.PNG)
 
 Login to Jupyter Hub with the username and password you supplied for the VM at deployment
 
-If it has worked, you will see the Jhub session that looks like this :D
+If it has worked, you will see the Jhub session that looks like this.
+
+![jhub](https://user-images.githubusercontent.com/12868840/112557789-2b550d00-8dc5-11eb-8646-41bb4569142d.PNG)
+
 
 
 ## 11. Test the beast
@@ -278,6 +281,11 @@ Now are you are connected to your VM securely, it's time to test a few things. I
 
 Open a terminal from the Jupyter Hub main screen (new -> terminal)
 
+![jhub term](https://user-images.githubusercontent.com/12868840/112557821-46c01800-8dc5-11eb-9f3d-c9b0b938c742.PNG)
+
+![jhub terminal screen](https://user-images.githubusercontent.com/12868840/112557836-50498000-8dc5-11eb-93f8-a38580665b2e.PNG)
+
+
 **Check no. processors, ram, and uptime**
 
 `htop`
@@ -285,6 +293,9 @@ Open a terminal from the Jupyter Hub main screen (new -> terminal)
 **Check available disk space**
 
 `df -h`
+
+![4tib df](https://user-images.githubusercontent.com/12868840/112557855-58a1bb00-8dc5-11eb-9baa-e3c219e9bc4b.PNG)
+
 
 **Check internet speed**
 
@@ -298,8 +309,11 @@ Open a notebook and get to work. Easily collaborate
 
 You now have a beast. Well if you are on the free account it's probably only 4 cores. But the same applies whether you have 4 cores or 400. It's all running the same OS so if you get familiar with this now, you will be ready to upgrade when the free trial is over.
 
-**Follow the microsoft documentation to show you more options to connect and use the new vm**
+**Further reading**
+Follow he microsoft documentation to show you more options to connect and use the new vm. There is some great stuff here.
+
 https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro
+
 https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/linux-dsvm-walkthrough
 
 
