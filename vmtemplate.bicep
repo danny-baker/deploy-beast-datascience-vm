@@ -1,9 +1,9 @@
 // This compiles into an ARM template to build a dedicated vm for datascience (port 22/80/443/8000/8787 open by default)
 
 // vm specs
-var vmSize = 'Standard_E4s_v3'   // View available vm types with 'az vm list-skus -l centralus --output table' from azure CLI
-var osDiskSize = 32000            // size in GiB (4 - 32,000 GiB)
-var osDiskType = 'Premium_LRS'   // choices are 'Premium_LRS' for premium SSD, 'StandardSSD_LRS' for standard SSD, 'Standard_LRS' for HDD platter 
+var vmSize = 'Standard_E4s_v3'    // View available vm types with 'az vm list-skus -l centralus --output table' from azure CLI
+var osDiskSize = 4095             // OS disk size in GB (allowable: 1 - 4,095 GB) https://azure.microsoft.com/en-gb/pricing/details/managed-disks/
+var osDiskType = 'Premium_LRS'    // choices are 'Premium_LRS' for premium SSD, 'StandardSSD_LRS' for standard SSD, 'Standard_LRS' for HDD platter 
 
 // general
 param projectName string = 'projectname'
@@ -24,13 +24,11 @@ var networkInterfaceName_var = '${projectName}-nic'
 var networkSecurityGroupName_var = '${projectName}-nsg'
 var subnetRef = resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', VnetName_var, SubnetName)
 
-// access (these parameters are passed in at deployment as secure strings: user/pass/ssh-key. Don't change layout, must be decorated like this)
+// access (these parameters are passed in at deployment as secure strings. Don't change layout, must be decorated like this)
 @secure() 
 param adminUsername string
 @secure()
 param adminPassword string
-//@secure()
-//param adminPublicKey string
 
 // resource declarations 
 
@@ -194,15 +192,7 @@ resource vmName 'Microsoft.Compute/virtualMachines@2019-12-01' = {
       adminUsername: adminUsername
       adminPassword: adminPassword
       linuxConfiguration: {
-        disablePasswordAuthentication: false        
-        /*ssh: {
-          publicKeys: [
-            {
-              path: '/home/${adminUsername}/.ssh/authorized_keys'
-              keyData: adminPublicKey
-            }
-          ]
-        }*/
+        disablePasswordAuthentication: false    
       }
       secrets: []      
     }
