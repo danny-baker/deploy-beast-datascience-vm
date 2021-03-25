@@ -36,11 +36,11 @@ What is really important to stress is that the OS image used for this deployment
 
 For the Python JHub users, you might be used to running JHub from your local machine (and being constrained by crappy laptop hardware) or from Google Colab (with limited ram and storage and annoying timeouts). THIS VM IS YOUR OWN PRIVATE JHUB SERVER, with all the horsepower you are willing to pay for. Need 500GB Ram and 64 cores for 3 hours? Just deploy the VM in seconds and get the job done like a pro.
 
-**What is infrastructure-as-code?**
+### What is infrastructure-as-code?
 
 This example demonstrates how to build cloud infrastucture-as-code, which is a way of describing the components you want from a script file. All the big players have some kind of API that they use to interpret the infrastructure to deploy. Whether you are building a machine from the browser or direct from 'code', it's all being turned into a common domain specific format for the provider to ingest, like a blueprint, in order to build the components and wire them up. Microsoft Azure use things called ARM Templates, which  are .json representation of all the infrastructure you want to build. AWS use a .json and .yaml like interface. I'm not sure about Google and the others. Notably, Microsoft has released a new language called [Bicep](https://github.com/Azure/bicep) (August 2020) which drastically simplifies the way you describe the infrastructure. It is really awesome and we're going to be using it!
 
-**What is actually built when I deploy a virtual machine??**
+### What is actually built when I deploy a virtual machine??
 
 It's important to understand that when you provision a virtual machine there are other cloud resources that are also needed in the ecosystem; it's not just the VM that gets provisioned in isolation. To deploy a VM with some ports exposed to the internet, for example, what you are doing in reality within Azure is building a virtual network, subnet within the network, virtual network interface card, network security group (controls things like which ports to open/close), storage account with persistent disk (preloaded with an operating system), the virtual machine itself (which is really the compute cpu-ram component) and a public facing IP to bind to the network interface card so you can access the VM over the internet. Yes it's slightly terrifying at first but I promise it's not too bad once you get the basics. All this magic happens in one elegant step so you don't need to worry about the complexity and can focus on what you do best: the _science_ of data :)
 
