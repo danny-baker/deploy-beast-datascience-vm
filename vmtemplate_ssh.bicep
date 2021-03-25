@@ -29,8 +29,8 @@ var subnetRef = resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetwo
 param adminUsername string
 @secure()
 param adminPassword string
-//@secure()
-//param adminPublicKey string
+@secure()
+param adminPublicKey string
 
 // resource declarations 
 
@@ -195,14 +195,14 @@ resource vmName 'Microsoft.Compute/virtualMachines@2019-12-01' = {
       adminPassword: adminPassword
       linuxConfiguration: {
         disablePasswordAuthentication: false        
-        /*ssh: {
+        ssh: {
           publicKeys: [
             {
               path: '/home/${adminUsername}/.ssh/authorized_keys'
               keyData: adminPublicKey
             }
           ]
-        }*/
+        }
       }
       secrets: []      
     }
