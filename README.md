@@ -12,9 +12,9 @@ If you know what you are doing with deploying Azure resources using ARM template
 `az deployment group create -f vmtemplate.bicep -g <RESOURCE GROUP NAME> --parameters adminUsername='USERNAME' adminPassword='PASSWORD' adminPublicKey='INSERT FULL ASCII PUB KEY HERE'` 
 
 Notes:
-- Bicep templates deploy just like ARM JSON templates
+- Bicep templates deploy just like ARM .json templates (you just need to install Bicep first)
 - username and password should be wrapped in quotations '' or special characters don't detect properly
-- password needs to be decent (1 capital, 1 number, 1 special) 
+- password needs to be decent (1 capital, 1 number, 1 special char) 
 - passing a public (ssh) key parameter is OPTIONAL. You do not need to create an SSH key-pair if you only want to access your machine via JHub (as JHub requires the user/pass).
 - For JHub and other services exposed to the internet, the vm creates a self-signed certificates for HTTPS (TLS/SSL). When you try to connect, modern browsers will still throw a tanty. Just click through the security warnings and you can connect ok, and be confident that you are accessing the services over an encrypted protocol.
 
@@ -26,6 +26,8 @@ Once deployed, grab the public IP address of the new vm (from Portal or CLI) and
 If you are new to cloud infrastructure and scared at this point, worry not. Follow this crash course below and you will be up and running in no time with a a fully dedicated VM. I've also published an article **INSERT LINK** that provides a full explanatory overview with much more detail. 
 
 Here's what you're going to do: in a single command you will compile a Bicep file (high level language describing the infrastructure) into an Azure Resource Manager (ARM) template (a lower level abstraction in JSON) and then build the resources needed in Azure. It takes about 2 mins to deploy and you can be running JHub notebooks over the internet on your remote vm. If you are new to Microsoft cloud, I'd recommend getting a [free Microsoft Azure account](https://azure.microsoft.com/en-gb/free/), so you can play around within the limitations of the trial at no cost.
+
+What is really important to stress is that the OS image used for this deployment is fully setup (by Microsoft) for data science. This means practically no setup (or linux skills) are needed. It ships with support for all the common languages, and tons of packges preloaded, and it natively runs an Jupyter Hub server and R Studio lab server out of the box! No setup.
 
 For the Python JHub users, you might be used to running JHub from your local machine (and being constrained by crappy laptop hardware) or from Google Colab (with limited ram and storage and annoying timeouts). THIS VM IS YOUR OWN PRIVATE JHUB SERVER, with all the horsepower you are willing to pay for. Need 500GB Ram and 64 cores for 3 hours? Just deploy the VM in seconds and get the job done like a pro.
 
