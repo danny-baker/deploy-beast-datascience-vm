@@ -53,7 +53,7 @@ Here is the network topography just to give you a picture of the end product tha
 <<MORE>>
 
 ### Why virtual machines?
-1. Scalability and choice: access hundreds of cores and thousands of GBs of RAM.
+1. Scalability and choice: access hundreds of cores,  thousands of GBs of RAM and massive storage.
 2. Pay for just what you use (billed per second)
 3. Insane internet speed (I've clocked 1,540 MBit/second download speed with a typical 4 core VM)
 
@@ -62,11 +62,11 @@ I think most heavy-weight data science applications require high in-memory proce
 
 For non-GPU applications in data engineering and M/L, I think the D/E series get you a solid all-rounder setup with up to 96 cores and 672GiB RAM in a single instance, plus many options to suit a specific project. For example, an 'E16as_v4' will get you 16 x 2.35Ghz cores, 128GiB RAM and 256GB of temporary SSD storage for about $1USD/hr.
 
-If you are doing something crazy, the M series are straight out beasts and single instances can clock out to 416 cores and 11,400Gb RAM. I mean I don't know what you would use these for in datascience and they are, to be fair, more suited to hardcore enterprise applications. But they are there.
+If you are doing something crazy, the M series are straight out beasts and single instances can clock out to 416 cores and 11,400Gb RAM. I mean I don't know what you would use these for in datascience. These are, to be fair, more suited to hardcore enterprise applications. But they are there.
 
-And for the rapidly evolving deep-learning folk, the new [N-series](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-gpu?context=/azure/virtual-machines/context/context) are for you. There are a number of variants and classess within but in essence you can customise the VM to get fractional access to GPU (e.g. 0.25GPU core) to 4 dedicated GPU cores per node. And you have access to Nvidia Tesla T4 and M60, Volta V100, AMD Radion Mi25 bolted to vms with latest generation CPU core banks from 4-64 cpu cores. I should note these are not available in the Free Trial, you must go to a paid plan. These are serious and I imagine what many of you might want to try. It's also worth mentioning here that Microsoft isn't known as the big player in GPU cloud offerings. It's fair to say this is Google and another of others. Bottom line is most of them offer GPU options and if this is critical to your work, then it's worth researching options. 
+And for the rapidly evolving deep-learning folk, the new [N-series](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-gpu?context=/azure/virtual-machines/context/context) are for you. There are a number of variants and classess within but in essence you can customise the VM to get fractional access to GPU/TPU (e.g. 0.25GPU core to 4 dedicated GPU cores per node). You have direct access to Nvidia Tesla T4 and M60, Volta V100, AMD Radion Mi25 bolted to vms with latest generation CPU core banks from 4-64 cpu cores. I should note these are not available in the Free Trial, you must go to a paid plan. These are serious and I imagine what many of you might want to try. It's also worth mentioning here that Microsoft isn't known as the big player in GPU cloud offerings. It's fair to say this is Google and others. Bottom line is most of them offer GPU options and if this is critical to your work, then it's worth researching options. If GPU is not crazy essential, I think Azure is a great option for trying out dedicated cloud hardware because of the ease of deployment now with the new Bicep language.
 
-The quick and dirty profile of machine types and what to care about for data science applications. There are many subvariants so this is just a flavour.
+The quick and dirty profile of machine types and what to care about for data science applications. There are many subvariants so this is just a flavour to give you an idea of specs and cost ranges.
 
 | Series | Profile                                            | CPU Cores   | GPU Cores    | RAM (GiB)        | Cost ($US/hr) | Verdict                                                                      |
 |:------:|:--------------------------------------------------:|:-----------:|:------------:|:----------------:|:-------------:|:----------------------------------------------------------------------------:|
@@ -86,7 +86,7 @@ More info [here](https://azure.microsoft.com/en-gb/pricing/details/virtual-machi
 It's worth noting that on a standard PAYG account you won't be able to provision a beast out of the box. All Azure accounts have soft and hard vcpu (core) quotas, so if you want anything beyond about 32 cores you will need to lodge a service desk request for a quota increase, which can take 48hrs to process.
 
 ### Where does my VM live?
-Microsoft has datacenters across the world which you can visualise on a [map](https://azure.microsoft.com/en-gb/global-infrastructure/geographies/). Your VM will live in a datacenter of your choosing based on the location of the 'resource group' that you will set. There are marginal price differences between regions, but for this use case, the most important factor is to choose the closest zone to your present location, to minimise latency between you and the machine. For example "Central US" or "UK South".
+Microsoft has datacenters across the world which you can visualise on a [map](https://azure.microsoft.com/en-gb/global-infrastructure/geographies/). Your VM will live in a datacenter of your choosing based on the location of the 'resource group' that you will set. An Azure resource group is simply a convenient bucket to put all your resources in, much like a folder on a your desktop computer. You can control access at the 'folder' level and remove all it's contents by deleting it in one go. There are marginal price differences between regions, but for this use case, the most important factor is to choose the closest zone to your present location, to minimise latency between you and the machine. For example "Central US" or "UK South".
 
 ### Can I just build a datascience VM using the Azure portal in browser?
 YES. 
