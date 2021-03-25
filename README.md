@@ -114,8 +114,12 @@ Getting data in:
 - From the internet: wget/curl/github (just like you would in Colab)
 
 Getting data out:
-
 This is a little trickier than you think, but I have few standard recommendations.
+
+- small (<30GB): use the JHub download feature in browser (the simplest)
+- medium: (<1TB): use a linux data transfer application like `rsync` (requires linux on your local machine, native for MacOS but Windows you will need WSL)
+- large: (+1TB): transfer to a cloud data storage service like Azure Blob, NFS. This will allow you to rapdidly get data out of the VM and shut it down, then you can connect direclty to the cloud storage service (much cheaper) to either download or store the data more long term.
+
 
 ## Instructions
 
