@@ -53,9 +53,13 @@ Here is the network topography just to give you a picture of the end product tha
 - You want to say: "just call me bad ass..." 
 
 ### Alternatives
-- Google Colab
-- Azure Notebooks (quite similar to this and have a free/paid tier for VMs. You don't have FULL access to your vm though) **<<CHECK>>**
-**<<MORE>>**
+Google Colab
+Kaggle Kernels
+Azure Notebooks
+Deepnote
+Binder
+Curvenote
+Etc.
 
 ### Why virtual machines?
 1. Scalability and choice: access hundreds of cores,  thousands of GBs of RAM and massive storage.
@@ -117,10 +121,10 @@ Most beastly setup on free account: E-series 'Standard E4s_v3' (the default in m
 - 1TiB Premium SSD disk (Fastest OS disk type)
 - Insane internet speeds (Typically 1000+ MBit/second)
 
-This package will burn ~$10USD credit/day and you can run it full throttle 24-7, uninterrupted with no cpu constraints for 20 days until free credit depletes. You can set the OS disk size to anything up to 32GiB but 1TiB maximises storage vs credit for 30 day tri
+This package will burn ~$10USD credit/day and you can run it full throttle 24-7, uninterrupted with no cpu constraints for 20 days until free credit depletes. You can set the OS disk size to anything up to 4,095GB (4TiB) but 1TiB maximises storage vs credit for the 30 day trial.
 
 ### How does storage work with vms?
-All VMs need a managed persistent disk for the OS image. You can attach additional disks (several usually) and mount them on the filesystem but note this is fidly if you are not comfortable with linux. By far, the quickest and easiest option is to just beef up the OS disk size (up to 32TiB SSD) to what you need for the task at hand.
+All VMs need a managed persistent disk for the OS image. You can attach additional disks (several usually) and mount them on the filesystem but note this is fidly if you are not comfortable with linux. By far, the quickest and easiest option is to just beef up the OS disk size (up to 4TiB SSD) to what you need for the task at hand.
 
 ### How do I transfer data to and from my VM?
 This is a full blown remote linux machine so it's not as straight forward as copy-pasting documents to your windows filesytem when you are running a localhost JHub server. But, the beauty is that you can do most of your uploading/downloading directly through the Jupyter Hub server by way of the browser, which should cover most people's needs. Don't forget you can rip down data from the internet at lightening speeds from your VM ten times faster than on your home internet or Colab which is constrained to 130Mb/s, for example.
@@ -168,11 +172,11 @@ Copy this project repo to your local machine either from Github over browser as 
 
 Open the `vmtemplate.bicep` file in visual studio code. 
 
-At the beginning of the file I've summarised all the knobs and dials you might want to turn to tweak your VM settings. By default, I've chosen the toughest setup I could find within the limits of a Free Account (This is an E4s_v4 with 128GB RAM, and a 1TB Premium SSD OS Drive). But of course you can mix and match practically any VM up to 4 cores on the free account, and experiment with different HDD sizes and types. In brief, if you are on a free account, the default settings are optimised for the best 4 cores, most ram and best disk I could find. If you are on a PAYG account, you can go crazy.
+At the beginning of the file I've summarised all the knobs and dials you might want to turn to tweak your VM settings. By default, I've chosen the toughest setup I could find within the limits of a Free Account (This is an E4s_v3 with 128GB RAM, and a 1TB Premium SSD OS Drive). But of course you can mix and match practically any VM up to 4 cores on the free account, and experiment with different HDD sizes and types. In brief, if you are on a free account, the default settings are optimised for the best 4 cores, most ram and best disk I could find. If you are on a PAYG account, you can go crazy.
 
 **Key decision points:**
 - VM Type - This is critical as it determines the number of cores, RAM, temporary storage, and other limitations in relation to I/O. Lookup what you want either on [Azure docs](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/) or on [azurenet](https://azureprice.net/). Modify the variable field as you need
-- OS disk size - Default to 1TiB premium SSD, but you can choose anything up to 32TiB as a single disk.
+- OS disk size - Default to 1TiB premium SSD, but you can choose anything up to 4TiB (4095GB) as a single disk.
 - OS disk type Take special note there are 3 distinct classes of storage 'Premium_LRS' which is SSD, 'StandardSSD_LRS' which is constrained SSD media, then the good old fashioned hard disk drive 'Standard_LRS'. Standard SSD is half the price of premium ssd, and standard HDD is 1/4 the price of premium ssd. Refer to docs [here](https://azure.microsoft.com/en-gb/pricing/details/managed-disks/). In all datascience applications, I'd use nothing other than "Premium_LRS" for maximum performance. 
 
 ### 6. Login to Azure
@@ -290,9 +294,7 @@ Install a well loved program to check speed on linux
 
 Run `speedtest`
 
-Open a notebook
-
-
+Open a notebook and get to work. Easily collaborate 
 
 You now have a beast. Well if you are on the free account it's probably only 4 cores. But the same applies whether you have 4 cores or 400. It's all running the same OS so if you get familiar with this now, you will be ready to upgrade when the free trial is over.
 
