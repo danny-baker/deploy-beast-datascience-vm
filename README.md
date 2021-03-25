@@ -1,24 +1,23 @@
-# Deploy ANY virtual machine on Azure using code 
-This guide will help you customise and deploy any virtual machine from Microsoft Azure, preconfigured for data science applications.
+# Deploy ANY virtual machine on Azure using Bicep
+This guide will help you customise and deploy any virtual machine from Microsoft Azure, preconfigured for data science applications, using code.
 
 This is an example of deploying cloud infrastructure-as-code using a new domain specific language called Bicep. The [OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro) is Linux Ubuntu 18.04 and is specially setup with 150GB of goodies including native support for Python, R, Julia, SQL, C#, Java, Node.js, F#. If you don't know linux, don't worry: out of the box it autoruns a Jupyter Hub server giving you instant (secure) access to Jhub notebooks from the browser of your local machine, running remotely on your VM. Deploying in seconds, you will have access to beast VMs with up to 416 cores, 11000+ GB RAM and 1500+ MBit/s internet speeds. Pricing for VMs ranges from 1 cent to 120 $USD/hr and a free trial gets you $200 USD of credit for 30 days, with some important caveats.
 
-This is designed for one-off time-constrained tasks where you need a dedicated monster of a VM to run for a few hours or days to get the job done. You can then export any data, and tear the whole resource down when you're finished.
+This is designed for one-off time-constrained tasks where you need a dedicated beefy VM to run for a few hours or days to get the job done. You can then export any data, and tear the whole resource down when you're finished. In particular: this is for when you need more hardware than your local machine or the free/premium note-book-as-a-service platforms like Google Colab can provide.
 
 ## Quickstart
 
 If you know what you are doing with deploying Azure resources using ARM templates (and Bicep), simply open the `vmtemplate.bicep` file , configure your VM specs, create a resource group and deploy in the Az CLI with a single command:
 
-`az deployment group create -f vmtemplate.bicep -g <RESOURCE GROUP> --parameters adminUsername=<USERNAME> adminPassword=<PASSWORD> adminPublicKey=<INSERT FULL ASCII PUB KEY HERE>` 
-
-**[have option without public key]**
-
-Once deployed, grab the public IP address of the new vm (from Portal or CLI) and either SSH into the VM directly or access the Jupyter Hub server in the browser via `https://xxx.xxx.xxx.xxx:8000`. 
+`az deployment group create -f vmtemplate.bicep -g <RESOURCE GROUP NAME> --parameters adminUsername='USERNAME' adminPassword='PASSWORD' adminPublicKey='INSERT FULL ASCII PUB KEY HERE'` 
 
 Notes:
-- password needs to be decent (1 capital, 1 number, 1 special etc) 
-- you must also pass a valid public ssh key as a parameter aswell. **[TO FIX]**
-- For JHub and other services exposed to the internet, the vm creates a self-signed certificates for HTTPS (TLS/SSL). When you try to connect, modern browsers will still throw a tanty. Just click through the security warnings and you can connect ok, and be confident that you are accessing the services over an encrypted protocol (HTTPS).
+- username and password should be wrapped in quotations '' or special characters don't detect properly
+- password needs to be decent (1 capital, 1 number, 1 special) 
+- passing a public (ssh) key is OPTIONAL. You do not need to create an SSH key-pair if you only want to access your machine via JHub (as JHub requires the user/pass).
+- For JHub and other services exposed to the internet, the vm creates a self-signed certificates for HTTPS (TLS/SSL). When you try to connect, modern browsers will still throw a tanty. Just click through the security warnings and you can connect ok, and be confident that you are accessing the services over an encrypted protocol.
+
+Once deployed, grab the public IP address of the new vm (from Portal or CLI) and either SSH into the VM directly or access the Jupyter Hub server in the browser via `https://xxx.xxx.xxx.xxx:8000`. 
 
 
 ## Guide for Beginners
@@ -54,7 +53,7 @@ For non-GPU applications in data engineering and M/L, I think the D/E series get
 
 If you are doing something crazy, the M series are straight out beasts and single instances can clock out to 416 cores and 11,400Gb RAM. I mean I don't know what you would use these for in datascience and they are, to be fair, more suited to hardcore enterprise applications. But they are there.
 
-And for the rapidly evolving deep-learning folk, the new [N-series](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-gpu?context=/azure/virtual-machines/context/context) are for you. There are a number of variants and classess within but in essence you can customise the VM to get fractional access to GPU (e.g. 0.25GPU core) to 4 dedicated GPU cores per node. And you have access to Nvidia Tesla T4 and M60, Volta V100, AMD Radion Mi25 bolted to vms with latest generation CPU core banks from 4-64 cpu cores. I should note these are not available in the Free Trial, you must go to a paid plan. These are serious and I imagine what many of you might want to try.
+And for the rapidly evolving deep-learning folk, the new [N-series](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-gpu?context=/azure/virtual-machines/context/context) are for you. There are a number of variants and classess within but in essence you can customise the VM to get fractional access to GPU (e.g. 0.25GPU core) to 4 dedicated GPU cores per node. And you have access to Nvidia Tesla T4 and M60, Volta V100, AMD Radion Mi25 bolted to vms with latest generation CPU core banks from 4-64 cpu cores. I should note these are not available in the Free Trial, you must go to a paid plan. These are serious and I imagine what many of you might want to try. It's also worth mentioning here that Microsoft isn't known as the big player in GPU cloud offerings. It's fair to say this is Google and another of others. Bottom line is most of them offer GPU options and if this is critical to your work, then it's worth researching. I just happen to know Azure best.
 
 The quick and dirty profile of machine types and what to care about for data science applications. There are many subvariants so this is just a flavour.
 
@@ -76,11 +75,11 @@ More info [here](https://azure.microsoft.com/en-gb/pricing/details/virtual-machi
 It's worth noting that on a standard PAYG account you won't be able to provision a beast out of the box. All Azure accounts have soft and hard vcpu (core) quotas, so if you want anything beyond about 32 cores you will need to lodge a service desk request for a quota increase, which can take 48hrs to process.
 
 ### Where does my VM live?
-Microsoft has datacenters across the world which you can visualise on a [map](https://azure.microsoft.com/en-gb/global-infrastructure/geographies/).Your VM will live in a datacenter of your choosing based on the location of the 'resource group' that you will set. There are marginal price differences between regions, but in this application, the most important factor is to choose the closest zone to your present location, to minimise latency between you and the machine. For example "Central US" or "UK South".
+Microsoft has datacenters across the world which you can visualise on a [map](https://azure.microsoft.com/en-gb/global-infrastructure/geographies/). Your VM will live in a datacenter of your choosing based on the location of the 'resource group' that you will set. There are marginal price differences between regions, but for this use case, the most important factor is to choose the closest zone to your present location, to minimise latency between you and the machine. For example "Central US" or "UK South".
 
-### Can I just build a datascience VM in the Azure portal?
+### Can I just build a datascience VM using the Azure portal?
 YES. 
-In fact, I'd recommend build your first VM using the [Azure portal](http://portal.azure.com), selecting the [data science OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro ). This is exactly the same OS image as I'm using in this build template. There are a few limitations to using the portal so you can't specify as many options but you can definitely get it up and access your vm on JHub etc. I hope this guide shows you how easy it can be to deploy infrastructure as code which is what is actually happening behind the scenes when you deploy from the Azure Portal anyway.
+In fact, I'd recommend you build your first VM using the [Azure portal](http://portal.azure.com), selecting the [data science OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro ). This is exactly the same OS image as I'm using in this build template. There are a few limitations to using the portal so you can't specify as many options but you can definitely get it up and access your vm on JHub etc. I hope this guide shows you how easy it can be to deploy infrastructure as code which is what is actually happening behind the scenes when you deploy from the Azure Portal anyway.
 
 ### How you are billed for VMs?
 You pay by the second. And yes, leaving the VM on will rack up your credit card in a way you will not like (you are protected on the Free Account, don't worry).
@@ -100,14 +99,22 @@ Most beastly setup on free account: 'Standard E4s_v4' (the default in my templat
 - 4 cores (Intel Xeon Platinum 8272CL base core clock 2.5GHz which can increase to 3.4Ghz all cores)
 - 32GB ram
 - 1TiB Premium SSD disk (Fastest OS disk type)
-- Insane internet speeds (Typically 1000 MBit/second)
+- Insane internet speeds (Typically 1000+ MBit/second)
 
-This package will burn ~$10USD credit/day and you can run it full throttle 24-7, uninterrupted with no cpu constraints for 20 days until credit depletes.
+This package will burn ~$10USD credit/day and you can run it full throttle 24-7, uninterrupted with no cpu constraints for 20 days until free credit depletes.
 
 ### How does storage work with vms?
-All VMs need a managed persistent disk for the OS image. You can attach additional disk (several usually) and mount them on the filesystem but note this is fidly if you are not comfortable with linux. By far, the quickest and easiest option is to just beef up the OS disk size to what you need for the task.
+All VMs need a managed persistent disk for the OS image. You can attach additional disk (several usually) and mount them on the filesystem but note this is fidly if you are not comfortable with linux. By far, the quickest and easiest option is to just beef up the OS disk size (up to 32TiB SSD) to what you need for the task. 
 
 ### How do I transfer data to and from my VM?
+This is a full blown remote linux machine so it's not as straight forward as copy-pasting documents to your windows filesytem when you are running a localhost JHub server. But, the beauty is that you can do most of your uploading/downloading directly through the Jupyter Hub server by way of the browser, which should cover most people's needs. Don't forget you can rip down data from the internet at lightening speeds from your VM 10 times faster than on your home internet or Colab which is constrained to 130Mb/s, for example.
+
+Getting data in:
+- From your pc: use the JHub upload feature in browser or tools like `rsync` from a linux terminal (requires you to have WSL in windows)
+- From the internet: wget/curl/github (just like you would in Colab)
+
+Getting data out:
+
 This is a little trickier than you think, but I have few standard recommendations.
 
 ## Instructions
