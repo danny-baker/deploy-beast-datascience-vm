@@ -92,7 +92,7 @@ Microsoft has datacenters across the world which you can visualise on a [map](ht
 YES. 
 In fact, I'd recommend you build your first VM using the [Azure portal](http://portal.azure.com), selecting the [data science OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro ). This is exactly the same OS image as I'm using in this build template. There are a few limitations to using the portal so you can't specify as many options but you can definitely get it up and access your vm on JHub etc. I hope this guide shows you how easy it can be to deploy infrastructure as code which is what is actually happening behind the scenes when you deploy from the Azure Portal anyway.
 
-### How you are billed for VMs?
+### How am I billed for my VM?
 You pay by the second. And yes, leaving the VM on will rack up your credit card in a way you will not like (you are protected on the Free Account, don't worry).
 
 Most of the other infrastructure is essentially free (the virtual network, subnet, public IP, etc). The key costs are the COMPUTE (the virtual machine) and STORAGE (the persistent disk attached to it).
@@ -139,8 +139,8 @@ Now that the crash course is complete, we can start with the step by step guide 
 ### Prerequisites
 - Microsoft Azure account (e.g. [Free Trial](https://azure.microsoft.com/en-gb/free/) or pay-as-you-go)
 
-### 1. Install VS Code and Bicep/ARM extensions
-Microsoft Visual Studio code is great for this project as it is open source and has downloadable extensions for bicep and ARM templates, meaning it colours the code really nicely to make it more readable. Download and install [VS Code](https://code.visualstudio.com/) with [ARM Tools](https://marketplace.visualstudio.com/items?itemName=msazurermtools.azurerm-vscode-tools) and [Bicep](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-bicep) extensions. Note the extensions can be easily installed from within VS Code once it's running.
+### 1. Install VS Code and Bicep/ARM extensions (OPTIONAL)
+This is preparing us for opening and editing the project files, primarily the `vmtemplate.bicep` file. Microsoft Visual Studio code is great for this project as it is open source and has downloadable extensions for bicep and ARM templates, meaning it colours the code really nicely to make it more readable. Download and install [VS Code](https://code.visualstudio.com/) with [ARM Tools](https://marketplace.visualstudio.com/items?itemName=msazurermtools.azurerm-vscode-tools) and [Bicep](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-bicep) extensions. Note the extensions can be easily installed from within VS Code once it's running. Of course this is optional. You could use any editor (e.g. Notepad++, VIM, etc.)
 
 ### 2. Install Azure CLI
 What is the Azure CLI? It's a dedicated program that provides a command line interface (i.e. CLI) for interacting directly with Azure resources. This means you can build and tear down infrastructure at command line like a boss, rather than doing it from the web browser portal. The most straight forward way is to [install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) which can run on Windows, MacOS, and Linux. 
@@ -151,8 +151,14 @@ For this complete example, Yes. Because there are some limitations with the port
 ### 3. Install Bicep
 Bicep is a cool new domain-specific-language for deploying Azure resources in a much more simplified way than using ARM templates, which are in JSON format and can be painful to read when you start adding multiple pieces of infrastructure. Bicep files compile into Azure Resource Manager (ARM) templates, which can then be directly ingested by Azure to build infrastructure. Bicep scripts, therefore are a high-level abstraction ontop of ARM templates, that simplify the description of the infrastructure you want to build. It only takes a few mins to install Bicep. Follow the installation guide [here](https://github.com/Azure/bicep). 
 
+From within the Azure CLI latest version it is basically:
+
+`az bicep install`
+
+`az bicep upgrade`
+
 ### 4. Clone this repo
-Copy this project repo to your local machine either from Github over browser as a straight download, or via `git clone` etc. If you are not familiar with github and git, really, you just need to get the `vmtemplate.bicep` file to your local machine.
+Copy this project repo to your local machine either from Github over browser as a straight download, or via `git clone` etc. If you are not familiar with github and git, really, you just need to get the `vmtemplate.bicep` file to your local machine where you can access it from within the Azure CLI.
 
 ### 5. Configure VM specs and access (the fun part)
 
@@ -183,33 +189,56 @@ Set subscription (if default is not correct)
 
 `az account set --subscription <name>`
 
-### 7. Create Azure resource group
-
-In this example I'm creating a resource group called "beast" in the "Central US" region
-
-`az group create --name beast --location "Central US"`
-
-Check by typing
+List resource groups (to view any existing resource groups in your subscription)
 
 `az group list --output table`
 
+OPTIONAL: Permanently set Azure CLI output format to table which is way more human readable than JSON, which is the default. I highly recommend doing this.
+
+`az configure` (and follow prompts. Ensure you select output as table format)
+
+### 7. Create Azure resource group
+
+Create a new resource group in a region that is geographically close to your current location.
+
+To view available regions:
+
+`az account list-locations`
+
+In this example I'm creating a resource group called "beast" in the "Central US" region. It usually takes a few seconds.
+
+`az group create --name beast --location "Central US"`
+
+Check resource group is created
+
+`az group list --output table` (if you have changed your Az CLI configuration, you don't need to append the --output table every time)
+
 After a few seconds, it should appear. You can check in portal.azure.com directly by searching for 'resource groups'
 
-### 7a (OPTIONAL) Create SSH keypair
+### 8. Setup access methods
 
-If you are running linux (WSL in Windows or MacOSX) you can create public/private key encryption files for secure shell access (SSH) to the VM. This is the safest way to do it, although note that Jupyter Hub does not support it. So no matter what, if you are planning to use JHub mainly, you will still need to use the user/pass. And from JHUB you can access a full root terminal to do whatever you need. So this is really only for more hardcore ppl that want to be able to directly SSH into the VM.
+We are almost ready to construct the resource. The final thing we need to do is setup how you will access the machine. There are two main ways you can do this: username/password credentials and/or SSH public/private key encryption. You can do user/pass only, or user/pass & SSH.
 
-Create SSH keypair have have public key ready to pass in as paramater.
+**Choose a username and password**
+- Let's assume you decide on username: jamesbond / password: G0|den3y3
+- Note passwords must contain at least 1 uppercase, 1 number and 1 special character.
+- For the current template we will be using, you must create a username and password. This is because Jupyter Hub requires a user/pass and does not support SSH keys. And because I assume most people will want to run notebooks on their VM, I've setup the template to allow a username/password, which is not really the most secure way to connect to a Linux host. 
 
-### 8. The great build
+**OPTIONAL Create SSH keypair**
 
-This is the moment you have been waiting for. Assuming you decided on username: jamesbond / password: G0|den3y3
+If you are running linux, WSL in Windows or MacOSX and you have basically a linux terminal,  you can create public/private key encryption files for secure shell access (SSH) to the VM. This is the safest way to access it, although note that Jupyter Hub does not support it. So no matter what, if you are planning to use JHub mainly, you will still need to use a username/password. From JHUB you can access a full root terminal to do whatever you need. So this is really only for more hardcore ppl that want to be able to directly SSH into the VM rather than go in via JHub. Create SSH keypair have have public key ready to pass in as paramater (for advanced users only).
 
-From the Azure CLI ensure you navigate to the current working directory where the vmdeploy.bicep file resides. Compile and deploy the VM, passing in the paramaters for username and password
+### 9. The great build
+
+This is the moment you have been waiting for: we are ready to build the infrastructure. 
+
+From the Azure CLI ensure you navigate to the current working directory where the `vmdeploy.bicep` file resides. Compile and deploy the VM, passing in the paramaters.
+
+**Build with username/password only**
 
 `az deployment group create -f vmtemplate.bicep -g beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3"`
 
-Or the same deploy, with the optional public ssh key
+**Build with username/password AND SSH public key**
 
 `az deployment group create -f vmtemplate.bicep -g beast --parameters adminUsername=jamesbond adminPassword=G0|den3y3 adminPublicKey=<INSERT FULL ASCII PUB KEY HERE>` 
 
