@@ -103,16 +103,16 @@ Note the hourly rate is PAYG and if you have an ongoing demand for a vm, you can
 
 ### What is the best VM available on the free trial?
 The 30 day free trial gets you 200 USD of credit which is great, but note some important limitations below:
-- Max cores: 4 per region (meaning no big bad wolf VMs on free account)
-- No access: GPU VM series (upgrade to PAYG account to access N-Series GPU optimised vms, starting at about 1USD/hr)
+- Max cores = 4 per region (meaning no big bad wolf VMs on free account)
+- No access to GPU VM series (upgrade to PAYG account to access N-Series GPU optimised vms, starting at about 1USD/hr)
 
-Most beastly setup on free account: 'Standard E4s_v4' (the default in my template)
+Most beastly setup on free account: E-series 'Standard E4s_v3' (the default in my template)
 - 4 cores (Intel Xeon Platinum 8272CL base core clock 2.5GHz which can increase to 3.4Ghz all cores)
 - 32GB ram
 - 1TiB Premium SSD disk (Fastest OS disk type)
 - Insane internet speeds (Typically 1000+ MBit/second)
 
-This package will burn ~$10USD credit/day and you can run it full throttle 24-7, uninterrupted with no cpu constraints for 20 days until free credit depletes.
+This package will burn ~$10USD credit/day and you can run it full throttle 24-7, uninterrupted with no cpu constraints for 20 days until free credit depletes. You can set the OS disk size to anything up to 32GiB but 1TiB maximises storage vs credit for 30 day tri
 
 ### How does storage work with vms?
 All VMs need a managed persistent disk for the OS image. You can attach additional disks (several usually) and mount them on the filesystem but note this is fidly if you are not comfortable with linux. By far, the quickest and easiest option is to just beef up the OS disk size (up to 32TiB SSD) to what you need for the task at hand.
