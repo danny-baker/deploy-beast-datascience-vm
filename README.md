@@ -218,31 +218,28 @@ After a few seconds, it should appear. You can check in portal.azure.com directl
 We are almost ready to construct the resource. The final thing we need to do is setup how you will access the machine. There are two main ways you can do this: username/password credentials and/or SSH public/private key encryption. You can do user/pass only, or user/pass & SSH.
 
 **Choose a username and password**
-- Let's assume you decide on username: jamesbond / password: G0|den3y3
 - Note passwords must contain at least 1 uppercase, 1 number and 1 special character.
 - For the current template we will be using, you must create a username and password. This is because Jupyter Hub requires a user/pass and does not support SSH keys. And because I assume most people will want to run notebooks on their VM, I've setup the template to allow a username/password, which is not really the most secure way to connect to a Linux host. 
 
-**OPTIONAL Create SSH keypair**
+**OPTIONAL Create SSH key-pair**
 
 If you are running linux, WSL in Windows or MacOSX and you have basically a linux terminal,  you can create public/private key encryption files for secure shell access (SSH) to the VM. This is the safest way to access it, although note that Jupyter Hub does not support it. So no matter what, if you are planning to use JHub mainly, you will still need to use a username/password. From JHUB you can access a full root terminal to do whatever you need. So this is really only for more hardcore ppl that want to be able to directly SSH into the VM rather than go in via JHub. Create SSH keypair have have public key ready to pass in as paramater (for advanced users only).
 
 ### 9. The great build
 
-This is the moment you have been waiting for: we are ready to build the infrastructure. 
-
-From the Azure CLI ensure you navigate to the current working directory where the `vmdeploy.bicep` file resides. Compile and deploy the VM, passing in the paramaters.
+This is the moment you have been waiting for: we are ready to build the infrastructure. From the Azure CLI ensure you navigate to the current working directory where the `vmdeploy.bicep` file resides. You must also be logged into your account via the Az CLI (step 6). Compile and deploy the VM, passing in the paramaters. Let's assume you decide on username: jamesbond / password: G0|den3y3
 
 **Build with username/password only**
 
-`az deployment group create -f vmtemplate.bicep -g beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3"`
+`az deployment group create -f vmtemplate.bicep --resource-group beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3"`
 
 **Build with username/password AND SSH public key**
 
-`az deployment group create -f vmtemplate.bicep -g beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3" adminPublicKey="INSERT FULL ASCII PUBLIC KEY HERE" 
+`az deployment group create -f vmtemplate.bicep --resource-group beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3" adminPublicKey="INSERT FULL ASCII PUBLIC KEY HERE"`
 
 Notes
-- I would encase the username and password in inverted commas to ensure special characters parse properly. Sometimes you will get an error without them.
-- Same gooes for the public key.
+- Always encase the username and password in inverted commas to ensure special characters parse properly. Sometimes you will get an error without them.
+- Same goes for the public key.
 
 If it worked you should see something that looks like this
 
