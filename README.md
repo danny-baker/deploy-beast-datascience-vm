@@ -9,7 +9,7 @@ This is designed for one-off time-constrained tasks where you need a dedicated b
 
 If you know what you are doing with deploying Azure resources using ARM templates (and Bicep), simply open the `vmtemplate.bicep` file , set your VM specs, create a resource group and deploy in the Az CLI with a single command:
 
-`az deployment group create -f vmtemplate.bicep -g <RESOURCE GROUP NAME> --parameters adminUsername='USERNAME' adminPassword='PASSWORD' adminPublicKey='INSERT FULL ASCII PUB KEY HERE OR REMOVE THIS PARAMETER IF YOU DON'T NEED IT'` 
+`az deployment group create -f vmtemplate.bicep -g <RESOURCE GROUP NAME> --parameters adminUsername='USERNAME' adminPassword='PASSWORD'` 
 
 This will build your VM along with all the components needed in around 90 seconds. Once deployed, grab the public IP address of the new vm (from Portal or CLI) and either SSH into the VM directly or access the Jupyter Hub server in the browser via `https://xxx.xxx.xxx.xxx:8000`. 
 
@@ -17,7 +17,7 @@ Notes:
 - Bicep templates deploy just like ARM .json templates (you just need to install Bicep first)
 - username and password should be wrapped in quotations '' or special characters don't detect properly
 - password needs to be decent (1 capital, 1 number, 1 special char) 
-- passing a public (ssh) key parameter is OPTIONAL. You do not need to create an SSH key-pair if you only want to access your machine via JHub (as JHub requires the user/pass).
+- OPTIONAL SSH key. If you also plan to connect directly to your VM via ssh you can add an optional 3rd parameter to the deploy command `adminPublicKey='YOUR FULL PUBLIC KEY'`
 - For JHub and other services exposed to the internet, the vm creates a self-signed certificates for HTTPS (TLS/SSL). When you try to connect, modern browsers will still throw a tanty. Just click through the security warnings and you can connect ok, and be confident that you are accessing the services over an encrypted protocol.
 
 
@@ -53,7 +53,7 @@ Here is the network topography just to give you a picture of the end product tha
 <<MORE>>
 
 ### Why virtual machines?
-1. Scalability and choice: access hundreds of cores and thousands of GBs of RAM.
+1. Scalability and choice: access hundreds of cores,  thousands of GBs of RAM and massive storage.
 2. Pay for just what you use (billed per second)
 3. Insane internet speed (I've clocked 1,540 MBit/second download speed with a typical 4 core VM)
 
@@ -62,11 +62,11 @@ I think most heavy-weight data science applications require high in-memory proce
 
 For non-GPU applications in data engineering and M/L, I think the D/E series get you a solid all-rounder setup with up to 96 cores and 672GiB RAM in a single instance, plus many options to suit a specific project. For example, an 'E16as_v4' will get you 16 x 2.35Ghz cores, 128GiB RAM and 256GB of temporary SSD storage for about $1USD/hr.
 
-If you are doing something crazy, the M series are straight out beasts and single instances can clock out to 416 cores and 11,400Gb RAM. I mean I don't know what you would use these for in datascience and they are, to be fair, more suited to hardcore enterprise applications. But they are there.
+If you are doing something crazy, the M series are straight out beasts and single instances can clock out to 416 cores and 11,400Gb RAM. I mean I don't know what you would use these for in datascience. These are, to be fair, more suited to hardcore enterprise applications. But they are there.
 
-And for the rapidly evolving deep-learning folk, the new [N-series](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-gpu?context=/azure/virtual-machines/context/context) are for you. There are a number of variants and classess within but in essence you can customise the VM to get fractional access to GPU (e.g. 0.25GPU core) to 4 dedicated GPU cores per node. And you have access to Nvidia Tesla T4 and M60, Volta V100, AMD Radion Mi25 bolted to vms with latest generation CPU core banks from 4-64 cpu cores. I should note these are not available in the Free Trial, you must go to a paid plan. These are serious and I imagine what many of you might want to try. It's also worth mentioning here that Microsoft isn't known as the big player in GPU cloud offerings. It's fair to say this is Google and another of others. Bottom line is most of them offer GPU options and if this is critical to your work, then it's worth researching options. 
+And for the rapidly evolving deep-learning folk, the new [N-series](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-gpu?context=/azure/virtual-machines/context/context) are for you. There are a number of variants and classess within but in essence you can customise the VM to get fractional access to GPU/TPU (e.g. 0.25GPU core to 4 dedicated GPU cores per node). You have direct access to Nvidia Tesla T4 and M60, Volta V100, AMD Radion Mi25 bolted to vms with latest generation CPU core banks from 4-64 cpu cores. I should note these are not available in the Free Trial, you must go to a paid plan. These are serious and I imagine what many of you might want to try. It's also worth mentioning here that Microsoft isn't known as the big player in GPU cloud offerings. It's fair to say this is Google and others. Bottom line is most of them offer GPU options and if this is critical to your work, then it's worth researching options. If GPU is not crazy essential, I think Azure is a great option for trying out dedicated cloud hardware because of the ease of deployment now with the new Bicep language.
 
-The quick and dirty profile of machine types and what to care about for data science applications. There are many subvariants so this is just a flavour.
+The quick and dirty profile of machine types and what to care about for data science applications. There are many subvariants so this is just a flavour to give you an idea of specs and cost ranges.
 
 | Series | Profile                                            | CPU Cores   | GPU Cores    | RAM (GiB)        | Cost ($US/hr) | Verdict                                                                      |
 |:------:|:--------------------------------------------------:|:-----------:|:------------:|:----------------:|:-------------:|:----------------------------------------------------------------------------:|
@@ -86,13 +86,13 @@ More info [here](https://azure.microsoft.com/en-gb/pricing/details/virtual-machi
 It's worth noting that on a standard PAYG account you won't be able to provision a beast out of the box. All Azure accounts have soft and hard vcpu (core) quotas, so if you want anything beyond about 32 cores you will need to lodge a service desk request for a quota increase, which can take 48hrs to process.
 
 ### Where does my VM live?
-Microsoft has datacenters across the world which you can visualise on a [map](https://azure.microsoft.com/en-gb/global-infrastructure/geographies/). Your VM will live in a datacenter of your choosing based on the location of the 'resource group' that you will set. There are marginal price differences between regions, but for this use case, the most important factor is to choose the closest zone to your present location, to minimise latency between you and the machine. For example "Central US" or "UK South".
+Microsoft has datacenters across the world which you can visualise on a [map](https://azure.microsoft.com/en-gb/global-infrastructure/geographies/). Your VM will live in a datacenter of your choosing based on the location of the 'resource group' that you will set. An Azure resource group is simply a convenient bucket to put all your resources in, much like a folder on a your desktop computer. You can control access at the 'folder' level and remove all it's contents by deleting it in one go. There are marginal price differences between regions, but for this use case, the most important factor is to choose the closest zone to your present location, to minimise latency between you and the machine. For example "Central US" or "UK South".
 
 ### Can I just build a datascience VM using the Azure portal in browser?
 YES. 
 In fact, I'd recommend you build your first VM using the [Azure portal](http://portal.azure.com), selecting the [data science OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro ). This is exactly the same OS image as I'm using in this build template. There are a few limitations to using the portal so you can't specify as many options but you can definitely get it up and access your vm on JHub etc. I hope this guide shows you how easy it can be to deploy infrastructure as code which is what is actually happening behind the scenes when you deploy from the Azure Portal anyway.
 
-### How you are billed for VMs?
+### How am I billed for my VM?
 You pay by the second. And yes, leaving the VM on will rack up your credit card in a way you will not like (you are protected on the Free Account, don't worry).
 
 Most of the other infrastructure is essentially free (the virtual network, subnet, public IP, etc). The key costs are the COMPUTE (the virtual machine) and STORAGE (the persistent disk attached to it).
@@ -103,16 +103,16 @@ Note the hourly rate is PAYG and if you have an ongoing demand for a vm, you can
 
 ### What is the best VM available on the free trial?
 The 30 day free trial gets you 200 USD of credit which is great, but note some important limitations below:
-- Max cores: 4 per region (meaning no big bad wolf VMs on free account)
-- No access: GPU VM series (upgrade to PAYG account to access N-Series GPU optimised vms, starting at about 1USD/hr)
+- Max cores = 4 per region (meaning no big bad wolf VMs on free account)
+- No access to GPU VM series (upgrade to PAYG account to access N-Series GPU optimised vms, starting at about 1USD/hr)
 
-Most beastly setup on free account: 'Standard E4s_v4' (the default in my template)
+Most beastly setup on free account: E-series 'Standard E4s_v3' (the default in my template)
 - 4 cores (Intel Xeon Platinum 8272CL base core clock 2.5GHz which can increase to 3.4Ghz all cores)
 - 32GB ram
 - 1TiB Premium SSD disk (Fastest OS disk type)
 - Insane internet speeds (Typically 1000+ MBit/second)
 
-This package will burn ~$10USD credit/day and you can run it full throttle 24-7, uninterrupted with no cpu constraints for 20 days until free credit depletes.
+This package will burn ~$10USD credit/day and you can run it full throttle 24-7, uninterrupted with no cpu constraints for 20 days until free credit depletes. You can set the OS disk size to anything up to 32GiB but 1TiB maximises storage vs credit for 30 day tri
 
 ### How does storage work with vms?
 All VMs need a managed persistent disk for the OS image. You can attach additional disks (several usually) and mount them on the filesystem but note this is fidly if you are not comfortable with linux. By far, the quickest and easiest option is to just beef up the OS disk size (up to 32TiB SSD) to what you need for the task at hand.
@@ -139,8 +139,8 @@ Now that the crash course is complete, we can start with the step by step guide 
 ### Prerequisites
 - Microsoft Azure account (e.g. [Free Trial](https://azure.microsoft.com/en-gb/free/) or pay-as-you-go)
 
-### 1. Install VS Code and Bicep/ARM extensions
-Microsoft Visual Studio code is great for this project as it is open source and has downloadable extensions for bicep and ARM templates, meaning it colours the code really nicely to make it more readable. Download and install [VS Code](https://code.visualstudio.com/) with [ARM Tools](https://marketplace.visualstudio.com/items?itemName=msazurermtools.azurerm-vscode-tools) and [Bicep](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-bicep) extensions. Note the extensions can be easily installed from within VS Code once it's running.
+### 1. Install VS Code and Bicep/ARM extensions (OPTIONAL)
+This is preparing us for opening and editing the project files, primarily the `vmtemplate.bicep` file. Microsoft Visual Studio code is great for this project as it is open source and has downloadable extensions for bicep and ARM templates, meaning it colours the code really nicely to make it more readable. Download and install [VS Code](https://code.visualstudio.com/) with [ARM Tools](https://marketplace.visualstudio.com/items?itemName=msazurermtools.azurerm-vscode-tools) and [Bicep](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-bicep) extensions. Note the extensions can be easily installed from within VS Code once it's running. Of course this is optional. You could use any editor (e.g. Notepad++, VIM, etc.)
 
 ### 2. Install Azure CLI
 What is the Azure CLI? It's a dedicated program that provides a command line interface (i.e. CLI) for interacting directly with Azure resources. This means you can build and tear down infrastructure at command line like a boss, rather than doing it from the web browser portal. The most straight forward way is to [install the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) which can run on Windows, MacOS, and Linux. 
@@ -151,8 +151,14 @@ For this complete example, Yes. Because there are some limitations with the port
 ### 3. Install Bicep
 Bicep is a cool new domain-specific-language for deploying Azure resources in a much more simplified way than using ARM templates, which are in JSON format and can be painful to read when you start adding multiple pieces of infrastructure. Bicep files compile into Azure Resource Manager (ARM) templates, which can then be directly ingested by Azure to build infrastructure. Bicep scripts, therefore are a high-level abstraction ontop of ARM templates, that simplify the description of the infrastructure you want to build. It only takes a few mins to install Bicep. Follow the installation guide [here](https://github.com/Azure/bicep). 
 
+From within the Azure CLI latest version it is basically:
+
+`az bicep install`
+
+`az bicep upgrade`
+
 ### 4. Clone this repo
-Copy this project repo to your local machine either from Github over browser as a straight download, or via `git clone` etc. If you are not familiar with github and git, really, you just need to get the `vmtemplate.bicep` file to your local machine.
+Copy this project repo to your local machine either from Github over browser as a straight download, or via `git clone` etc. If you are not familiar with github and git, really, you just need to get the `vmtemplate.bicep` file to your local machine where you can access it from within the Azure CLI.
 
 ### 5. Configure VM specs and access (the fun part)
 
@@ -164,8 +170,6 @@ At the beginning of the file I've summarised all the knobs and dials you might w
 - VM Type - This is critical as it determines the number of cores, RAM, temporary storage, and other limitations in relation to I/O. Lookup what you want either on [Azure docs](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/) or on [azurenet](https://azureprice.net/). Modify the variable field as you need
 - OS disk size - Default to 1TiB premium SSD, but you can choose anything up to 32TiB as a single disk.
 - OS disk type Take special note there are 3 distinct classes of storage 'Premium_LRS' which is SSD, 'StandardSSD_LRS' which is constrained SSD media, then the good old fashioned hard disk drive 'Standard_LRS'. Standard SSD is half the price of premium ssd, and standard HDD is 1/4 the price of premium ssd. Refer to docs [here](https://azure.microsoft.com/en-gb/pricing/details/managed-disks/). In all datascience applications, I'd use nothing other than "Premium_LRS" for maximum performance. 
-- You will also need to decide on a username/password which you will use in the next step at deployment. This data will be passed a paramters at deployment-time and stored as secure strings by Azure.
-- OPTIONAL: SSH public/private key. If you want to be able to secure shell (SSH) directly using keys, then you can attach your public key as an input parameter in the build command. This is generally regarded as the most secure way to access your VM, but the Jupyter Hub server does not support SSH, so in fact if you are planning to use JHub primarily, you only need a username/password. This will still get you superuser access to the machine via JHub and you can still open a terimnal from within JHub.
 
 ### 6. Login to Azure
 
@@ -183,39 +187,63 @@ Set subscription (if default is not correct)
 
 `az account set --subscription <name>`
 
-### 7. Create Azure resource group
-
-In this example I'm creating a resource group called "beast" in the "Central US" region
-
-`az group create --name beast --location "Central US"`
-
-Check by typing
+List resource groups (to view any existing resource groups in your subscription)
 
 `az group list --output table`
 
+OPTIONAL: Permanently set Azure CLI output format to table which is way more human readable than JSON, which is the default. I highly recommend doing this.
+
+`az configure` (and follow prompts. Ensure you select output as table format)
+
+### 7. Create Azure resource group
+
+Create a new resource group in a region that is geographically close to your current location.
+
+To view available regions:
+
+`az account list-locations`
+
+In this example I'm creating a resource group called "beast" in the "Central US" region. It usually takes a few seconds.
+
+`az group create --name beast --location "Central US"`
+
+Check resource group is created
+
+`az group list --output table` (if you have changed your Az CLI configuration, you don't need to append the --output table every time)
+
 After a few seconds, it should appear. You can check in portal.azure.com directly by searching for 'resource groups'
 
-### 7a (OPTIONAL) Create SSH keypair
+### 8. Setup access methods
 
-If you are running linux (WSL in Windows or MacOSX) you can create public/private key encryption files for secure shell access (SSH) to the VM. This is the safest way to do it, although note that Jupyter Hub does not support it. So no matter what, if you are planning to use JHub mainly, you will still need to use the user/pass. And from JHUB you can access a full root terminal to do whatever you need. So this is really only for more hardcore ppl that want to be able to directly SSH into the VM.
+We are almost ready to construct the resource. The final thing we need to do is setup how you will access the machine. There are two main ways you can do this: username/password credentials and/or SSH public/private key encryption. You can do user/pass only, or user/pass & SSH.
 
-Create SSH keypair have have public key ready to pass in as paramater.
+**Choose a username and password**
+- Note passwords must contain at least 1 uppercase, 1 number and 1 special character.
+- For the current template we will be using, you must create a username and password. This is because Jupyter Hub requires a user/pass and does not support SSH keys. And because I assume most people will want to run notebooks on their VM, I've setup the template to allow a username/password, which is not really the most secure way to connect to a Linux host. 
 
-### 8. The great build
+**OPTIONAL Create SSH key-pair**
 
-This is the moment you have been waiting for. Assuming you decided on username: jamesbond / password: G0|den3y3
+If you are running linux, WSL in Windows or MacOSX and you have basically a linux terminal,  you can create public/private key encryption files for secure shell access (SSH) to the VM. This is the safest way to access it, although note that Jupyter Hub does not support it. So no matter what, if you are planning to use JHub mainly, you will still need to use a username/password. From JHUB you can access a full root terminal to do whatever you need. So this is really only for more hardcore ppl that want to be able to directly SSH into the VM rather than go in via JHub. Create SSH keypair have have public key ready to pass in as paramater (for advanced users only).
 
-From the Azure CLI ensure you navigate to the current working directory where the vmdeploy.bicep file resides. Compile and deploy the VM, passing in the paramaters for username and password
+### 9. The great build
 
-`az deployment group create -f vmtemplate.bicep -g beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3"`
+This is the moment you have been waiting for: we are ready to build the infrastructure. From the Azure CLI ensure you navigate to the current working directory where the `vmdeploy.bicep` file resides. You must also be logged into your account via the Az CLI (step 6). Compile and deploy the VM, passing in the paramaters. Let's assume you decide on username: jamesbond / password: G0|den3y3
 
-Or the same deploy, with the optional public ssh key
+**Build with username/password only**
 
-`az deployment group create -f vmtemplate.bicep -g beast --parameters adminUsername=jamesbond adminPassword=G0|den3y3 adminPublicKey=<INSERT FULL ASCII PUB KEY HERE>` 
+`az deployment group create -f vmtemplate.bicep --resource-group beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3"`
+
+**Build with username/password AND SSH public key**
+
+`az deployment group create -f vmtemplate.bicep --resource-group beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3" adminPublicKey="INSERT FULL ASCII PUBLIC KEY HERE"`
+
+Notes
+- Always encase the username and password in inverted commas to ensure special characters parse properly. Sometimes you will get an error without them.
+- Same goes for the public key.
 
 If it worked you should see something that looks like this
 
-### 9. Connect to the machine over the browser via Jupyter Hub!
+### 10. Connect to the machine over the browser via Jupyter Hub!
 
 Your new VM has a bunch of services preconfigured, so after deployment, it immediately runs a range of containerised services (via Docker) including a Jupyter Hub service, exposed on port 8000. Jupyter Hub is (in part) a webserver and so you can directly connect to it from any browser over the internet. 
 
@@ -236,7 +264,7 @@ Login to Jupyter Hub with the username and password you supplied for the VM at d
 If it has worked, you will see the Jhub session that looks like this :D
 
 
-## 10. Test the beast
+## 11. Test the beast
 
 Now are you are connected to your VM securely, it's time to test a few things. It's super important to note that connecting to your VM via JHub gives you full superuser access; you can open a linux terminal from within Jhub and do literally anything you as if you had connected via SSH.
 
