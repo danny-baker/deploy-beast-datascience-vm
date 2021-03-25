@@ -170,8 +170,6 @@ At the beginning of the file I've summarised all the knobs and dials you might w
 - VM Type - This is critical as it determines the number of cores, RAM, temporary storage, and other limitations in relation to I/O. Lookup what you want either on [Azure docs](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/) or on [azurenet](https://azureprice.net/). Modify the variable field as you need
 - OS disk size - Default to 1TiB premium SSD, but you can choose anything up to 32TiB as a single disk.
 - OS disk type Take special note there are 3 distinct classes of storage 'Premium_LRS' which is SSD, 'StandardSSD_LRS' which is constrained SSD media, then the good old fashioned hard disk drive 'Standard_LRS'. Standard SSD is half the price of premium ssd, and standard HDD is 1/4 the price of premium ssd. Refer to docs [here](https://azure.microsoft.com/en-gb/pricing/details/managed-disks/). In all datascience applications, I'd use nothing other than "Premium_LRS" for maximum performance. 
-- You will also need to decide on a username/password which you will use in the next step at deployment. This data will be passed a paramters at deployment-time and stored as secure strings by Azure.
-- OPTIONAL: SSH public/private key. If you want to be able to secure shell (SSH) directly using keys, then you can attach your public key as an input parameter in the build command. This is generally regarded as the most secure way to access your VM, but the Jupyter Hub server does not support SSH, so in fact if you are planning to use JHub primarily, you only need a username/password. This will still get you superuser access to the machine via JHub and you can still open a terimnal from within JHub.
 
 ### 6. Login to Azure
 
