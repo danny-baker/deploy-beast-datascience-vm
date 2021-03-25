@@ -9,7 +9,7 @@ This is designed for one-off time-constrained tasks where you need a dedicated b
 
 If you know what you are doing with deploying Azure resources using ARM templates (and Bicep), simply open the `vmtemplate.bicep` file , set your VM specs, create a resource group and deploy in the Az CLI with a single command:
 
-`az deployment group create -f vmtemplate.bicep -g <RESOURCE GROUP NAME> --parameters adminUsername='USERNAME' adminPassword='PASSWORD' adminPublicKey='INSERT FULL ASCII PUB KEY HERE OR REMOVE THIS PARAMETER IF YOU DON'T NEED IT'` 
+`az deployment group create -f vmtemplate.bicep -g <RESOURCE GROUP NAME> --parameters adminUsername='USERNAME' adminPassword='PASSWORD'` 
 
 This will build your VM along with all the components needed in around 90 seconds. Once deployed, grab the public IP address of the new vm (from Portal or CLI) and either SSH into the VM directly or access the Jupyter Hub server in the browser via `https://xxx.xxx.xxx.xxx:8000`. 
 
@@ -17,7 +17,7 @@ Notes:
 - Bicep templates deploy just like ARM .json templates (you just need to install Bicep first)
 - username and password should be wrapped in quotations '' or special characters don't detect properly
 - password needs to be decent (1 capital, 1 number, 1 special char) 
-- passing a public (ssh) key parameter is OPTIONAL. You do not need to create an SSH key-pair if you only want to access your machine via JHub (as JHub requires the user/pass).
+- OPTIONAL SSH key. If you also plan to connect directly to your VM via ssh you can add an optional 3rd parameter to the deploy command `adminPublicKey='YOUR FULL PUBLIC KEY'`
 - For JHub and other services exposed to the internet, the vm creates a self-signed certificates for HTTPS (TLS/SSL). When you try to connect, modern browsers will still throw a tanty. Just click through the security warnings and you can connect ok, and be confident that you are accessing the services over an encrypted protocol.
 
 
