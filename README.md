@@ -238,11 +238,15 @@ From the Azure CLI ensure you navigate to the current working directory where th
 
 **Build with username/password AND SSH public key**
 
-`az deployment group create -f vmtemplate.bicep -g beast --parameters adminUsername=jamesbond adminPassword=G0|den3y3 adminPublicKey=<INSERT FULL ASCII PUB KEY HERE>` 
+`az deployment group create -f vmtemplate.bicep -g beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3" adminPublicKey="INSERT FULL ASCII PUBLIC KEY HERE" 
+
+Notes
+- I would encase the username and password in inverted commas to ensure special characters parse properly. Sometimes you will get an error without them.
+- Same gooes for the public key.
 
 If it worked you should see something that looks like this
 
-### 9. Connect to the machine over the browser via Jupyter Hub!
+### 10. Connect to the machine over the browser via Jupyter Hub!
 
 Your new VM has a bunch of services preconfigured, so after deployment, it immediately runs a range of containerised services (via Docker) including a Jupyter Hub service, exposed on port 8000. Jupyter Hub is (in part) a webserver and so you can directly connect to it from any browser over the internet. 
 
@@ -263,7 +267,7 @@ Login to Jupyter Hub with the username and password you supplied for the VM at d
 If it has worked, you will see the Jhub session that looks like this :D
 
 
-## 10. Test the beast
+## 11. Test the beast
 
 Now are you are connected to your VM securely, it's time to test a few things. It's super important to note that connecting to your VM via JHub gives you full superuser access; you can open a linux terminal from within Jhub and do literally anything you as if you had connected via SSH.
 
