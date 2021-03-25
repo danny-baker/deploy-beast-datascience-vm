@@ -134,6 +134,7 @@ This is a full blown remote linux machine so it's not as straight forward as cop
 - From the internet: wget/curl/github (just like you would in Colab)
 
 **Getting data out of your VM:**
+
 This is a little trickier than you think because the machine is running linux and you probably are running Windows, but I have few standard recommendations.
 
 - small (<30GB): use the JHub file download feature in browser (the simplest)
