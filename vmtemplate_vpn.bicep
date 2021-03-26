@@ -1,16 +1,17 @@
 // DATA SCIENCE VM: VPN PROTECTED (PRIVATE IP) **ADVANCED USERS ONLY**
 
 // Build a fully private VM behind a premium VPN gateway. Ports are ok to leave open as there is no public facing IP for the VM. You must connect successfully to the VPN to access the VM.
-// At deployment this file accepts 4 mandatory secure parameters: username, password, SSH public Key, VPN Root certificate public key
-
+// At deployment this file accepts 4 mandatory secure parameters: adminUsername, adminPassword, adminPublicKey, VPNrootCERT (the self-signed VPN Root certificate public key which you must create)
+// You can pass in 6 optional parameters (the vm specs) or leave them as default, or just change the default values here in this file
+// A few extra goodies added in, including provision for a data disk which can be up to 32TB SSD per disk.
 
 // vm specs
-var vmSize = 'Standard_E4s_v3'    // View available vm types with 'az vm list-skus -l centralus --output table' from azure CLI or checkout https://azureprice.net/ or https://docs.microsoft.com/en-us/azure/virtual-machines/sizes
-var osDiskSize = 1000             // size in GiB (allowable: 256 - 4,095 GiB) https://azure.microsoft.com/en-gb/pricing/details/managed-disks/
-var osDiskType = 'Premium_LRS'    // choices are 'Premium_LRS' for premium SSD, 'StandardSSD_LRS' for standard SSD, 'Standard_LRS' for HDD platter 
-var dataDiskSize = 1              // size in GiB (allowable: 1 - 32,000 GiB). Note you must manually mount data disks. Guide here https://docs.microsoft.com/en-us/azure/virtual-machines/linux/attach-disk-portal
-var dataDiskType = 'Premium_LRS'  
-var projectName = 'projectname'
+param vmModel string = 'Standard_E4s_v3'    // View available vm types with 'az vm list-skus -l centralus --output table' from azure CLI or checkout https://azureprice.net/ or https://docs.microsoft.com/en-us/azure/virtual-machines/sizes
+param osDiskSize int = 1000                 // OS disk size in GB (allowable: 256 - 4,095 GB) https://azure.microsoft.com/en-gb/pricing/details/managed-disks/
+param osDiskType string = 'Premium_LRS'     // choices are 'Premium_LRS' for premium SSD, 'StandardSSD_LRS' for standard SSD, 'Standard_LRS' for HDD platter 
+param projectName string = 'projectname'    // If this parameter is not passed in at build it will default to this value.
+param dataDiskSize int = 1                  // size in GiB (allowable: 1 - 32,000 GiB). Note you must manually mount data disks. Guide here https://docs.microsoft.com/en-us/azure/virtual-machines/linux/attach-disk-portal
+param dataDiskType string = 'Premium_LRS'  
 
 // Advanced 
 var vmName_var = '${projectName}-prod-vm'
@@ -211,7 +212,7 @@ resource vmName 'Microsoft.Compute/virtualMachines@2019-12-01' = {
   location: resourceGroup().location
   properties: {
     hardwareProfile: {
-      vmSize: vmSize
+      vmSize: vmModel
     }
     osProfile: {
       computerName: vmName_var

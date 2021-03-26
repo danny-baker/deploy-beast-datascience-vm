@@ -1,6 +1,7 @@
 // DATA SCIENCE VM: SSH ACCESS ONLY (PUBLIC IP)
 
 // This template builds a data science VM with public IP and exposed ports. It is designed for direct applications where you can work from a terminal (SSH) and do not need JHub.
+// It accepts up to 6 parameters at build: 2 mandatory parameters are adminUserName, adminPublicKey; and you can optionally pass in vm specs vmModel, osDiskSize, osDiskType, projectName or leave to defaults
 
 // vm specs
 param vmModel string = 'Standard_E4s_v3'    // View available vm types with 'az vm list-skus -l centralus --output table' from azure CLI or checkout https://azureprice.net/ or https://docs.microsoft.com/en-us/azure/virtual-machines/sizes
