@@ -9,11 +9,11 @@ This is designed for one-off time-constrained tasks where you need a dedicated b
 
 If you know what you are doing with deploying Azure resources using ARM templates (and Bicep), simply open the appropriate Bicep template file, set your VM specs, create a resource group, and deploy in the Azure CLI with a single command:
 
-**Deploy with username/pass only (`vmtemplate.bicep`)**
+**Deploy with username/pass only**
 
 `az deployment group create -f vmtemplate.bicep -g <RESOURCE GROUP NAME> --parameters adminUsername='USERNAME' adminPassword='PASSWORD'` 
 
-**Deploy with username/pass and SSH public key (`vmtemplate_ssh.bicep`)**
+**Deploy with username/pass and SSH public key**
 
 `az deployment group create -f vmtemplate_ssh.bicep -g <RESOURCE GROUP NAME> --parameters adminUsername='USERNAME' adminPassword='PASSWORD' adminPublicKey="INSERT PUBLIC SSH KEY HERE"` 
 
@@ -30,41 +30,50 @@ Notes:
 
 If you are new to cloud infrastructure and scared at this point, worry not. Follow the crash course and step-by-step instructions below and you will be up and running in no time with a a fully dedicated VM. I've also published an article **INSERT LINK** that provides a full explanatory overview with much more detail and jokes. 
 
-Here's what you're going to do: in a single command you will compile a Bicep file (high level language describing the infrastructure) into an Azure Resource Manager (ARM) template (a lower level abstraction in JSON) and then build the resources needed in Azure. It takes about 2 mins to deploy and you can be running JHub notebooks over the internet on your remote vm. If you are new to Microsoft cloud, I'd recommend getting a [free Microsoft Azure account](https://azure.microsoft.com/en-gb/free/), so you can play around within the limitations of the trial at no cost.
+Here's what you're going to do: in a single command you will compile a Bicep file (high level language describing the cloud infrastructure) into an Azure Resource Manager (ARM) template (a lower level abstraction in JSON format) and then build the resources needed in Azure. It takes about 2 mins to deploy and you can be running JHub notebooks over the internet on your remote vm. If you are new to Microsoft cloud, I'd recommend getting a [free Microsoft Azure account](https://azure.microsoft.com/en-gb/free/), so you can play around within the limitations of the trial at no cost.
 
-What is really important to stress is that the OS image used for this deployment is fully setup (by Microsoft) for data science. This means practically no setup (or linux skills) are needed. It ships with support for all the common languages, and tons of packges preloaded, and it natively runs an Jupyter Hub server and R Studio lab server as containerised services out of the box! This means you can connect instantly to the VM as soon as it is up.
+What is really important to stress is that the OS image used for this deployment is fully setup (by Microsoft) for data science. This means literally zero setup (or linux skills) are needed. It ships with support for all the common languages, and tons of packges preloaded, and it natively runs an Jupyter Hub server and R Studio lab server as containerised services out of the box! This means you can connect instantly to the VM as soon as it is up, securely over HTTPS.
 
 For the Python JHub users, you might be used to running JHub from your local machine (and being constrained by crappy laptop hardware) or from Google Colab (with limited ram and storage and annoying timeouts). THIS VM IS YOUR OWN PRIVATE JHUB SERVER, with all the horsepower you are willing to pay for. Need 500GB Ram and 64 cores for 3 hours? Just deploy the VM in seconds and get the job done like a pro.
 
-### What is infrastructure-as-code?
-
-This example demonstrates how to build cloud infrastucture-as-code, which is a way of describing the components you want from a script file. All the big players have some kind of API that they use to interpret the infrastructure to deploy. Whether you are building a machine from the browser or direct from 'code', it's all being turned into a common domain specific format for the provider to ingest, like a blueprint, in order to build the components and wire them up. Microsoft Azure use things called ARM Templates, which  are .json representation of all the infrastructure you want to build. AWS use a .json and .yaml like interface. I'm not sure about Google and the others. Notably, Microsoft has released a new language called [Bicep](https://github.com/Azure/bicep) (August 2020) which drastically simplifies the way you describe the infrastructure. It is really awesome and we're going to be using it!
-
-### What is actually built when I deploy a virtual machine??
-
-It's important to understand that when you provision a virtual machine there are other cloud resources that are also needed in the ecosystem; it's not just the VM that gets provisioned in isolation. To deploy a VM with some ports exposed to the internet, for example, what you are doing in reality within Azure is building a virtual network, subnet within the network, virtual network interface card, network security group (controls things like which ports to open/close), storage account with persistent disk (preloaded with an operating system), the virtual machine itself (which is really the compute cpu-ram component) and a public facing IP to bind to the network interface card so you can access the VM over the internet. Yes it's slightly terrifying at first but I promise it's not too bad once you get the basics. All this magic happens in one elegant step so you don't need to worry about the complexity and can focus on what you do best: the _science_ of data :)
-
-Here is the network topography just to give you a picture of the end product that is built from this template.
-
 ### Use this template when
-- You need raw horsepower to get the job done (e.g. 256GB+ RAM, 16+ cores)
+- You need raw horsepower to get the job done (e.g. 128GB+ RAM, 16+ cores)
 - You want total and exclusive control of your hardware (no managed services etc)
 - Your local machine or any of the Colab cloud notebook environments are simply not up to the task
 - You want to say: "just call me bad ass..." 
 
-### Alternatives
-Google Colab
-Kaggle Kernels
-Azure Notebooks
-Deepnote
-Binder
-Curvenote
-Etc.
-
 ### Why virtual machines?
-1. Scalability and choice: access hundreds of cores,  thousands of GBs of RAM and massive storage.
-2. Pay for just what you use (billed per second)
-3. Insane internet speed (I've clocked 1,540 MBit/second download speed with a typical 4 core VM)
+- Scalability and choice: access hundreds of cores,  thousands of GBs of RAM and massive storage.
+- Pay for just what you use (billed per second)
+- Insane internet speeds (I've clocked 1,540 MBit/second download speed with a typical 4 core VM)
+
+### Alternatives to a dedicated virtual machine for data science
+- Your local hardware
+- Google Colab
+- Kaggle Kernels
+- Azure Notebooks
+- Deepnote
+- Binder
+- Curvenote
+- Etc.
+
+### Can I access Jupyter Hub securely on my virtual machine?
+YES. In fact this is probably the most important thing about this particular setup. Microsoft has done all the work building a special data science linux OS image, that runs a Jupyter Hub server automatically. No setup required. They have also handled self-signed TLS certificates which means you can connect to your JHub server using HTTPS. You will need to click through a security warning in most browsers but this is just because you are using self-signed certificates between the vm and your pc. What this means is you can instantly have JHub up and running on serious horsepower, and collaborate in real-time with others on your new hardware if you wish.
+
+### What is infrastructure-as-code?
+
+This example demonstrates how to build cloud infrastucture-as-code, which is a way of describing the components you want from a script file. Many (or all) of the big players have some kind of API that they use to interpret the infrastructure to deploy. Whether you are building a machine from the browser or direct from 'code', it's all being turned into a common domain specific format for the provider to ingest, like a blueprint, in order to build the components and wire them up. Microsoft Azure use things called ARM Templates, which  are .json representation of all the infrastructure you want to build. AWS use a .json and .yaml like interface. I'm not sure about Google and the others. Notably, Microsoft has released a new language called [Bicep](https://github.com/Azure/bicep) (August 2020) which drastically simplifies the way you describe the infrastructure. It is really awesome and we're going to be using it!
+
+### What is actually built when I deploy a virtual machine??
+
+It's important to understand that when you provision a virtual machine there are other cloud resources that are also needed; it's not just the VM that gets provisioned in isolation. To deploy a VM with some ports exposed to the internet, for example, what you are doing in reality within Azure is building a virtual network, subnet within the network, virtual network interface card, network security group (controls things like which ports to open/close), storage account with persistent disk (preloaded with an operating system), the virtual machine itself (which is really the compute cpu-ram component) and a public facing IP address to bind to the network interface card so you can access the VM over the internet. Yes it's slightly terrifying at first but I promise it's not too bad once you get the basics. All this magic happens in one elegant step so you don't need to worry about the complexity and can focus on what you do best: the _science_ of data :)
+
+Here is the network topography just to give you a picture of the end product that is built from this template.
+
+
+
+
+
 
 ### Making sense of VM Machine Types in Azure
 I think most heavy-weight data science applications require high in-memory processing, and parallel core processing either with CPU or GPU. As a result I think the VM types of most interest are D/E/M/N Series from Azure.
