@@ -252,9 +252,9 @@ Check resource group is created
 
 After a few seconds, it should appear. You can check in portal.azure.com directly by searching for 'resource groups'
 
-### 8. Setup access methods
+### 8. Setup access
 
-We are almost ready to construct the resource. The final thing we need to do is setup how you will access the machine. There are two main ways you can do this: username/password credentials and/or SSH public/private key encryption. You can do user/pass only, or user/pass & SSH and I have a separate bicep template file for each option.
+We are almost ready to construct the resource. The final thing we need to do is setup how you will access the machine. There are two main ways you can do this: username/password credentials OR SSH public/private key encryption. I have a separate bicep file for each option. I'd recommend user/pass default for now, as this is the option that supports JHub.
 
 **Choose a username and password**
 - Note passwords must contain at least 1 uppercase, 1 number and 1 special character.
@@ -265,13 +265,13 @@ We are almost ready to construct the resource. The final thing we need to do is 
 
 Only applicable if you do not plan to use JHub and want the most secure way to access your VM.
 
-If you are running linux, WSL in Windows or MacOSX and you have basically a linux terminal,  you can create public/private key encryption files for secure shell access (SSH) to the VM. This is the safest way to access it, although note that Jupyter Hub does not support it. So no matter what, if you are planning to use JHub mainly, you will need to use a username/password template. From JHUB you can access a full root terminal to do whatever you need. So this is really only for more hardcore ppl that want to be able to directly SSH into the VM with keys rather than go in via JHub. Create SSH keypair have have public key ready to pass in as paramater (advanced users only).
+If you are running linux, WSL in Windows or MacOSX and you have basically a linux terminal,  you can create public/private key encryption files for secure shell access (SSH) to the VM. This is the safest way to access it, although note that Jupyter Hub does not support it. So no matter what, if you are planning to use JHub mainly, you will need to use a username/password template. From JHUB you can access a full root terminal to do whatever you need. So this is really only for more hardcore ppl that want to be able to directly SSH into the VM with encrypted keys. Create SSH keypair have have public key ready to pass in as paramater (advanced users only).
 
 ### 9. THE GREAT BUILD
 
-This is the moment you have been waiting for: we are ready to build the infrastructure. From the Azure CLI ensure you navigate to the current working directory where the `vmdeploy.bicep` file reside. You must also be logged into your account via the Az CLI (step 6). Build the VM by running the appropriate command below, passing in the paramters for username/password. Let's assume you decide on username: jamesbond / password: G0|den3y3
+This is the moment you have been waiting for: we are ready to build the infrastructure. From the Azure CLI ensure you navigate to the current working directory where the `vmdeploy.bicep` file reside. You must also be logged into your Azure account via the Az CLI (step 6). Build the VM by running the appropriate command below, passing in the paramters for username/password or public key. Let's assume you decide on username: jamesbond / password: G0|den3y3 and have created a resource group called 'beast'.
 
-**Deploy username/password**
+**Deploy with username/password**
 
 `az deployment group create -f vmtemplate.bicep --resource-group beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3"`
 
@@ -287,7 +287,11 @@ If it worked you should see something that looks like this
 
 ![successful deploy](https://user-images.githubusercontent.com/12868840/112634272-4f9b0300-8e32-11eb-81b6-9ebd42d17dd6.PNG)
 
-Above: If you see something like this in thte Azure CLI after patiently waiting for 2 minutes. 
+Above: If you see something like this in thte Azure CLI after patiently waiting for 2 minutes you are looking good. 
+
+Login to Azure Portal and take a look at your new infrastructure!
+
+
 
 ### 10. Connect to the machine over the browser via Jupyter Hub!
 
