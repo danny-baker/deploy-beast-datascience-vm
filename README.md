@@ -7,55 +7,34 @@ This is designed for one-off time-constrained tasks where you need a dedicated b
 
 **Use case: when you need better specs than your local machine or the notebook-as-a-service platforms like Google Colab can provide; When you want to say "Just call me bad ass..."**
 
-## Quickstart
+# Quickstart
 
 If you know what you are doing with deploying Azure resources using ARM templates (and Bicep), simply open the appropriate Bicep template file, set your VM specs, create a resource group, and deploy in the Azure CLI with a single command:
 
-**Deploy with username/pass**
+### Deploy with a single command
 
-If you are planning to use Jupyter Hub to connect to your VM over the internet (via HTTPS). For default specs (4 core VM, 32GB ram, 1TB SSD):
+Use default template VM specs optimised for Free Account (E-series, 4 cores, 32GB RAM, 64GB temp SSD, 1TB SSD OS disk):
 
 `az deployment group create -f vmtemplate.bicep --resource-group <RESOURCE GROUP NAME> --parameters adminUsername="USERNAME" adminPassword="PASSWORD"`
 
-Or specify exactly what you want with 6 parameters:
+Or specify vm specs with up to six parameters:
 
-```
+`az deployment group create -f vmtemplate.bicep --resource-group <RESOURCE GROUP NAME> --parameters adminUsername="USERNAME" adminPassword="PASSWORD" vmModel="Standard_E4s_v3" osDiskSize=1000 osDiskType="Premium_LRS" projectName="myproject"`
 
-az deployment group create -f vmtemplate.bicep --resource-group <RESOURCE GROUP NAME> --parameters adminUsername="USERNAME" adminPassword="PASSWORD" \
+### Access via JHub
 
+Once deployed, grab the public IP address of the new vm (from Portal or CLI) access the Jupyter Hub server in the browser via  `https://xxx.xxx.xxx.xxx:8000`. 
 
+### Access via Secure Shell (SSH)
 
-```
+Access directly over terminal: `ssh USERNAME@xxx.xxx.xxx.xxx`
 
-
-
-**Deploy with SSH public key**
-
-If you do not need Jupyter Hub and want the most secure way to access your VM over the internet (keys must first be generated etc.)
-
-`az deployment group create -f vmtemplate_ssh.bicep --resource-group <RESOURCE GROUP NAME> --parameters adminUsername="USERNAME" adminPublicKey="INSERT PUBLIC SSH KEY HERE"`
-
-**Access via JHub**
-
-Once deployed, grab the public IP address of the new vm (from Portal or CLI) access the Jupyter Hub server in the browser via
-
- `https://xxx.xxx.xxx.xxx:8000`. 
-
-**Access via Secure Shell (SSH)**
-
-If you deployed with user/pass, access from a terminal via:
-
-`ssh USERNAME@xxx.xxx.xxx.xxx`
-
-If you deployed with ssh key, access from a terminal via:
-
-`ssh -i ~/.ssh/private-key USERNAME@xxx.xxx.xxx.xxx`
-
-Notes:
+**Notes:**
 - Bicep templates deploy just like ARM .json templates (you just need to install Bicep first)
 - username and password should be wrapped in quotations '' or special characters don't detect properly
 - password needs to be decent (1 capital, 1 number, 1 special char) 
 - For JHub and other services exposed to the internet, the vm creates a self-signed certificates for HTTPS (TLS/SSL). When you try to connect, modern browsers will still throw a tanty. Just click through the security warnings and you can connect ok, and be confident that you are accessing the services over an encrypted protocol.
+- If you don't _need_ JHUB and want dedicated SSH access to your VM using keys, I have a template specifically for that `vmtemplate_ssh.bicep`. See detailed instructions later in document.
 
 
 # Guide for Beginners

@@ -1,16 +1,14 @@
-// PUBLIC IP VM: SSH ACCESS ONLY
+// DATA SCIENCE VM: SSH ACCESS ONLY (PUBLIC IP)
 
-// This template builds a data science VM with public IP and exposed ports. It is designed for direct applications where you can work from a terminal (SSH)
+// This template builds a data science VM with public IP and exposed ports. It is designed for direct applications where you can work from a terminal (SSH) and do not need JHub.
 
 // vm specs
-var vmSize = 'Standard_E4s_v3'    // View available vm types with 'az vm list-skus -l centralus --output table' from azure CLI or checkout https://azureprice.net/ or https://docs.microsoft.com/en-us/azure/virtual-machines/sizes
-var osDiskSize = 1000             // size in GiB (allowable: 256 - 4,095 GiB) https://azure.microsoft.com/en-gb/pricing/details/managed-disks/
-var osDiskType = 'Premium_LRS'    // choices are 'Premium_LRS' for premium SSD, 'StandardSSD_LRS' for standard SSD, 'Standard_LRS' for HDD platter 
+param vmModel string = 'Standard_E4s_v3'    // View available vm types with 'az vm list-skus -l centralus --output table' from azure CLI or checkout https://azureprice.net/ or https://docs.microsoft.com/en-us/azure/virtual-machines/sizes
+param osDiskSize int = 1000                 // OS disk size in GB (allowable: 256 - 4,095 GB) https://azure.microsoft.com/en-gb/pricing/details/managed-disks/
+param osDiskType string = 'Premium_LRS'     // choices are 'Premium_LRS' for premium SSD, 'StandardSSD_LRS' for standard SSD, 'Standard_LRS' for HDD platter 
+param projectName string = 'projectname'    // If this parameter is not passed in at build it will default to this value.
 
-// general
-param projectName string = 'projectname'
-
-// advanced (Leave alone unless you know what you're doing)
+// advanced 
 param vmName_var string = '${projectName}-vm'
 var vmPort80 = 'Allow'      //'Allow' or 'Deny' (HTTP)
 var vmPort443 = 'Allow'     //'Allow' or 'Deny' (HTTPS)
@@ -18,7 +16,7 @@ var vmPort22 = 'Allow'      //'Allow' or 'Deny' (SSH)
 var vmPort8000 = 'Allow'    //'Allow' or 'Deny' (JHUB SERVER)
 var vmPort8787 = 'Allow'    //'Allow' or 'Deny' (RSTUDIO SERVER)
 var VnetName_var = '${projectName}-VNet'
-var vnetAddressPrefixes = '10.1.0.0/16' //CIDR notation
+var vnetAddressPrefixes = '10.1.0.0/16' 
 var SubnetName = '${projectName}-subnet'
 var SubnetAddressPrefixes = '10.1.0.0/24'
 var publicIPAddressNameVM_var = '${projectName}-ip'
@@ -187,7 +185,7 @@ resource vmName 'Microsoft.Compute/virtualMachines@2019-12-01' = {
   location: resourceGroup().location
   properties: {
     hardwareProfile: {
-      vmSize: vmSize
+      vmSize: vmModel
     }
     osProfile: {
       computerName: vmName_var
@@ -208,7 +206,7 @@ resource vmName 'Microsoft.Compute/virtualMachines@2019-12-01' = {
     }
     storageProfile: {
       imageReference: {
-        publisher: 'microsoft-dsvm'
+        publisher: 'microsoft-dsvm' //This is the magical data science image
         offer: 'ubuntu-1804'
         sku: '1804'
         version: 'latest'

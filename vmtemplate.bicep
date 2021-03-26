@@ -1,7 +1,7 @@
-// PUBLIC IP VM: JUPYTER HUB SERVER
+// DATA SCIENCE VM: JUPYTER HUB (PUBLIC IP)
 
 // This constructs a data science VM using admin/pass with a public IP and exposes Jupyter Hub server on port 8000 (accessible at https://xxx.xxx.xxx.xxx:8000) once up.
-// It accepts up to 6 parameters at build. 2 mandatory parameters are adminUserName and adminPassword, and you can optionally pass in vm specs or leave these to default values
+// It accepts up to 6 parameters at build: 2 mandatory parameters are adminUserName, adminPassword; and you can optionally pass in vm specs vmModel, osDiskSize, osDiskType, projectName or leave to defaults
 
 // vm specs
 param vmModel string = 'Standard_E4s_v3'    // View available vm types with 'az vm list-skus -l centralus --output table' from azure CLI or checkout https://azureprice.net/ or https://docs.microsoft.com/en-us/azure/virtual-machines/sizes
