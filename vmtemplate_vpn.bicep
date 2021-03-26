@@ -1,10 +1,11 @@
-// ADVANCED USERS ONLY
+// VPN PROTECTED PRIVATE IP VM: ADVANCED USERS ONLY
+
 // Build a fully private VM behind a premium VPN gateway. Ports are ok to leave open as there is no public facing IP for the VM. You must connect successfully to the VPN to access the VM.
 // At deployment this file accepts 4 secure parameters: username, password, SSH public Key, VPN Root certificate public key
 
-// virtual machine specs (modify as you need, even if you are scared)
+// vm specs
 var vmSize = 'Standard_E4s_v3'    // View available vm types with 'az vm list-skus -l centralus --output table' from azure CLI or checkout https://azureprice.net/ or https://docs.microsoft.com/en-us/azure/virtual-machines/sizes
-var osDiskSize = 256              // size in GiB (allowable: 256 - 4,095 GiB) https://azure.microsoft.com/en-gb/pricing/details/managed-disks/
+var osDiskSize = 1000             // size in GiB (allowable: 256 - 4,095 GiB) https://azure.microsoft.com/en-gb/pricing/details/managed-disks/
 var osDiskType = 'Premium_LRS'    // choices are 'Premium_LRS' for premium SSD, 'StandardSSD_LRS' for standard SSD, 'Standard_LRS' for HDD platter 
 var dataDiskSize = 1              // size in GiB (allowable: 1 - 32,000 GiB). Note you must manually mount data disks. Guide here https://docs.microsoft.com/en-us/azure/virtual-machines/linux/attach-disk-portal
 var dataDiskType = 'Premium_LRS'  

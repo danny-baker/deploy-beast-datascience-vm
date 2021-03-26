@@ -13,9 +13,21 @@ If you know what you are doing with deploying Azure resources using ARM template
 
 **Deploy with username/pass**
 
-If you are planning to use Jupyter Hub to connect to your VM over the internet (via HTTPS)
+If you are planning to use Jupyter Hub to connect to your VM over the internet (via HTTPS). For default specs (4 core VM, 32GB ram, 1TB SSD):
 
 `az deployment group create -f vmtemplate.bicep --resource-group <RESOURCE GROUP NAME> --parameters adminUsername="USERNAME" adminPassword="PASSWORD"`
+
+Or specify exactly what you want with 6 parameters:
+
+```
+
+az deployment group create -f vmtemplate.bicep --resource-group <RESOURCE GROUP NAME> --parameters adminUsername="USERNAME" adminPassword="PASSWORD" \
+
+
+
+```
+
+
 
 **Deploy with SSH public key**
 
@@ -408,9 +420,9 @@ I've created a bicep file `vmtemplate_vpn.bicep` for advanced users that does th
 - dynamically creates private network ip address for the vm (usually 10.1.0.4)
 - creates the VM and all associated infrastructure with an additional subnet and premium VPN gateway (default tunnel encryption is IkeV2 and OpenVPN but you can change these)
 
-First you need to generate a root certificate for the VPN, and export it's public key in a particular way so you can copy the ASCII chars and use pass them in as paramaters at deployment. At deployment you pass 4 parameters: username / password / SSH public key / VPN root certificate public key. The VPN gateway takes about 45 minutes to create so you will have to be patient. Once up, assuming you already have the root and client certs installed on your local machine, you need to download the VPN client from Azure Portal (or via CLI), install, then connect. Once successfully connected to the VPN, you can directly to your VM via ssh.
+First you need to generate a root certificate for the VPN, and export it's public key in a particular way (ref links below) so you can copy the ASCII chars and use pass them in as paramaters at deployment. At deployment you pass 4 parameters: username / password / SSH public key / VPN root certificate public key. The VPN gateway takes about 45 minutes to create so you will have to be patient. Once it's up you should be able to navigate to it in Portal and see it has a public IP address. Assuming you already have the root and client certs installed on your local machine, you need to download the VPN client from Azure Portal (or via CLI) (ref links below), install, then connect. Once successfully connected to the VPN, you can directly ssh to your VM.
 
-I've tested this is working and can ssh to the private machine once connected to the VPN. JHub does not work out of the box in your browser on the private ip but I do believe with some routing magic and editing of `/etc/hosts` files it can be done. This is beyond my skill level though.
+I've tested this Bicep template is working and can ssh to the private data science machine once connected to the VPN. JHub does not work out of the box in your browser on the private ip but I do believe with some routing magic and editing of `/etc/hosts` files it can be done. This is beyond my skill level though.
 
 https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpn-gateway-settings
 https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-certificates-point-to-site for generating root and client certificates

@@ -1,30 +1,29 @@
-// This compiles into an ARM template to build a dedicated vm for datascience 
+// PUBLIC IP VM: JUPYTER HUB SERVER
+
+// This constructs a data science VM using admin/pass with a public IP and exposes Jupyter Hub server on port 8000 (accessible at https://xxx.xxx.xxx.xxx:8000) once up.
+// It accepts up to 6 parameters at build. 2 mandatory parameters are adminUserName and adminPassword, and you can optionally pass in vm specs or leave these to default values
 
 // vm specs
-var vmSize = 'Standard_E4s_v3'    // View available vm types with 'az vm list-skus -l centralus --output table' from azure CLI or checkout https://azureprice.net/ or https://docs.microsoft.com/en-us/azure/virtual-machines/sizes
-var osDiskSize = 256              // OS disk size in GB (allowable: 256 - 4,095 GB) https://azure.microsoft.com/en-gb/pricing/details/managed-disks/
-var osDiskType = 'Premium_LRS'    // choices are 'Premium_LRS' for premium SSD, 'StandardSSD_LRS' for standard SSD, 'Standard_LRS' for HDD platter 
+param vmModel string = 'Standard_E4s_v3'    // View available vm types with 'az vm list-skus -l centralus --output table' from azure CLI or checkout https://azureprice.net/ or https://docs.microsoft.com/en-us/azure/virtual-machines/sizes
+param osDiskSize int = 1000                 // OS disk size in GB (allowable: 256 - 4,095 GB) https://azure.microsoft.com/en-gb/pricing/details/managed-disks/
+param osDiskType string = 'Premium_LRS'     // choices are 'Premium_LRS' for premium SSD, 'StandardSSD_LRS' for standard SSD, 'Standard_LRS' for HDD platter 
+param projectName string = 'projectname'    // If this parameter is not passed in at build it will default to this value.
 
-// general
-param projectName string = 'projectname'
-
-// advanced (Leave alone unless you know what you're doing)
-param vmName_var string = '${projectName}-vm'
+// advanced 
+var vmName_var = '${projectName}-vm'
 var vmPort80 = 'Allow'      //'Allow' or 'Deny' (HTTP)
 var vmPort443 = 'Allow'     //'Allow' or 'Deny' (HTTPS)
 var vmPort22 = 'Allow'      //'Allow' or 'Deny' (SSH)
 var vmPort8000 = 'Allow'    //'Allow' or 'Deny' (JHUB SERVER)
 var vmPort8787 = 'Allow'    //'Allow' or 'Deny' (RSTUDIO SERVER)
 var VnetName_var = '${projectName}-VNet'
-var vnetAddressPrefixes = '10.1.0.0/16' //CIDR notation
+var vnetAddressPrefixes = '10.1.0.0/16' 
 var SubnetName = '${projectName}-subnet'
 var SubnetAddressPrefixes = '10.1.0.0/24'
 var publicIPAddressNameVM_var = '${projectName}-ip'
 var networkInterfaceName_var = '${projectName}-nic'
 var networkSecurityGroupName_var = '${projectName}-nsg'
 var subnetRef = resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', VnetName_var, SubnetName)
-
-// access (these parameters are passed in at deployment as secure strings. Don't change layout, must be decorated like this)
 @secure() 
 param adminUsername string
 @secure()
@@ -185,7 +184,7 @@ resource vmName 'Microsoft.Compute/virtualMachines@2019-12-01' = {
   location: resourceGroup().location
   properties: {
     hardwareProfile: {
-      vmSize: vmSize
+      vmSize: vmModel
     }
     osProfile: {
       computerName: vmName_var
@@ -198,7 +197,7 @@ resource vmName 'Microsoft.Compute/virtualMachines@2019-12-01' = {
     }
     storageProfile: {
       imageReference: {
-        publisher: 'microsoft-dsvm'
+        publisher: 'microsoft-dsvm' //This is the special data science image
         offer: 'ubuntu-1804'
         sku: '1804'
         version: 'latest'
