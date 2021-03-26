@@ -197,8 +197,10 @@ Open the `vmtemplate.bicep` file in visual studio code.
 
 At the beginning of the file I've summarised all the knobs and dials you might want to turn to tweak your VM settings. By default, I've chosen the toughest setup I could find within the limits of a Free Account (This is an E4s_v3 with 128GB RAM, and a 1TB Premium SSD OS Drive). But of course you can mix and match practically any VM up to 4 cores on the free account, and experiment with different HDD sizes and types. In brief, if you are on a free account, the default settings are optimised for the best 4 cores, most ram and best disk I could find. If you are on a PAYG account, you can go crazy.
 
+You can either modify the default vm spec values in the .bicep file itself, or overide the default values by passing the desired values in as paramaters in the build command. Totally up to you.
+
 **Key decision points:**
-- VM Size - This is critical as it determines the number of cores, RAM, temporary storage, and other limitations in relation to I/O. There are literally hundreds of options. Lookup what you want either on [Azure docs](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/) or on [azurenet](https://azureprice.net/). Modify the variable field as you need
+- VM Model - This is critical as it determines the number of cores, RAM, temporary storage, and other limitations in relation to I/O. There are literally hundreds of options. Lookup what you want either on [Azure docs](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/) or on [azurenet](https://azureprice.net/). Modify the variable field as you need
 - OS disk size - Default to 1TiB premium SSD, but you can choose anything up to 4TiB (4095GB) as a single disk.
 - OS disk type Take special note there are 3 distinct classes of storage 'Premium_LRS' which is SSD, 'StandardSSD_LRS' which is constrained SSD media, then the good old fashioned hard disk drive 'Standard_LRS'. Standard SSD is half the price of premium ssd, and standard HDD is 1/4 the price of premium ssd. Refer to docs [here](https://azure.microsoft.com/en-gb/pricing/details/managed-disks/). In all datascience applications, I'd use nothing other than "Premium_LRS" for maximum performance. 
 
@@ -255,17 +257,21 @@ We are almost ready to construct the resource. The final thing we need to do is 
 
 **OPTIONAL Create SSH key-pair**
 
-Only applicable if you do not plan to use JHub and want the most secure way to access your VM.
-
-If you are running linux, WSL in Windows or MacOSX and you have basically a linux terminal,  you can create public/private key encryption files for secure shell access (SSH) to the VM. This is the safest way to access it, although note that Jupyter Hub does not support it. So no matter what, if you are planning to use JHub mainly, you will need to use a username/password template. From JHUB you can access a full root terminal to do whatever you need. So this is really only for more hardcore ppl that want to be able to directly SSH into the VM with encrypted keys. Create SSH keypair have have public key ready to pass in as paramater (advanced users only).
+Only applicable if you do not plan to use JHub and want the most secure way to access your VM. If you are running linux, WSL in Windows or MacOSX and you have basically a linux terminal,  you can create public/private key encryption files for secure shell access (SSH) to the VM. This is the safest way to access it, although note that Jupyter Hub does not support it. So no matter what, if you are planning to use JHub mainly, you will need to use a username/password template. From JHUB you can access a full root terminal to do whatever you need. So this is really only for more hardcore ppl that want to be able to directly SSH into the VM with encrypted keys. Create SSH keypair have have public key ready to pass in as paramater (advanced users only).
 
 ### 9. THE GREAT BUILD
 
-This is the moment you have been waiting for: we are ready to build the infrastructure. From the Azure CLI ensure you navigate to the current working directory where the `vmdeploy.bicep` file reside. You must also be logged into your Azure account via the Az CLI (step 6). Build the VM by running the appropriate command below, passing in the paramters for username/password or public key. Let's assume you decide on username: jamesbond / password: G0|den3y3 and have created a resource group called 'beast'.
+This is the moment you have been waiting for: we are ready to build the infrastructure. From the Azure CLI ensure you navigate to the current working directory where the `vmdeploy.bicep` file(s) reside. You must also be logged into your Azure account via the Az CLI (step 6). Build the VM by running the appropriate command below, passing in the paramters for username/password or public key. Let's assume you decide on username: jamesbond / password: G0|den3y3 and have created a resource group called 'beast'.
 
 **Deploy with username/password**
 
+Build using default VM specs in the .bicep file:
+
 `az deployment group create -f vmtemplate.bicep --resource-group beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3"`
+
+Build passing custom VM specs as paramaters:
+
+`az deployment group create -f vmtemplate.bicep --resource-group beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3" vmModel="Standard_D2s_v3" osDiskSize=180 osDiskType="Premium_LRS" projectName="myproject"`
 
 **Deploy with SSH public key**
 
