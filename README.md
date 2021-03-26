@@ -201,7 +201,7 @@ From within the Azure CLI latest version it is basically:
 ### 4. Clone this repo
 Copy this project repo to your local machine either from Github over browser as a straight download, or via `git clone` etc. If you are not familiar with github and git, really, you just need to get the `vmtemplate.bicep` file to your local machine where you can access it from within the Azure CLI.
 
-### 5. Configure VM specs and access (the fun part)
+### 5. Configure VM specs (the fun part)
 
 Open the `vmtemplate.bicep` file in visual studio code. 
 
