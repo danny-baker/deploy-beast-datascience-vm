@@ -308,13 +308,23 @@ First get the IP address of your new vm:
 - From Azure Portal: search for resource group, navigate to the correct group, click on the VM (and you can see the public IP top right)
 - From Azure CLI: `az vm show -d -g <RESOURCE GROUP NAME> -n <VM NAME> --query publicIps -o tsv`
 
-Open a browser and access Jupyter Hub webserver (which is running on your vm exposed via port 8000):
+Open a browser and access Jupyter Hub webserver (which is running on your vm exposed via port 8000), where the IP address is substituted for the x's.:
 
 `https://xxx.xxx.xxx.xxx:8000`
 
-Where the IP address is substituted for the x's. Your vm has generated it's own self signed SSL certificate to allow encrypted browser traffic (HTTPS). However, as this is not a public certificate, the browser will often kick up a warning when you first connect. Don't worry and you can usually click accept the risk, and 'go to site'. You should then see a Jupyter hub login screen:
+
+Navigate past the browser security warning.  Your vm has generated it's own self signed SSL certificate to allow encrypted browser traffic (HTTPS). However, as this is not a public certificate, the browser will often kick up a warning when you first connect. Don't worry and you can usually click accept the risk, and 'go to site'. 
+
+![browsersecurity](https://user-images.githubusercontent.com/12868840/112639170-def6e500-8e37-11eb-9a39-790622d5f7a7.PNG)
+
+
+Above: You are still transferring securely data via HTTPS it's just you are using a self-signed certificate from the Linux VM which is not publicly recognised by the browser.
+
+Once through this, you should then see a Jupyter hub login screen:
 
 ![jhub login screen](https://user-images.githubusercontent.com/12868840/112557759-18dad380-8dc5-11eb-998c-73490dcd92c5.PNG)
+
+Above: If you get to this screen. Start celebrating.
 
 Login to Jupyter Hub with the username and password you supplied for the VM at deployment
 
@@ -322,8 +332,9 @@ If it has worked, you will see the Jhub session that looks like this.
 
 ![jhub](https://user-images.githubusercontent.com/12868840/112557789-2b550d00-8dc5-11eb-8646-41bb4569142d.PNG)
 
+**And you are IN. At this point you can start playing with notebooks or collaborate with buddies to datascience it up!**
 
-### 11. Run some tests
+### 11. Run some tests (NERD SECTION)
 
 Now are you are connected to your VM, it's time to test a few things. 
 
@@ -355,18 +366,18 @@ Above: In this example we can see 3.9TB available on the main OS disk mounted on
 
 ![speedtest_fast](https://user-images.githubusercontent.com/12868840/112633155-e8308380-8e30-11eb-8c2f-a02d6669b3b0.PNG)
 
-Above: Here I clocked 1,800 Mbit/second download speed from a standard 4 core VM on the free trial!
+Above: Here I clocked 1,800+ Mbit/second download speed from a standard 4 core VM on the free trial. Call me crazy but that is decent.
 
 
-### 12. Access via SSH
+### 12. Access via SSH (OPTIONAL)
 
-You can access the vm via a terminal directly from an application like Putty in Windows, or a linux terminal in MacOS or WSL on Windows. You just need the public IP address, user/pass or private key location.
+You can also access the vm via a terminal directly from an application like Putty in Windows, or a linux terminal in MacOS or WSL on Windows. You just need the public IP address, user/pass or private key location.
 
 **SSH using simple username/password:**
 
 `ssh jamesbond@51.143.137.130`
 
-In this case I've used the public IP I got for my machine. You will be prompted for the password, and you will be prompted to accept the thumbprint after this, and then you are in.
+In this case I've used the public IP I got for my machine. You will be prompted for the password, and you will be prompted to accept the thumbprint from the remote machine after this, and then you are in.
 
 **SSH using key**
 
@@ -376,13 +387,13 @@ Access the vm using keys is far more secure and preferred but JHub does not supp
 
 ## Extra Security Considerations (VPN etc.)
 
-By default, this VM uses the suboptimal username/password creditials with a public facing IP address for ease of access and collaboration, and a Jupyter Hub requirement. This is not ideal but probably OK for short term testing and one-offs. I'd suggest you generate a strong password with something like [keepass](https://keepass.info/)
+By default, this VM uses the suboptimal username/password creditials with a public facing IP address for ease of access and collaboration, and a Jupyter Hub requirement. This is of course not ideal but probably OK for short term testing and one-offs. I'd suggest you generate a strong password with something like [keepass](https://keepass.info/)
 
 **Putting your VM behind a VPN**
 
-It is possible to put this VM behind a proper VPN gateway in Azure, requiring you to first connect to the VPN from your client machine, before you can access it. This is way more hassle to setup because you need to manually generate a root certificate and client certificates, but I've created a working system here. Decent VPNs are not cheap, but the cool thing is, the Azure account comes with a premium VPN service FREE for 12 MONTHS which is usually $140USD/month.
+It is possible to put this VM behind a proper VPN gateway in Azure, requiring you to first connect to the VPN from your client machine, before you can access it. This is way more hassle to setup because you need to manually generate a root certificate and client certificates, but I've created a working template for this too. Decent VPNs are not cheap, but the cool thing is, the Azure account comes with a premium VPN service FREE for 12 MONTHS which is usually $140 USD/month. This gives you high bandwidth and acess to the quality encryption tunnel protocols (IKEv2) etc.
 
-If you are only planning to use your VM for a one-off short term job, I think it's probably fine to use as is.
+If you are only planning to use your VM for a one-off short term job, I think it's probably fine to use as is without a VPN. If you plan to use the VPN for an extended period of time, and/or security is of paramount importance to you than really the only safe way is to put it on a private network (no public IP) accessible only by a VPN gateway.
 
 If you want to put it behind proper security, the best option I think is putting it behind a premium VPN Gateway.
 
