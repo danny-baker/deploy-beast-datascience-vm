@@ -11,13 +11,13 @@ This is designed for one-off time-constrained tasks where you need a dedicated b
 
 If you know what you are doing with deploying Azure resources using ARM templates (and Bicep), simply open the appropriate Bicep template file, set your VM specs, create a resource group, and deploy in the Azure CLI with a single command:
 
-**Deploy with username/pass only**
+**Deploy with username/pass**
 
 If you are planning to use Jupyter Hub to connect to your VM over the internet (via HTTPS)
 
 `az deployment group create -f vmtemplate.bicep --resource-group <RESOURCE GROUP NAME> --parameters adminUsername="USERNAME" adminPassword="PASSWORD"`
 
-**Deploy with SSH public key only**
+**Deploy with SSH public key**
 
 If you do not need Jupyter Hub and want the most secure way to access your VM over the internet (keys must first be generated etc.)
 
@@ -256,29 +256,36 @@ We are almost ready to construct the resource. The final thing we need to do is 
 
 **Choose a username and password**
 - Note passwords must contain at least 1 uppercase, 1 number and 1 special character.
-- For the current template we will be using, you must create a username and password. This is because Jupyter Hub requires a user/pass and does not support SSH keys. And because I assume most people will want to run notebooks on their VM, I've setup the template to allow a username/password, which is not really the most secure way to connect to a Linux host. 
+- I'd suggest you generate a strong password with something like [keepass](https://keepass.info/)
+- For the default template we will be using, you must create a username and password. This is because Jupyter Hub requires a user/pass and does not support SSH keys. And because I assume most people will want to run notebooks on their VM, I've setup the template to allow a username/password, which is not really the most secure way to connect to a Linux host. 
 
 **OPTIONAL Create SSH key-pair**
 
-If you are running linux, WSL in Windows or MacOSX and you have basically a linux terminal,  you can create public/private key encryption files for secure shell access (SSH) to the VM. This is the safest way to access it, although note that Jupyter Hub does not support it. So no matter what, if you are planning to use JHub mainly, you will still need to use a username/password. From JHUB you can access a full root terminal to do whatever you need. So this is really only for more hardcore ppl that want to be able to directly SSH into the VM rather than go in via JHub. Create SSH keypair have have public key ready to pass in as paramater (for advanced users only).
+Only applicable if you do not plan to use JHub and want the most secure way to access your VM.
 
-### 9. The great build
+If you are running linux, WSL in Windows or MacOSX and you have basically a linux terminal,  you can create public/private key encryption files for secure shell access (SSH) to the VM. This is the safest way to access it, although note that Jupyter Hub does not support it. So no matter what, if you are planning to use JHub mainly, you will need to use a username/password template. From JHUB you can access a full root terminal to do whatever you need. So this is really only for more hardcore ppl that want to be able to directly SSH into the VM with keys rather than go in via JHub. Create SSH keypair have have public key ready to pass in as paramater (advanced users only).
 
-This is the moment you have been waiting for: we are ready to build the infrastructure. From the Azure CLI ensure you navigate to the current working directory where the `vmdeploy.bicep` files reside. You must also be logged into your account via the Az CLI (step 6). Compile and deploy the VM, passing in the paramaters. Let's assume you decide on username: jamesbond / password: G0|den3y3
+### 9. THE GREAT BUILD
 
-**Build with username/password only**
+This is the moment you have been waiting for: we are ready to build the infrastructure. From the Azure CLI ensure you navigate to the current working directory where the `vmdeploy.bicep` file reside. You must also be logged into your account via the Az CLI (step 6). Build the VM by running the appropriate command below, passing in the paramters for username/password. Let's assume you decide on username: jamesbond / password: G0|den3y3
+
+**Deploy username/password**
 
 `az deployment group create -f vmtemplate.bicep --resource-group beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3"`
 
-**Build with username/password AND SSH public key**
+**Deploy with SSH public key**
 
-`az deployment group create -f vmtemplate_ssh.bicep --resource-group beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3" adminPublicKey="INSERT FULL ASCII PUBLIC KEY HERE"`
+`az deployment group create -f vmtemplate_ssh.bicep --resource-group beast --parameters adminUsername="jamesbond" adminPublicKey="INSERT FULL ASCII PUBLIC KEY HERE"`
 
 Notes
-- For SSH, there you are calling a different bicep template file called `vmtemplate_ssh.bicep` that accepts 3 parameters instead of 2.
+- For SSH, you are calling a different bicep template file called `vmtemplate_ssh.bicep`.
 - Always encase the username and password (and public key) in inverted commas to ensure special characters parse properly. Sometimes you will get an error without them.
 
 If it worked you should see something that looks like this
+
+![successful deploy](https://user-images.githubusercontent.com/12868840/112634272-4f9b0300-8e32-11eb-81b6-9ebd42d17dd6.PNG)
+
+Above: If you see something like this in thte Azure CLI after patiently waiting for 2 minutes. 
 
 ### 10. Connect to the machine over the browser via Jupyter Hub!
 
@@ -288,7 +295,7 @@ First get the IP address of your new vm:
 - From Azure Portal: search for resource group, navigate to the correct group, click on the VM (and you can see the public IP top right)
 - From Azure CLI: `az vm show -d -g <RESOURCE GROUP NAME> -n <VM NAME> --query publicIps -o tsv`
 
-Open a browser and access Jupyter Hub webserver (which is running as a container service on your vm exposed via port 8000):
+Open a browser and access Jupyter Hub webserver (which is running on your vm exposed via port 8000):
 
 `https://xxx.xxx.xxx.xxx:8000`
 
@@ -305,7 +312,7 @@ If it has worked, you will see the Jhub session that looks like this.
 
 ### 11. Run some tests
 
-Now are you are connected to your VM, it's time to test a few things. It's important to note that connecting to your VM via JHub gives you full superuser access; you can open a linux terminal from within Jhub and do literally anything you as if you had connected via SSH.
+Now are you are connected to your VM, it's time to test a few things. 
 
 Open a terminal from the Jupyter Hub main screen (new -> terminal)
 
@@ -313,13 +320,13 @@ Open a terminal from the Jupyter Hub main screen (new -> terminal)
 
 ![jhub terminal screen](https://user-images.githubusercontent.com/12868840/112557836-50498000-8dc5-11eb-93f8-a38580665b2e.PNG)
 
+Above: It's important to note that connecting to your VM via JHub gives you full superuser access; you can open a linux terminal from within Jhub and do literally anything you want. (You can also directly SSH to your machine using the user/pass aswell, see later sections)
 
 **Check no. processors, ram, and uptime with `htop`**
 
 ![htop](https://user-images.githubusercontent.com/12868840/112565126-6c085280-8dd4-11eb-8b92-4258cf0b3e25.PNG)
 
-Above: In this example we're running a E4s_v3 with 4 cores (visible top left) and 32GB RAM. This is a super handy way to real-time monitor your VM core and RAM load. You can also look at the running process tree and, most importantly, uptime which is what you are being charged for by the second when you are on PAYG.
-
+Above: In this example we're running a E4s_v3 with 4 cores (cores visible top left) and 32GB RAM. This is a super handy way to real-time monitor your VM core and RAM load. You can also look at the running process tree and, most importantly, uptime which is what you are being charged for by the second when you are on PAYG.
 
 **Check available disk space with `df -h`**
 
@@ -333,26 +340,26 @@ Above: In this example we can see 3.9TB available on the main OS disk mounted on
 
 `speedtest`
 
-Open a notebook and get to work :)
+![speedtest_fast](https://user-images.githubusercontent.com/12868840/112633155-e8308380-8e30-11eb-8c2f-a02d6669b3b0.PNG)
 
-You now have a beast. Well... if you are on the free account it's probably only 4 cores. But the same applies whether you have 4 cores or 400. It's all running the same OS so if you get familiar with all this now, you will be ready to upgrade when the free trial is over.
+Above: Here I clocked 1,800 Mbit/second download speed from a standard 4 core VM on the free trial!
 
 
 ### 12. Access via SSH
 
-You can access the vm via a terminal directly from an application like Putty in Windows, or a linux terminal in MacOS or WSL on Windows. You just need the public IP address again.
+You can access the vm via a terminal directly from an application like Putty in Windows, or a linux terminal in MacOS or WSL on Windows. You just need the public IP address, user/pass or private key location.
 
-**Terminal using simple username/password:**
+**SSH using simple username/password:**
 
 `ssh jamesbond@51.143.137.130`
 
 In this case I've used the public IP I got for my machine. You will be prompted for the password, and you will be prompted to accept the thumbprint after this, and then you are in.
 
-**Terminal using key**
+**SSH using key**
 
 `ssh -i ~/.ssh/private-key jamesbond@51.143.137.130`
 
-Access the vm using keys is far more secure and preferred. However for JHub the machine must accept user/pass so this option is open by default for all templates. 
+Access the vm using keys is far more secure and preferred but JHub does not support it. So you would lonly use this option if you want preferred secure way to connect to your VM and you don't plan to use Jhub. You need to point ssh to the location of the private key on your local machine that was used to generate the public key that you passed in as a parameter in the deploy command.
 
 ## Extra Security Considerations (VPN etc.)
 
