@@ -74,9 +74,6 @@ Here is the network topography just to give you a picture of the end product tha
 
 
 
-
-
-
 ### Making sense of VM Machine Types in Azure
 I think most heavy-weight data science applications require high in-memory processing, and parallel core processing either with CPU or GPU. As a result I think the VM types of most interest are D/E/M/N Series from Azure.
 
@@ -286,10 +283,9 @@ If it has worked, you will see the Jhub session that looks like this.
 ![jhub](https://user-images.githubusercontent.com/12868840/112557789-2b550d00-8dc5-11eb-8646-41bb4569142d.PNG)
 
 
-
 ## 11. Test the beast
 
-Now are you are connected to your VM securely, it's time to test a few things. It's super important to note that connecting to your VM via JHub gives you full superuser access; you can open a linux terminal from within Jhub and do literally anything you as if you had connected via SSH.
+Now are you are connected to your VM securely, it's time to test a few things. It's important to note that connecting to your VM via JHub gives you full superuser access; you can open a linux terminal from within Jhub and do literally anything you as if you had connected via SSH.
 
 Open a terminal from the Jupyter Hub main screen (new -> terminal)
 
@@ -300,17 +296,20 @@ Open a terminal from the Jupyter Hub main screen (new -> terminal)
 
 **Check no. processors, ram, and uptime with `htop`**
 
+
+
+
 **Check available disk space with `df -h`**
+
 ![4tib df](https://user-images.githubusercontent.com/12868840/112557855-58a1bb00-8dc5-11eb-9baa-e3c219e9bc4b.PNG)
 
+Above: In this example we can see 3.9TB available on the main OS disk mounted on root `/`. Note also 60GB temporary storage avilable on this Vm class, which is mounted on `/mnt` which you can use to for processing and storage. Many Azure VM's offer temp SSD storage so be sure to check out this option.
 
 **Check internet speed**
 
 `sudo apt install speedtest-cli`
 
 `speedtest`
-
-
 
 Open a notebook and get to work :)
 
