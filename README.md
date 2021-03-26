@@ -1,4 +1,4 @@
-# Deploy a beast data science virtual machine on Azure using Bicep
+# Deploy a BEAST data science virtual machine on Azure, using Bicep
 This guide will help you customise and deploy (almost) any virtual machine from Microsoft Azure, preconfigured for data science applications, with a running Jupyter Hub server out-of-the-box.
 
 This is an example of deploying cloud infrastructure-as-code using a new domain specific language called Bicep. The [OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro) is Linux Ubuntu 18.04 and is specially setup with 150GB of goodies including native support for Python, R, Julia, SQL, C#, Java, Node.js, F#. If you don't know linux, don't worry: out of the box it autoruns a Jupyter Hub server giving you instant (secure) access to Jhub from the browser of your local machine, running remotely on your VM. Deploying in seconds, you will have access to beast VMs with up to 416 cores, 11000+ GB RAM, 32TB SSD disks, and 1500+ MBit/s internet speeds. Pricing for VMs ranges from 1 cent to 120 $USD/hr and a free trial gets you $200 USD of credit for 30 days, with some important caveats.
@@ -69,6 +69,8 @@ This example demonstrates how to build cloud infrastucture-as-code, which is a w
 It's important to understand that when you provision a virtual machine there are other cloud resources that are also needed; it's not just the VM that gets provisioned in isolation. To deploy a VM with some ports exposed to the internet, for example, what you are doing in reality within Azure is building a virtual network, subnet within the network, virtual network interface card, network security group (controls things like which ports to open/close), storage account with persistent disk (preloaded with an operating system), the virtual machine itself (which is really the compute cpu-ram component) and a public facing IP address to bind to the network interface card so you can access the VM over the internet. Yes it's slightly terrifying at first but I promise it's not too bad once you get the basics. All this magic happens in one elegant step so you don't need to worry about the complexity and can focus on what you do best: the _science_ of data :)
 
 Here is the network topography just to give you a picture of the end product that is built from this template.
+
+![topography](https://user-images.githubusercontent.com/12868840/112561657-8c80de80-8dcd-11eb-90f2-d8451d541144.PNG)
 
 
 
