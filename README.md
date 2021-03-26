@@ -1,19 +1,19 @@
-# Deploy ANY virtual machine on Azure using Bicep
-This guide will help you customise and deploy (almost) any virtual machine from Microsoft Azure, preconfigured for data science applications, with a running Jupyter Hub and R Studio server out-of-the-box.
+# Deploy a beast data science virtual machine on Azure using Bicep
+This guide will help you customise and deploy (almost) any virtual machine from Microsoft Azure, preconfigured for data science applications, with a running Jupyter Hub server out-of-the-box.
 
 This is an example of deploying cloud infrastructure-as-code using a new domain specific language called Bicep. The [OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro) is Linux Ubuntu 18.04 and is specially setup with 150GB of goodies including native support for Python, R, Julia, SQL, C#, Java, Node.js, F#. If you don't know linux, don't worry: out of the box it autoruns a Jupyter Hub server giving you instant (secure) access to Jhub from the browser of your local machine, running remotely on your VM. Deploying in seconds, you will have access to beast VMs with up to 416 cores, 11000+ GB RAM, 32TB SSD disks, and 1500+ MBit/s internet speeds. Pricing for VMs ranges from 1 cent to 120 $USD/hr and a free trial gets you $200 USD of credit for 30 days, with some important caveats.
 
-This is designed for one-off time-constrained tasks where you need a dedicated beefy VM to run for a few hours or days to get the job done. You can then export any data, and tear the whole resource down when you're finished. The use case: when you need more hardware than your local machine or the free/premium note-book-as-a-service platforms like Google Colab can provide.
+This is designed for one-off time-constrained tasks where you need a dedicated beefy VM to run for a few hours or days to get the job done. You can then export any data, and tear the whole resource down when you're finished. The use case: when you need more hardware than your local machine or the notebook-as-a-service platforms like Google Colab can provide.
 
 ## Quickstart
 
-If you know what you are doing with deploying Azure resources using ARM templates (and Bicep), simply open the `vmtemplate.bicep` file , set your VM specs, create a resource group and deploy in the Az CLI with a single command:
+If you know what you are doing with deploying Azure resources using ARM templates (and Bicep), simply open the appropriate Bicep template file, set your VM specs, create a resource group, and deploy in the Azure CLI with a single command:
 
-**Deploy with username/pass only**
+**Deploy with username/pass only (`vmtemplate.bicep`)**
 
 `az deployment group create -f vmtemplate.bicep -g <RESOURCE GROUP NAME> --parameters adminUsername='USERNAME' adminPassword='PASSWORD'` 
 
-**Deploy with username/pass and SSH public key**
+**Deploy with username/pass and SSH public key (`vmtemplate_ssh.bicep`)**
 
 `az deployment group create -f vmtemplate_ssh.bicep -g <RESOURCE GROUP NAME> --parameters adminUsername='USERNAME' adminPassword='PASSWORD' adminPublicKey="INSERT PUBLIC SSH KEY HERE"` 
 
@@ -287,31 +287,27 @@ Open a terminal from the Jupyter Hub main screen (new -> terminal)
 ![jhub terminal screen](https://user-images.githubusercontent.com/12868840/112557836-50498000-8dc5-11eb-93f8-a38580665b2e.PNG)
 
 
-**Check no. processors, ram, and uptime**
+**Check no. processors, ram, and uptime with `htop`**
 
-`htop`
-
-**Check available disk space**
-
-`df -h`
-
+**Check available disk space with `df -h`**
 ![4tib df](https://user-images.githubusercontent.com/12868840/112557855-58a1bb00-8dc5-11eb-9baa-e3c219e9bc4b.PNG)
 
 
 **Check internet speed**
 
-Install a well loved program to check speed on linux
-
 `sudo apt install speedtest-cli`
 
-Run `speedtest`
+`speedtest`
 
-Open a notebook and get to work. Easily collaborate 
 
-You now have a beast. Well if you are on the free account it's probably only 4 cores. But the same applies whether you have 4 cores or 400. It's all running the same OS so if you get familiar with this now, you will be ready to upgrade when the free trial is over.
+
+Open a notebook and get to work :)
+
+You now have a beast. Well... if you are on the free account it's probably only 4 cores. But the same applies whether you have 4 cores or 400. It's all running the same OS so if you get familiar with all this now, you will be ready to upgrade when the free trial is over.
 
 **Further reading**
-Follow he microsoft documentation to show you more options to connect and use the new vm. There is some great stuff here.
+
+Follow the microsoft documentation to show you more options to connect and use the new vm and what you can do with it.
 
 https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro
 
