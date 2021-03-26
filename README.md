@@ -255,9 +255,9 @@ We are almost ready to construct the resource. The final thing we need to do is 
 - I'd suggest you generate a strong password with something like [keepass](https://keepass.info/)
 - For the default template we will be using, you must create a username and password. This is because Jupyter Hub requires a user/pass and does not support SSH keys. And because I assume most people will want to run notebooks on their VM, I've setup the template to allow a username/password, which is not really the most secure way to connect to a Linux host. 
 
-**OPTIONAL Create SSH key-pair**
+**OPTIONAL: Create SSH key-pair**
 
-Only applicable if you do not plan to use JHub and want the most secure way to access your VM. If you are running linux, WSL in Windows or MacOSX and you have basically a linux terminal,  you can create public/private key encryption files for secure shell access (SSH) to the VM. This is the safest way to access it, although note that Jupyter Hub does not support it. So no matter what, if you are planning to use JHub mainly, you will need to use a username/password template. From JHUB you can access a full root terminal to do whatever you need. So this is really only for more hardcore ppl that want to be able to directly SSH into the VM with encrypted keys. Create SSH keypair have have public key ready to pass in as paramater (advanced users only).
+Only applicable if you do not plan to use JHub and want the most secure way to access your VM. If you are running linux, WSL in Windows or MacOS and you have basically a linux terminal,  you can create public/private key encryption files for secure shell access (SSH) to the VM. This is the safest way to access it, although note that Jupyter Hub does not support it. So no matter what, if you are planning to use JHub mainly, you will need to use the recommended `vmtemplate.bicep` template. From JHUB you can access a full root terminal to do whatever you need. So this is really only for more hardcore ppl that want to be able to directly SSH into the VM with encrypted keys. If you definitely want this option, create SSH keypair have have public key ready to be copied.
 
 ### 9. THE GREAT BUILD
 
