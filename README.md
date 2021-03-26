@@ -3,7 +3,7 @@ This guide will help you customise and deploy (almost) any virtual machine from 
 
 This is an example of deploying cloud infrastructure-as-code using a new domain specific language called [Bicep](https://github.com/Azure/bicep). The [OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro) is Linux Ubuntu 18.04 and is specially setup for data science with 150GB of goodies including native support for Python, R, Julia, SQL, C#, Java, Node.js, F#. If you don't know linux, don't worry: it autoruns a Jupyter Hub server giving you instant (secure HTTPS) access to Jhub from the browser of your local machine. Deploying in seconds, you will have access to beast VMs with up to 416 cores, 11000+ GB RAM, 32TB SSD disks, and 1800+ MBit/s internet speeds. Pricing for VMs ranges from 1 cent to 120 $USD/hr and a free trial gets you $200 USD of credit for 30 days, with some important caveats.
 
-This is designed for one-off time-constrained tasks where you need a dedicated beefy VM to run for a few hours or days to get the job done. You can then export any data, and tear the whole resource down when you're finished. 
+This is designed for one-off time-constrained tasks where you need a dedicated beefy VM to run for several hours or days to get the job done. You can then export any data, and tear the whole resource down when you're finished. 
 
 **Use case: when you need better specs than your local machine or the notebook-as-a-service platforms like Google Colab can provide; When you want to say "Just call me bad ass..."**
 
