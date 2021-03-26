@@ -46,7 +46,7 @@ Notes:
 - For JHub and other services exposed to the internet, the vm creates a self-signed certificates for HTTPS (TLS/SSL). When you try to connect, modern browsers will still throw a tanty. Just click through the security warnings and you can connect ok, and be confident that you are accessing the services over an encrypted protocol.
 
 
-## Guide for Beginners
+# Guide for Beginners
 
 If you are new to cloud infrastructure and scared at this point, worry not. Follow the crash course and step-by-step instructions below and you will be up and running in no time with a a fully dedicated VM. I've also published an article **INSERT LINK** that provides a full explanatory overview with much more detail and jokes. 
 
@@ -60,6 +60,7 @@ For the Python JHub users, you might be used to running JHub from your local mac
 - You need raw horsepower to get the job done (e.g. 128GB+ RAM, 16+ cores)
 - You want total and exclusive control of your hardware (no managed services etc)
 - Your local machine or any of the cloud notebook environments are simply not up to the task
+- You have just watched Hackers and you want to experiment with your own dedicated linux virtual machine :)
 
 ### Why virtual machines?
 - Scalability and choice: access hundreds of cores, thousands of GBs of RAM and massive storage.
@@ -77,6 +78,7 @@ For the Python JHub users, you might be used to running JHub from your local mac
 - Etc.
 
 ### Can I access Jupyter Hub securely on my virtual machine?
+
 YES. In fact this is probably the most important thing about this particular setup. Microsoft has done all the work building a special data science linux OS image, that runs a Jupyter Hub server automatically. No setup required. They have also handled self-signed TLS certificates which means you can connect to your JHub server using HTTPS. You will need to click through a security warning in most browsers but this is just because you are using self-signed certificates between the vm and your pc. What this means is you can instantly have JHub up and running on serious horsepower, and collaborate in real-time with others on your new hardware if you wish.
 
 ### What is infrastructure-as-code?
@@ -157,11 +159,11 @@ All VMs need a managed persistent disk for the OS image. You can attach addition
 It's also worth nothing that many VM classes offer temporary high speed storage. This is usually located super local to your compute hardware and is basically the fastest storage you can get. Note it's ephemeral and only lasts a few days so is really useful for data processing stages. The temporary storage is automatically mounted on your VM at location `/mnt`.
 
 ### How do I transfer data to and from my VM?
-This is a proper remote linux machine so it's not as straight forward as copy-pasting documents to your windows filesytem that you might be used to running JHub on your local machine. But, the beauty is that you can do most of your uploading/downloading directly through the Jupyter Hub server by way of the browser, which should cover most people's needs. Don't forget you can rip down data from the internet at lightening speeds from your VM ten times faster than on your home internet or Colab which is constrained to 130Mb/s, for example.
+This is a proper remote linux machine so it's not as straight forward as copy-pasting documents to your windows filesytem running JHub on your laptop etc. But, the beauty is that you can do most of your uploading/downloading directly through the Jupyter Hub server by way of the browser, which should cover most people's needs. Don't forget you can rip down data from the internet at lightening speeds from your VM. Because your VM is sitting in a datacenter, it typically had D/L speeds ten times faster (1800+ Mbit/s) than on your home internet or Colab which is constrained to 130Mb/s, for example.
 
 **Getting data into your VM:**
 - From your pc: use the JHub upload feature in browser or tools like `rsync` from a linux terminal (requires you to have WSL in windows)
-- From the internet: wget/curl/github (just like you would in Colab)
+- From the internet: wget/curl/github (just like you would in cloud notebook tools)
 
 **Getting data out of your VM:**
 
@@ -171,7 +173,7 @@ This is a little trickier than you think because the machine is running linux an
 - medium: (<1TB): use a linux data transfer application like `rsync` (requires linux on your local machine, native for MacOS but Windows you will need WSL)
 - large: (+1TB): transfer direct to a cloud data storage service like Azure Blob, or Network File System (NFS). This will allow you to rapdidly get data out of the VM and shut it down (to save $$), then you can connect directly to the cloud storage service to either download or store the data more long term.
 
-## Instructions
+# Instructions
 
 Now that the crash course is complete, we can start with the step by step guide to deploy your vm infrastructure as code.
 
@@ -334,9 +336,9 @@ If it has worked, you will see the Jhub session that looks like this.
 
 #### And you are IN. At this point you can start playing with notebooks or collaborate with buddies to datascience it up!
 
-## NERD SECTION
+# NERD SECTION
 
-If you want to learn more, read on.
+For some more advanced security options and cool stuff, read on.
 
 ### Test your new VM (internet speed, cores, ram utilisation)
 
@@ -387,13 +389,25 @@ In this case I've used the public IP I got for my machine. You will be prompted 
 
 `ssh -i ~/.ssh/private-key jamesbond@51.143.137.130`
 
-Access the vm using keys is far more secure and preferred but JHub does not support it. So you would only use this option if you want preferred secure way to connect to your VM and you don't plan to use Jhub. You need to point ssh to the location of the private key on your local machine that was used to generate the public key that you passed in as a parameter in the deploy command.
+Access the vm using keys is far more secure and preferred but JHub does not support it. So you would only use this option if you want preferred secure way to connect to your VM and you don't plan to use Jhub. 
 
 ### Extra Security Considerations (VPN etc.)
 
-By default, this VM uses the suboptimal username/password creditials with a public facing IP address for ease of access and collaboration, and a Jupyter Hub requirement. This is of course not ideal but probably OK for short term testing and one-offs. I'd suggest you generate a strong password with something like [keepass](https://keepass.info/)
+**Use very strong password**
+
+By default, this VM uses the suboptimal username/password creditials with a public facing IP address for ease of access and collaboration, and a Jupyter Hub requirement. This is of course not ideal but probably OK for short term runs and one-offs. I'd suggest you generate a strong password with something like [keepass](https://keepass.info/)
 
 **Putting your VM behind a VPN**
+
+If security is of paramount importance for your experimentation and you want enterprise level protection, really the only option in my mind is putting your machine on a private network only (no public IPs or publicly exposed ports) and allowing access to the private network ONLY via a premium VPN gateway service. A proper VPN allows you to use an encrypted tunnel from your client machine to your virtual private network in Azure where your VM lives. Once inside you can directly connect to your machine via SSH, user/pass, or possibly the browser for Jhub (with some painful finicking). There are some manual steps you will need to first (i.e. generate root and client certificates) but if you are determined, you can get it done in a few hours of pain and suffering.
+
+Fortunately, Azure has 3 options for VPN gateways and in fact the Azure Free Trial account gives you access to a bunch of services for 12 months free of charge, including a premium VPN which usually costs $140USD/month.
+
+
+
+I've created a bicep file `vmtemplate_vpn.bicep` that builds everything you need in one go (including the VPN gateway on it's own subnet). You will need to pass the VPN root certificate public key as a parameter at build time. More info below.
+
+
 
 It is possible to put this VM behind a proper VPN gateway in Azure, requiring you to first connect to the VPN from your client machine, before you can access it. This is way more hassle to setup because you need to manually generate a root certificate and client certificates, but I've created a working template for this too. Decent VPNs are not cheap, but the cool thing is, the Azure account comes with a premium VPN service FREE for 12 MONTHS which is usually $140 USD/month. This gives you high bandwidth and acess to the quality encryption tunnel protocols (IKEv2) etc.
 
