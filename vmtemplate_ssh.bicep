@@ -1,8 +1,10 @@
-// This compiles into an ARM template to build a dedicated vm for datascience (access via ssh key)
+// PUBLIC IP VM: SSH ACCESS ONLY
+
+// This template builds a data science VM with public IP and exposed ports. It is designed for direct applications where you can work from a terminal (SSH)
 
 // vm specs
 var vmSize = 'Standard_E4s_v3'    // View available vm types with 'az vm list-skus -l centralus --output table' from azure CLI or checkout https://azureprice.net/ or https://docs.microsoft.com/en-us/azure/virtual-machines/sizes
-var osDiskSize = 256              // size in GiB (allowable: 256 - 4,095 GiB) https://azure.microsoft.com/en-gb/pricing/details/managed-disks/
+var osDiskSize = 1000             // size in GiB (allowable: 256 - 4,095 GiB) https://azure.microsoft.com/en-gb/pricing/details/managed-disks/
 var osDiskType = 'Premium_LRS'    // choices are 'Premium_LRS' for premium SSD, 'StandardSSD_LRS' for standard SSD, 'Standard_LRS' for HDD platter 
 
 // general
@@ -23,8 +25,6 @@ var publicIPAddressNameVM_var = '${projectName}-ip'
 var networkInterfaceName_var = '${projectName}-nic'
 var networkSecurityGroupName_var = '${projectName}-nsg'
 var subnetRef = resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', VnetName_var, SubnetName)
-
-// access
 @secure() 
 param adminUsername string
 //@secure()
