@@ -413,6 +413,7 @@ First you need to generate a root certificate for the VPN, and export it's publi
 I've tested this is working and can ssh to the private machine once connected to the VPN. JHub does not work out of the box in your browser on the private ip but I do believe with some routing magic and editing of `/etc/hosts` files it can be done. This is beyond my skill level though.
 
 https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpn-gateway-settings
+
 https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-certificates-point-to-site for generating root and client certificates
 
 
