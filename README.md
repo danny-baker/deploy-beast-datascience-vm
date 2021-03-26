@@ -5,7 +5,7 @@ This is an example of deploying cloud infrastructure-as-code using a new domain 
 
 This is designed for one-off time-constrained tasks where you need a dedicated beefy VM to run for a few hours or days to get the job done. You can then export any data, and tear the whole resource down when you're finished. 
 
-**Use case: when you need more hardware than your local machine or the notebook-as-a-service platforms like Google Colab can provide; OR When you want to say: "Just call me bad ass..."**
+**Use case: when you need more hardware than your local machine or the notebook-as-a-service platforms like Google Colab can provide; When you want to say: "Just call me bad ass..."**
 
 ## Quickstart
 
