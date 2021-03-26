@@ -1,8 +1,8 @@
-// This compiles into an ARM template to build a dedicated vm for datascience (port 22/80/443/8000/8787 open by default)
+// This compiles into an ARM template to build a dedicated vm for datascience 
 
 // vm specs
 var vmSize = 'Standard_E4s_v3'    // View available vm types with 'az vm list-skus -l centralus --output table' from azure CLI
-var osDiskSize = 1000             // size in GiB (allowable: 1 - 4,095 GiB) https://azure.microsoft.com/en-gb/pricing/details/managed-disks/
+var osDiskSize = 1000             // size in GiB (allowable: 256 - 4,095 GiB) https://azure.microsoft.com/en-gb/pricing/details/managed-disks/
 var osDiskType = 'Premium_LRS'    // choices are 'Premium_LRS' for premium SSD, 'StandardSSD_LRS' for standard SSD, 'Standard_LRS' for HDD platter 
 
 // general

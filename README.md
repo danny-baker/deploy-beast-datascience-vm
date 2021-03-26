@@ -13,11 +13,11 @@ If you know what you are doing with deploying Azure resources using ARM template
 
 **Deploy with username/pass only**
 
-`az deployment group create -f vmtemplate.bicep -g <RESOURCE GROUP NAME> --parameters adminUsername='USERNAME' adminPassword='PASSWORD'` 
+`az deployment group create -f vmtemplate.bicep --resource-group <RESOURCE GROUP NAME> --parameters adminUsername="USERNAME" adminPassword="PASSWORD"`
 
 **Deploy with username/pass and SSH public key**
 
-`az deployment group create -f vmtemplate_ssh.bicep -g <RESOURCE GROUP NAME> --parameters adminUsername='USERNAME' adminPassword='PASSWORD' adminPublicKey="INSERT PUBLIC SSH KEY HERE"` 
+`az deployment group create -f vmtemplate_ssh.bicep --resource-group <RESOURCE GROUP NAME> --parameters adminUsername="USERNAME" adminPassword="PASSWORD" adminPublicKey="INSERT PUBLIC SSH KEY HERE"`
 
 This will build your VM along with all the components needed in around 90 seconds. Once deployed, grab the public IP address of the new vm (from Portal or CLI) and either SSH into the VM directly or access the Jupyter Hub server in the browser via `https://xxx.xxx.xxx.xxx:8000`. 
 
@@ -285,9 +285,9 @@ If it has worked, you will see the Jhub session that looks like this.
 ![jhub](https://user-images.githubusercontent.com/12868840/112557789-2b550d00-8dc5-11eb-8646-41bb4569142d.PNG)
 
 
-## 11. Test the beast
+### 11. Run some tests
 
-Now are you are connected to your VM securely, it's time to test a few things. It's important to note that connecting to your VM via JHub gives you full superuser access; you can open a linux terminal from within Jhub and do literally anything you as if you had connected via SSH.
+Now are you are connected to your VM, it's time to test a few things. It's important to note that connecting to your VM via JHub gives you full superuser access; you can open a linux terminal from within Jhub and do literally anything you as if you had connected via SSH.
 
 Open a terminal from the Jupyter Hub main screen (new -> terminal)
 
@@ -318,6 +318,42 @@ Above: In this example we can see 3.9TB available on the main OS disk mounted on
 Open a notebook and get to work :)
 
 You now have a beast. Well... if you are on the free account it's probably only 4 cores. But the same applies whether you have 4 cores or 400. It's all running the same OS so if you get familiar with all this now, you will be ready to upgrade when the free trial is over.
+
+
+### 12. Access via SSH
+
+You can access the vm via a terminal directly from an application like Putty in Windows, or a linux terminal in MacOS or WSL on Windows. You just need the public IP address again.
+
+**Terminal using simple username/password:**
+
+`ssh jamesbond@51.143.137.130`
+
+In this case I've used the public IP I got for my machine. You will be prompted for the password, and you will be prompted to accept the thumbprint after this, and then you are in.
+
+**Terminal using key**
+
+`ssh -i ~/.ssh/private-key jamesbond@51.143.137.130`
+
+Access the vm using keys is far more secure and preferred. However for JHub the machine must accept user/pass so this option is open by default for all templates. 
+
+## Extra Security Considerations (VPN etc.)
+
+By default, this VM uses the suboptimal username/password creditials with a public facing IP address for ease of access and collaboration, and a Jupyter Hub requirement. This is not ideal but probably OK for short term testing and one-offs. I'd suggest you generate a strong password with something like [keepass](https://keepass.info/)
+
+**Putting your VM behind a VPN**
+
+It is possible to put this VM behind a VPN gateway in Azure, requiring you to first connect to the VPN from your client machine, before you can access it. This is more hassle to setup because you need to generate a root certificate and client certificates, but I've created a working system here. Decent VPNs are not cheap, but the cool thing is, the Azure account comes with a premium VPN service FREE for 12 MONTHS which is usually $140USD/month.
+
+
+
+If you are only planning to use your VM for a one-off short term job, I think it's probably fine to use as is.
+
+If you want to put it behind proper security, the best option I think is putting it behind a premium VPN Gateway.
+
+
+
+
+
 
 **Further reading**
 
