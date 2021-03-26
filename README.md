@@ -330,9 +330,13 @@ If it has worked, you will see the Jhub session that looks like this.
 
 ![jhub](https://user-images.githubusercontent.com/12868840/112557789-2b550d00-8dc5-11eb-8646-41bb4569142d.PNG)
 
-**And you are IN. At this point you can start playing with notebooks or collaborate with buddies to datascience it up!**
+#### And you are IN. At this point you can start playing with notebooks or collaborate with buddies to datascience it up!
 
-### 11. Run some tests (NERD SECTION)
+## NERD SECTION
+
+If you want to learn more, read on.
+
+### Test your new VM (internet speed, cores, ram utilisation)
 
 Now are you are connected to your VM, it's time to test a few things. 
 
@@ -367,7 +371,7 @@ Above: In this example we can see 3.9TB available on the main OS disk mounted on
 Above: Here I clocked 1,800+ Mbit/second download speed from a standard 4 core VM on the free trial. Call me crazy but that is decent.
 
 
-### 12. Access via SSH (OPTIONAL)
+### Access VM via SSH 
 
 You can also access the vm via a terminal directly from an application like Putty in Windows, or a linux terminal in MacOS or WSL on Windows. You just need the public IP address, user/pass or private key location.
 
@@ -383,7 +387,7 @@ In this case I've used the public IP I got for my machine. You will be prompted 
 
 Access the vm using keys is far more secure and preferred but JHub does not support it. So you would only use this option if you want preferred secure way to connect to your VM and you don't plan to use Jhub. You need to point ssh to the location of the private key on your local machine that was used to generate the public key that you passed in as a parameter in the deploy command.
 
-## Extra Security Considerations (VPN etc.)
+### Extra Security Considerations (VPN etc.)
 
 By default, this VM uses the suboptimal username/password creditials with a public facing IP address for ease of access and collaboration, and a Jupyter Hub requirement. This is of course not ideal but probably OK for short term testing and one-offs. I'd suggest you generate a strong password with something like [keepass](https://keepass.info/)
 
@@ -400,7 +404,7 @@ If you want to put it behind proper security, the best option I think is putting
 
 
 
-**Further reading**
+### Further reading
 
 Follow the microsoft documentation to show you more options to connect and use the new vm and what you can do with it.
 
