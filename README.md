@@ -389,6 +389,11 @@ In this case I've used the public IP I got for my machine. You will be prompted 
 
 Access the vm using keys is far more secure and preferred but JHub does not support it. So you would only use this option if you want preferred secure way to connect to your VM and you don't plan to use Jhub. 
 
+![ssh access](https://user-images.githubusercontent.com/12868840/112702891-eac0c680-8e8c-11eb-8fda-947ca65dce20.PNG)
+
+Above: The friendly SSH welcome screen.
+
+
 ### Extra Security Considerations (VPN etc.)
 
 **Use very strong password**
