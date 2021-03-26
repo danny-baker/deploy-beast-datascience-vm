@@ -291,6 +291,13 @@ Above: If you see something like this in thte Azure CLI after patiently waiting 
 
 Login to Azure Portal and take a look at your new infrastructure!
 
+![portal deploy](https://user-images.githubusercontent.com/12868840/112638836-90494b00-8e37-11eb-8ee2-d7c073cb0f9f.PNG)
+
+Above: Navigate to the resource group in portal, and you can see all the new components created
+
+![public ip](https://user-images.githubusercontent.com/12868840/112638843-917a7800-8e37-11eb-9fb9-bb32f686e732.PNG)
+
+Above: Click on the VM itself, to view it's Public and Private IP address
 
 
 ### 10. Connect to the machine over the browser via Jupyter Hub!
