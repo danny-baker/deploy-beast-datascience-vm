@@ -335,7 +335,7 @@ If it has worked, you will see the Jhub session that looks like this.
 ![jhub](https://user-images.githubusercontent.com/12868840/112557789-2b550d00-8dc5-11eb-8646-41bb4569142d.PNG)
 
 #### And you are IN. At this point you can start playing with notebooks or collaborate with buddies to datascience it up!
-
+<br>
 # NERD SECTION
 
 For some more advanced security options and cool stuff, read on.
