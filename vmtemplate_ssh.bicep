@@ -11,7 +11,7 @@ param projectName string = 'projectname'
 // advanced (Leave alone unless you know what you're doing)
 param vmName_var string = '${projectName}-vm'
 var vmPort80 = 'Allow'      //'Allow' or 'Deny' (HTTP)
-var vmpPort443 = 'Allow'    //'Allow' or 'Deny' (HTTPS)
+var vmPort443 = 'Allow'     //'Allow' or 'Deny' (HTTPS)
 var vmPort22 = 'Allow'      //'Allow' or 'Deny' (SSH)
 var vmPort8000 = 'Allow'    //'Allow' or 'Deny' (JHUB SERVER)
 var vmPort8787 = 'Allow'    //'Allow' or 'Deny' (RSTUDIO SERVER)
@@ -24,7 +24,7 @@ var networkInterfaceName_var = '${projectName}-nic'
 var networkSecurityGroupName_var = '${projectName}-nsg'
 var subnetRef = resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', VnetName_var, SubnetName)
 
-// access (don't touch)
+// access
 @secure() 
 param adminUsername string
 //@secure()
@@ -82,7 +82,7 @@ resource networkSecurityGroupName 'Microsoft.Network/networkSecurityGroups@2020-
         name: 'HTTPS'
         properties: {
           priority: 320
-          access: vmpPort443 
+          access: vmPort443 
           direction: 'Inbound'
           destinationPortRange: '443'
           protocol: 'Tcp'
@@ -194,7 +194,7 @@ resource vmName 'Microsoft.Compute/virtualMachines@2019-12-01' = {
       adminUsername: adminUsername
       //adminPassword: adminPassword
       linuxConfiguration: {
-        disablePasswordAuthentication: true        
+        disablePasswordAuthentication: true  //If you also want to have user/pass for this vm, set this to true, uncomment the adminPassword line above, and uncomment the @secure() paramater declarations near top of document      
         ssh: {
           publicKeys: [
             {
