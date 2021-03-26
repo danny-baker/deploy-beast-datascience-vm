@@ -1,8 +1,8 @@
-// This compiles into an ARM template to build a dedicated vm for datascience 
+// This compiles into an ARM template to build a dedicated vm for datascience (access via ssh key)
 
 // vm specs
-var vmSize = 'Standard_E4s_v3'    // View available vm types with 'az vm list-skus -l centralus --output table' from azure CLI
-var osDiskSize = 1000             // size in GiB (allowable: 256 - 4,095 GiB) https://azure.microsoft.com/en-gb/pricing/details/managed-disks/
+var vmSize = 'Standard_E4s_v3'    // View available vm types with 'az vm list-skus -l centralus --output table' from azure CLI or checkout https://azureprice.net/ or https://docs.microsoft.com/en-us/azure/virtual-machines/sizes
+var osDiskSize = 256              // size in GiB (allowable: 256 - 4,095 GiB) https://azure.microsoft.com/en-gb/pricing/details/managed-disks/
 var osDiskType = 'Premium_LRS'    // choices are 'Premium_LRS' for premium SSD, 'StandardSSD_LRS' for standard SSD, 'Standard_LRS' for HDD platter 
 
 // general
@@ -24,11 +24,11 @@ var networkInterfaceName_var = '${projectName}-nic'
 var networkSecurityGroupName_var = '${projectName}-nsg'
 var subnetRef = resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', VnetName_var, SubnetName)
 
-// access (these parameters are passed in at deployment as secure strings: user/pass/ssh-key. Don't change layout, must be decorated like this)
+// access (don't touch)
 @secure() 
 param adminUsername string
-@secure()
-param adminPassword string
+//@secure()
+//param adminPassword string
 @secure()
 param adminPublicKey string
 
@@ -192,9 +192,9 @@ resource vmName 'Microsoft.Compute/virtualMachines@2019-12-01' = {
     osProfile: {
       computerName: vmName_var
       adminUsername: adminUsername
-      adminPassword: adminPassword
+      //adminPassword: adminPassword
       linuxConfiguration: {
-        disablePasswordAuthentication: false        
+        disablePasswordAuthentication: true        
         ssh: {
           publicKeys: [
             {

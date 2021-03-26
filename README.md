@@ -1,11 +1,11 @@
 # Deploy a BEAST data science virtual machine on Azure, using Bicep
 This guide will help you customise and deploy (almost) any virtual machine from Microsoft Azure, preconfigured for data science applications, with a running Jupyter Hub server out-of-the-box.
 
-This is an example of deploying cloud infrastructure-as-code using a new domain specific language called Bicep. The [OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro) is Linux Ubuntu 18.04 and is specially setup with 150GB of goodies including native support for Python, R, Julia, SQL, C#, Java, Node.js, F#. If you don't know linux, don't worry: it autoruns a Jupyter Hub server giving you instant (secure HTTPS) access to Jhub from the browser of your local machine. Deploying in seconds, you will have access to beast VMs with up to 416 cores, 11000+ GB RAM, 32TB SSD disks, and 1500+ MBit/s internet speeds. Pricing for VMs ranges from 1 cent to 120 $USD/hr and a free trial gets you $200 USD of credit for 30 days, with some important caveats.
+This is an example of deploying cloud infrastructure-as-code using a new domain specific language called [Bicep](https://github.com/Azure/bicep). The [OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro) is Linux Ubuntu 18.04 and is specially setup for data science with 150GB of goodies including native support for Python, R, Julia, SQL, C#, Java, Node.js, F#. If you don't know linux, don't worry: it autoruns a Jupyter Hub server giving you instant (secure) access to Jhub from the browser of your local machine, running remotely on your VM. Deploying in seconds, you will have access to beast VMs with up to 416 cores, 11000+ GB RAM, 32TB SSD disks, and 1800+ MBit/s internet speeds. Pricing for VMs ranges from 1 cent to 120 $USD/hr and a free trial gets you $200 USD of credit for 30 days, with some important caveats.
 
 This is designed for one-off time-constrained tasks where you need a dedicated beefy VM to run for a few hours or days to get the job done. You can then export any data, and tear the whole resource down when you're finished. 
 
-**Use case: when you need more hardware than your local machine or the notebook-as-a-service platforms like Google Colab can provide; When you want to say: "Just call me bad ass..."**
+**Use case: when you need more hardware than your local machine or the notebook-as-a-service platforms like Google Colab can provide; When you want to say "Just call me bad ass..."**
 
 ## Quickstart
 
@@ -13,13 +13,31 @@ If you know what you are doing with deploying Azure resources using ARM template
 
 **Deploy with username/pass only**
 
+If you are planning to use Jupyter Hub to connect to your VM over the internet (via HTTPS)
+
 `az deployment group create -f vmtemplate.bicep --resource-group <RESOURCE GROUP NAME> --parameters adminUsername="USERNAME" adminPassword="PASSWORD"`
 
-**Deploy with username/pass and SSH public key**
+**Deploy with SSH public key only**
 
-`az deployment group create -f vmtemplate_ssh.bicep --resource-group <RESOURCE GROUP NAME> --parameters adminUsername="USERNAME" adminPassword="PASSWORD" adminPublicKey="INSERT PUBLIC SSH KEY HERE"`
+If you do not need Jupyter Hub and want the most secure way to access your VM over the internet (keys must first be generated etc.)
 
-This will build your VM along with all the components needed in around 90 seconds. Once deployed, grab the public IP address of the new vm (from Portal or CLI) and either SSH into the VM directly or access the Jupyter Hub server in the browser via `https://xxx.xxx.xxx.xxx:8000`. 
+`az deployment group create -f vmtemplate_ssh.bicep --resource-group <RESOURCE GROUP NAME> --parameters adminUsername="USERNAME" adminPublicKey="INSERT PUBLIC SSH KEY HERE"`
+
+**Access via JHub**
+
+Once deployed, grab the public IP address of the new vm (from Portal or CLI) access the Jupyter Hub server in the browser via
+
+ `https://xxx.xxx.xxx.xxx:8000`. 
+
+**Access via Secure Shell (SSH)**
+
+If you deployed with user/pass, access from a terminal via:
+
+`ssh USERNAME@xxx.xxx.xxx.xxx`
+
+If you deployed with ssh key, access from a terminal via:
+
+`ssh -i ~/.ssh/private-key USERNAME@xxx.xxx.xxx.xxx`
 
 Notes:
 - Bicep templates deploy just like ARM .json templates (you just need to install Bicep first)
@@ -342,7 +360,7 @@ By default, this VM uses the suboptimal username/password creditials with a publ
 
 **Putting your VM behind a VPN**
 
-It is possible to put this VM behind a VPN gateway in Azure, requiring you to first connect to the VPN from your client machine, before you can access it. This is more hassle to setup because you need to generate a root certificate and client certificates, but I've created a working system here. Decent VPNs are not cheap, but the cool thing is, the Azure account comes with a premium VPN service FREE for 12 MONTHS which is usually $140USD/month.
+It is possible to put this VM behind a proper VPN gateway in Azure, requiring you to first connect to the VPN from your client machine, before you can access it. This is way more hassle to setup because you need to manually generate a root certificate and client certificates, but I've created a working system here. Decent VPNs are not cheap, but the cool thing is, the Azure account comes with a premium VPN service FREE for 12 MONTHS which is usually $140USD/month.
 
 
 
