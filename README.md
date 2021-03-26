@@ -1,4 +1,4 @@
-# Deploy a BEAST datascience virtual machine on Azure, using Bicep
+# Deploy a BEAST data-science virtual machine on Azure, using Bicep
 This guide will help you customise and deploy (almost) any virtual machine from Microsoft Azure, preconfigured for data science applications, with a running Jupyter Hub server out-of-the-box accessible via HTTPS.
 
 This is an example of deploying cloud infrastructure-as-code using a new domain specific language called [Bicep](https://github.com/Azure/bicep). The [OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro) is Linux Ubuntu 18.04 and is specially setup for data science with 150GB of goodies including native support for Python, R, Julia, SQL, C#, Java, Node.js, F#. If you don't know linux, don't worry: it autoruns a Jupyter Hub server giving you instant (secure HTTPS) access to Jhub from the browser of your local machine. Deploying in seconds, you will have access to beast VMs with up to 416 cores, 11000+ GB RAM, 32TB SSD disks, Nvidia Tesla T4/M60/V100 and AMD MI25 GPU/TPUS, and 1800+ MBit/s internet speeds. Pricing for VMs ranges from 1 cent to 120 $USD/hr and a free trial gets you $200 USD of credit for 30 days, with some important caveats.
@@ -21,11 +21,11 @@ Or specify vm specs with up to six parameters:
 
 `az deployment group create -f vmtemplate.bicep --resource-group <RESOURCE GROUP NAME> --parameters adminUsername="USERNAME" adminPassword="PASSWORD" vmModel="Standard_E4s_v3" osDiskSize=1000 osDiskType="Premium_LRS" projectName="myproject"`
 
-### Access via JHub
+### Access vm via JHub
 
-Once deployed, grab the public IP address of the new vm (from Portal or CLI) access the Jupyter Hub server in the browser via  `https://xxx.xxx.xxx.xxx:8000`. 
+Once deployed, grab the public IP address of the new vm (from Portal or CLI) access the Jupyter Hub server in the browser via `https://xxx.xxx.xxx.xxx:8000` 
 
-### Access via Secure Shell (SSH)
+### Access vm via Secure Shell (SSH)
 
 Access directly over terminal: `ssh USERNAME@xxx.xxx.xxx.xxx`
 
@@ -112,7 +112,7 @@ The quick and dirty profile of machine types and what to care about for data sci
 
 More info [here](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/). Useful website [azurepricenet](https://azureprice.net/) allows you to quickly find  the VM family and specific model you need, with pricing. 
 
-It's worth noting that on a standard PAYG account you won't be able to provision a beast out of the box. All Azure accounts have soft and hard vcpu (core) quotas, so if you want anything beyond about 32 cores you will need to lodge a service desk request for a quota increase, which can take 48hrs to process.
+It's worth noting that on a standard PAYG account you won't be able to provision a beast out of the box. All Azure accounts have soft and hard vcpu (core) quotas, so if you want anything beyond about 32 cores you will need to lodge a service desk request for a quota increase, which can take 48hrs to process. You can check your current limit based on a given region for all VM types in the Az CLI `az vm list-usage --location "East US" -o table`, more info [here](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quotas).
 
 ### Where does my VM live?
 Microsoft has datacenters across the world which you can visualise on a [map](https://azure.microsoft.com/en-gb/global-infrastructure/geographies/). Your VM will live in a datacenter of your choosing based on the location of the 'resource group' that you will set. An Azure resource group is simply a convenient bucket to put all your resources in, much like a folder on a your desktop computer. You can control access at the 'folder' level and remove all it's contents by deleting it in one go. There are marginal price differences between regions, but for this use case, the most important factor is to choose the closest zone to your present location, to minimise latency between you and the machine. For example "Central US" or "UK South".
