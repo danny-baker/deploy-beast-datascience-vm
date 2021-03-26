@@ -56,16 +56,15 @@ What is really important to stress is that the OS image used for this deployment
 
 For the Python JHub users, you might be used to running JHub from your local machine (and being constrained by crappy laptop hardware) or from Google Colab (with limited ram and storage and annoying timeouts). THIS VM IS YOUR OWN PRIVATE JHUB SERVER, with all the horsepower you are willing to pay for. Need 500GB Ram and 64 cores for 3 hours? Just deploy the VM in seconds and get the job done like a pro.
 
-### Use this template when
+### Use this template when (Use Case)
 - You need raw horsepower to get the job done (e.g. 128GB+ RAM, 16+ cores)
 - You want total and exclusive control of your hardware (no managed services etc)
-- Your local machine or any of the Colab cloud notebook environments are simply not up to the task
-- You want to say: "just call me bad ass..." 
+- Your local machine or any of the cloud notebook environments are simply not up to the task
 
 ### Why virtual machines?
-- Scalability and choice: access hundreds of cores,  thousands of GBs of RAM and massive storage.
+- Scalability and choice: access hundreds of cores, thousands of GBs of RAM and massive storage.
 - Pay for just what you use (billed per second)
-- Insane internet speeds (I've clocked 1,540 MBit/second download speed with a typical 4 core VM)
+- Insane internet speeds (I've clocked 1,800 MBit/second download speed with a typical 4 core VM)
 
 ### Alternatives to a dedicated virtual machine for data science
 - Your local hardware
@@ -82,7 +81,7 @@ YES. In fact this is probably the most important thing about this particular set
 
 ### What is infrastructure-as-code?
 
-This example demonstrates how to build cloud infrastucture-as-code, which is a way of describing the components you want from a script file. Many (or all) of the big players have some kind of API that they use to interpret the infrastructure to deploy. Whether you are building a machine from the browser or direct from 'code', it's all being turned into a common domain specific format for the provider to ingest, like a blueprint, in order to build the components and wire them up. Microsoft Azure use things called ARM Templates, which  are .json representation of all the infrastructure you want to build. AWS use a .json and .yaml like interface. I'm not sure about Google and the others. Notably, Microsoft has released a new language called [Bicep](https://github.com/Azure/bicep) (August 2020) which drastically simplifies the way you describe the infrastructure. It is really awesome and we're going to be using it!
+This example demonstrates how to build cloud infrastucture-as-code, which is a way of describing the components you need. Many (or all) of the big players have some kind of API that they use to interpret the infrastructure to deploy. Whether you are building a machine from the browser or direct from 'code', it's all being turned into a common domain specific format for the provider to ingest, like a blueprint, in order to build the components and wire them up. Microsoft Azure use things called ARM Templates, which are .json representation of all the infrastructure you want to build. AWS use a .json and .yaml like interface. I'm not sure about Google and the others. Hot off the press, Microsoft has released a new language called [Bicep](https://github.com/Azure/bicep) (August 2020) which drastically simplifies the way you describe the infrastructure. It is really awesome and we're going to be using it!
 
 ### What is actually built when I deploy a virtual machine??
 
@@ -91,7 +90,6 @@ It's important to understand that when you provision a virtual machine there are
 Here is the network topography just to give you a picture of the end product that is built from this template.
 
 ![topography](https://user-images.githubusercontent.com/12868840/112561657-8c80de80-8dcd-11eb-90f2-d8451d541144.PNG)
-
 
 
 ### Making sense of VM Machine Types in Azure
@@ -107,7 +105,7 @@ The quick and dirty profile of machine types and what to care about for data sci
 
 | Series | Profile                                            | CPU Cores   | GPU Cores    | RAM (GiB)        | Cost ($US/hr) | Verdict                                                                      |
 |:------:|:--------------------------------------------------:|:-----------:|:------------:|:----------------:|:-------------:|:----------------------------------------------------------------------------:|
-| A      | Testing/Dev                                        | 1 - 8       | -            | 2 - 64           | 0.05 - 0.8    | Not suitable                                                                 |
+| [A](https://docs.microsoft.com/en-us/azure/virtual-machines/av2-series)      | Testing/Dev                                        | 1 - 8       | -            | 2 - 64           | 0.05 - 0.8    | Not suitable                                                                 |
 | B      | Burstable (CPU credits)                            | 1 - 20      | -            | 4 - 80           | 0.05 - 1      | Not suitable                                                                 |
 | D      | All rounder                                        | 2 - 96      | -            | 4 - 384          | 0.1 - 5       | Suitable                                                                     |
 | **E**  | **Memory optimised (high mem:cpu ratio)**          | **2 - 96**  | -            | **16 - 672**     | **0.1 - 7**   | **Highly suitable for data eng. & non-GPU M/L**                              |
