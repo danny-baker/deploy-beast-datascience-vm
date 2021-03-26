@@ -208,7 +208,7 @@ Open the `vmtemplate.bicep` file in visual studio code.
 At the beginning of the file I've summarised all the knobs and dials you might want to turn to tweak your VM settings. By default, I've chosen the toughest setup I could find within the limits of a Free Account (This is an E4s_v3 with 128GB RAM, and a 1TB Premium SSD OS Drive). But of course you can mix and match practically any VM up to 4 cores on the free account, and experiment with different HDD sizes and types. In brief, if you are on a free account, the default settings are optimised for the best 4 cores, most ram and best disk I could find. If you are on a PAYG account, you can go crazy.
 
 **Key decision points:**
-- VM Type - This is critical as it determines the number of cores, RAM, temporary storage, and other limitations in relation to I/O. Lookup what you want either on [Azure docs](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/) or on [azurenet](https://azureprice.net/). Modify the variable field as you need
+- VM Size - This is critical as it determines the number of cores, RAM, temporary storage, and other limitations in relation to I/O. There are literally hundreds of options. Lookup what you want either on [Azure docs](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/) or on [azurenet](https://azureprice.net/). Modify the variable field as you need
 - OS disk size - Default to 1TiB premium SSD, but you can choose anything up to 4TiB (4095GB) as a single disk.
 - OS disk type Take special note there are 3 distinct classes of storage 'Premium_LRS' which is SSD, 'StandardSSD_LRS' which is constrained SSD media, then the good old fashioned hard disk drive 'Standard_LRS'. Standard SSD is half the price of premium ssd, and standard HDD is 1/4 the price of premium ssd. Refer to docs [here](https://azure.microsoft.com/en-gb/pricing/details/managed-disks/). In all datascience applications, I'd use nothing other than "Premium_LRS" for maximum performance. 
 
@@ -350,13 +350,13 @@ Open a terminal from the Jupyter Hub main screen (new -> terminal)
 
 ![jhub terminal screen](https://user-images.githubusercontent.com/12868840/112557836-50498000-8dc5-11eb-93f8-a38580665b2e.PNG)
 
-Above: It's important to note that connecting to your VM via JHub gives you full superuser access; you can open a linux terminal from within Jhub and do literally anything you want. (You can also directly SSH to your machine using the user/pass aswell, see later sections)
+Above: It's important to note that connecting to your VM via JHub gives you full superuser access; you can open a linux terminal from within Jhub and do literally anything you want. (You can also directly SSH to your machine via a terminal, see following sections)
 
 **Check no. processors, ram, and uptime with `htop`**
 
 ![htop](https://user-images.githubusercontent.com/12868840/112565126-6c085280-8dd4-11eb-8b92-4258cf0b3e25.PNG)
 
-Above: In this example we're running a E4s_v3 with 4 cores (cores visible top left) and 32GB RAM. This is a super handy way to real-time monitor your VM core and RAM load. You can also look at the running process tree and, most importantly, uptime which is what you are being charged for by the second when you are on PAYG.
+Above: In this example we're running a E4s_v3 with 4 cores (cores visible top left) and 32GB RAM. This is a handy way to real-time monitor your VM core and RAM used and available capacity. You can also look at the running process tree and, most importantly, uptime which is what you are being charged for by the second when you are on PAYG.
 
 **Check available disk space with `df -h`**
 
@@ -399,30 +399,26 @@ By default, this VM uses the suboptimal username/password creditials with a publ
 
 **Putting your VM behind a VPN**
 
-If security is of paramount importance for your experimentation and you want enterprise level protection, really the only option in my mind is putting your machine on a private network only (no public IPs or publicly exposed ports) and allowing access to the private network ONLY via a premium VPN gateway service. A proper VPN allows you to use an encrypted tunnel from your client machine to your virtual private network in Azure where your VM lives. Once inside you can directly connect to your machine via SSH, user/pass, or possibly the browser for Jhub (with some painful finicking). There are some manual steps you will need to first (i.e. generate root and client certificates) but if you are determined, you can get it done in a few hours of pain and suffering.
+If security is of paramount importance for your experimentation and you want enterprise level protection, really the only option in my mind is putting your machine on a private network only (no public IPs or publicly exposed ports) and allowing access to the private network ONLY via a premium VPN gateway service. A proper VPN allows you to use an encrypted tunnel from your client machine to your virtual private network in Azure where your VM lives. Once inside you can directly connect to your machine via SSH, user/pass, or possibly the browser for Jhub (but this is outside my ability). There are some manual steps you will need to first (i.e. generate root and client certificates) but if you are determined, you can get it done in a few hours of pain and suffering.
 
 Fortunately, Azure has 3 options for VPN gateways and in fact the Azure Free Trial account gives you access to a bunch of services for 12 months free of charge, including a premium VPN which usually costs $140USD/month.
 
+I've created a bicep file `vmtemplate_vpn.bicep` for advanced users that does the following:
+- removes public IP for VM itself (ok to leave ports open)
+- dynamically creates private network ip address for the vm (usually 10.1.0.4)
+- creates the VM and all associated infrastructure with an additional subnet and premium VPN gateway (default tunnel encryption is IkeV2 and OpenVPN but you can change these)
 
+First you need to generate a root certificate for the VPN, and export it's public key in a particular way so you can copy the ASCII chars and use pass them in as paramaters at deployment. At deployment you pass 4 parameters: username / password / SSH public key / VPN root certificate public key. The VPN gateway takes about 45 minutes to create so you will have to be patient. Once up, assuming you already have the root and client certs installed on your local machine, you need to download the VPN client from Azure Portal (or via CLI), install, then connect. Once successfully connected to the VPN, you can directly to your VM via ssh.
 
-I've created a bicep file `vmtemplate_vpn.bicep` that builds everything you need in one go (including the VPN gateway on it's own subnet). You will need to pass the VPN root certificate public key as a parameter at build time. More info below.
+I've tested this is working and can ssh to the private machine once connected to the VPN. JHub does not work out of the box in your browser on the private ip but I do believe with some routing magic and editing of `/etc/hosts` files it can be done. This is beyond my skill level though.
 
-
-
-It is possible to put this VM behind a proper VPN gateway in Azure, requiring you to first connect to the VPN from your client machine, before you can access it. This is way more hassle to setup because you need to manually generate a root certificate and client certificates, but I've created a working template for this too. Decent VPNs are not cheap, but the cool thing is, the Azure account comes with a premium VPN service FREE for 12 MONTHS which is usually $140 USD/month. This gives you high bandwidth and acess to the quality encryption tunnel protocols (IKEv2) etc.
-
-If you are only planning to use your VM for a one-off short term job, I think it's probably fine to use as is without a VPN. If you plan to use the VPN for an extended period of time, and/or security is of paramount importance to you than really the only safe way is to put it on a private network (no public IP) accessible only by a VPN gateway.
-
-If you want to put it behind proper security, the best option I think is putting it behind a premium VPN Gateway.
-
-
-
-
+https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpn-gateway-settings
+https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-certificates-point-to-site for generating root and client certificates
 
 
 ### Further reading
 
-Follow the microsoft documentation to show you more options to connect and use the new vm and what you can do with it.
+Follow the microsoft documentation to show you more options to connect and use the data science vm and what you can do with it.
 
 https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro
 

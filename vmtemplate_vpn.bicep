@@ -1,6 +1,6 @@
 // ADVANCED USERS ONLY
 // Build a fully private VM behind a premium VPN gateway. Ports are ok to leave open as there is no public facing IP for the VM. You must connect successfully to the VPN to access the VM.
-// At deployment this file accepts 4 secure parameters: username, password, SSH public Key, VPN Root certificate 
+// At deployment this file accepts 4 secure parameters: username, password, SSH public Key, VPN Root certificate public key
 
 // virtual machine specs (modify as you need, even if you are scared)
 var vmSize = 'Standard_E4s_v3'    // View available vm types with 'az vm list-skus -l centralus --output table' from azure CLI or checkout https://azureprice.net/ or https://docs.microsoft.com/en-us/azure/virtual-machines/sizes
