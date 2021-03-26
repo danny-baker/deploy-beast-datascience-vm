@@ -1,7 +1,8 @@
-// VPN PROTECTED PRIVATE IP VM: ADVANCED USERS ONLY
+// DATA SCIENCE VM: VPN PROTECTED (PRIVATE IP) **ADVANCED USERS ONLY**
 
 // Build a fully private VM behind a premium VPN gateway. Ports are ok to leave open as there is no public facing IP for the VM. You must connect successfully to the VPN to access the VM.
-// At deployment this file accepts 4 secure parameters: username, password, SSH public Key, VPN Root certificate public key
+// At deployment this file accepts 4 mandatory secure parameters: username, password, SSH public Key, VPN Root certificate public key
+
 
 // vm specs
 var vmSize = 'Standard_E4s_v3'    // View available vm types with 'az vm list-skus -l centralus --output table' from azure CLI or checkout https://azureprice.net/ or https://docs.microsoft.com/en-us/azure/virtual-machines/sizes
@@ -11,13 +12,12 @@ var dataDiskSize = 1              // size in GiB (allowable: 1 - 32,000 GiB). No
 var dataDiskType = 'Premium_LRS'  
 var projectName = 'projectname'
 
-// Advanced users only (don't touch if this scares you)
+// Advanced 
 var vmName_var = '${projectName}-prod-vm'
 var VnetName_var = '${projectName}-VNet'
 var vnetAddressPrefixes = '10.1.0.0/16' //CIDR notation
 var SubnetName = '${projectName}-prod-subnet'
 var SubnetAddressPrefixes = '10.1.0.0/24'
-//var publicIPAddressNameVM_var = '${projectName}-prod-ip'
 var networkInterfaceName_var = '${projectName}-prod-nic'
 var networkSecurityGroupName_var = '${projectName}-prod-nsg'
 var subnetRef = resourceId(resourceGroup().name, 'Microsoft.Network/virtualNetworks/subnets', VnetName_var, SubnetName)
@@ -34,8 +34,8 @@ param adminPassword string
 param adminPublicKey string
 
 // VPN gateway
-//https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpn-gateway-settings
-//https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-certificates-point-to-site for generating root and client certificates
+// https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpn-gateway-settings
+// https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-certificates-point-to-site for generating root and client certificates
 var gatewaySubnetName = 'GatewaySubnet'
 var vpnSKU = 'VpnGw1'
 var GatewaySubnetAddressPrefixes = '10.1.255.0/27'
@@ -47,19 +47,6 @@ var VPNGatewayName_var = '${projectName}-VNetGW'
 param VPNrootCert string
 
 // resource declarations 
-
-/*
-resource publicIPAddressNameVM 'Microsoft.Network/publicIPAddresses@2020-05-01' = {
-  name: publicIPAddressNameVM_var
-  location: resourceGroup().location
-  properties: {
-    publicIPAllocationMethod: 'Dynamic'
-  }
-  sku: {
-    name: 'Basic'
-  }
-}
-*/
 
 // This is the public IP address of the VPN gateway that you will connect to over the internet to tunnel in from your local machine
 resource publicIPAddressNameGW 'Microsoft.Network/publicIPAddresses@2020-05-01' = {
