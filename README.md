@@ -47,7 +47,7 @@ What is really important to stress is that the OS image used for this deployment
 
 For the Python JHub users, you might be used to running JHub from your local machine (and being constrained by crappy laptop hardware) or from Google Colab (with limited ram and storage and annoying timeouts). THIS VM IS YOUR OWN PRIVATE JHUB SERVER, with all the horsepower you are willing to pay for. Need 500GB Ram and 64 cores for 3 hours? Just deploy the VM in seconds and get the job done like a pro.
 
-### Use this template when (Use Case)
+### Use this template when
 - You need raw horsepower to get the job done (e.g. 128GB+ RAM, 16+ cores)
 - You want total and exclusive control of your hardware (no managed services etc)
 - Your local machine or any of the cloud notebook environments are simply not up to the task
@@ -60,21 +60,20 @@ For the Python JHub users, you might be used to running JHub from your local mac
 
 ### Alternatives to a dedicated virtual machine for data science
 - Your local hardware
-- Google Colab
-- Kaggle Kernels
-- Azure Notebooks
-- Deepnote
-- Binder
-- Curvenote
+- [Google Colab](https://colab.research.google.com/notebooks/intro.ipynb#recent=true)
+- [Kaggle Kernels](https://www.kaggle.com/kernels)
+- [Azure Notebooks](https://notebooks.azure.com/) (although I think this is now defunct)
+- [Deepnote](https://deepnote.com/)
+- [Curvenote](https://curvenote.com/)
 - Etc.
 
 ### Can I access Jupyter Hub securely on my virtual machine?
 
-YES. In fact this is probably the most important thing about this particular setup. Microsoft has done all the work building a special data science linux OS image, that runs a Jupyter Hub server automatically. No setup required. They have also handled self-signed TLS certificates which means you can connect to your JHub server using HTTPS. You will need to click through a security warning in most browsers but this is just because you are using self-signed certificates between the vm and your pc. What this means is you can instantly have JHub up and running on serious horsepower, and collaborate in real-time with others on your new hardware if you wish.
+YES...well reasonably. In fact this is probably the most important thing about this particular setup. Microsoft has done all the work building a special data science linux OS image, that runs a Jupyter Hub server automatically. No setup required. They have also handled self-signed TLS certificates which means you can connect to your VM's JHub server using HTTPS. You will need to click through a security warning in most browsers but this is just because you are using self-signed certificates between the vm and your pc. What this means is you can instantly have JHub up and running on serious horsepower, and collaborate in real-time with others on your new hardware if you wish.
 
 ### What is infrastructure-as-code?
 
-This example demonstrates how to build cloud infrastucture-as-code, which is a way of describing the components you need in a written way. That's it really. Many (or all) of the big players have some kind of API that they use to interpret the infrastructure to deploy. Whether you are building a machine from the browser or direct from 'code', it's all being turned into a common domain specific format for the provider to ingest, like a blueprint, in order to build the components and wire them up. Microsoft Azure use things called ARM Templates, which are .json representation of all the infrastructure you want to build. AWS use a .json and .yaml like interface. I'm not sure about Google and the others. Hot off the press, Microsoft has released a new open-source language called [Bicep](https://github.com/Azure/bicep) (August 2020) which drastically simplifies the way you describe the infrastructure. It is really awesome and we're going to be using it!
+This example demonstrates how to build cloud infrastucture-as-code, which is a way of describing the components you need in 'code'. That's it really. Many (or all) of the big players have some kind of API that they use to interpret the infrastructure to deploy. Whether you are building a machine from the browser or direct from 'code', it's all being turned into a  domain specific format for the vendor to ingest, like a blueprint, in order to build the components and wire them up. Microsoft Azure use things called ARM Templates, which are .json representation of all the infrastructure you want to build. AWS use a .json and .yaml like interface. I'm not sure about Google and the others. Hot off the press, Microsoft has released a new open-source language called [Bicep](https://github.com/Azure/bicep) (August 2020) which drastically simplifies the way you describe their infrastructure. It is really awesome and we're going to be using it!
 
 ### What is actually built when I deploy a virtual machine??
 
