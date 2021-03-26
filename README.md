@@ -154,8 +154,10 @@ This package will burn ~$10USD credit/day and you can run it full throttle 24-7,
 ### How does storage work with vms?
 All VMs need a managed persistent disk for the OS image. You can attach additional disks (several usually) and mount them on the filesystem but note this is fidly if you are not comfortable with linux. By far, the quickest and easiest option is to just beef up the OS disk size (up to 4TiB SSD) to what you need for the task at hand.
 
+It's also worth nothing that many VM classes offer temporary high speed storage. This is usually located super local to your compute hardware and is basically the fastest storage you can get. Note it's ephemeral and only lasts a few days so is really useful for data processing stages. The temporary storage is automatically mounted on your VM at location `/mnt`.
+
 ### How do I transfer data to and from my VM?
-This is a full blown remote linux machine so it's not as straight forward as copy-pasting documents to your windows filesytem when you are running a localhost JHub server. But, the beauty is that you can do most of your uploading/downloading directly through the Jupyter Hub server by way of the browser, which should cover most people's needs. Don't forget you can rip down data from the internet at lightening speeds from your VM ten times faster than on your home internet or Colab which is constrained to 130Mb/s, for example.
+This is a proper remote linux machine so it's not as straight forward as copy-pasting documents to your windows filesytem that you might be used to running JHub on your local machine. But, the beauty is that you can do most of your uploading/downloading directly through the Jupyter Hub server by way of the browser, which should cover most people's needs. Don't forget you can rip down data from the internet at lightening speeds from your VM ten times faster than on your home internet or Colab which is constrained to 130Mb/s, for example.
 
 **Getting data into your VM:**
 - From your pc: use the JHub upload feature in browser or tools like `rsync` from a linux terminal (requires you to have WSL in windows)
@@ -163,7 +165,7 @@ This is a full blown remote linux machine so it's not as straight forward as cop
 
 **Getting data out of your VM:**
 
-This is a little trickier than you think because the machine is running linux and you probably are running Windows, but I have few standard recommendations.
+This is a little trickier than you think because the machine is running linux and you probably are running Windows, but I have few standard recommendations. And it also depends where you plan to store the data and how much data you have.
 
 - small (<30GB): use the JHub file download feature in browser (the simplest)
 - medium: (<1TB): use a linux data transfer application like `rsync` (requires linux on your local machine, native for MacOS but Windows you will need WSL)
@@ -359,7 +361,7 @@ In this case I've used the public IP I got for my machine. You will be prompted 
 
 `ssh -i ~/.ssh/private-key jamesbond@51.143.137.130`
 
-Access the vm using keys is far more secure and preferred but JHub does not support it. So you would lonly use this option if you want preferred secure way to connect to your VM and you don't plan to use Jhub. You need to point ssh to the location of the private key on your local machine that was used to generate the public key that you passed in as a parameter in the deploy command.
+Access the vm using keys is far more secure and preferred but JHub does not support it. So you would only use this option if you want preferred secure way to connect to your VM and you don't plan to use Jhub. You need to point ssh to the location of the private key on your local machine that was used to generate the public key that you passed in as a parameter in the deploy command.
 
 ## Extra Security Considerations (VPN etc.)
 
@@ -368,8 +370,6 @@ By default, this VM uses the suboptimal username/password creditials with a publ
 **Putting your VM behind a VPN**
 
 It is possible to put this VM behind a proper VPN gateway in Azure, requiring you to first connect to the VPN from your client machine, before you can access it. This is way more hassle to setup because you need to manually generate a root certificate and client certificates, but I've created a working system here. Decent VPNs are not cheap, but the cool thing is, the Azure account comes with a premium VPN service FREE for 12 MONTHS which is usually $140USD/month.
-
-
 
 If you are only planning to use your VM for a one-off short term job, I think it's probably fine to use as is.
 
