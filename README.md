@@ -1,11 +1,11 @@
-# Deploy a BEAST data science virtual machine on Azure, using Bicep
-This guide will help you customise and deploy (almost) any virtual machine from Microsoft Azure, preconfigured for data science applications, with a running Jupyter Hub server out-of-the-box and accessible via HTTPS.
+# Deploy a BEAST datascience virtual machine on Azure, using Bicep
+This guide will help you customise and deploy (almost) any virtual machine from Microsoft Azure, preconfigured for data science applications, with a running Jupyter Hub server out-of-the-box accessible via HTTPS.
 
-This is an example of deploying cloud infrastructure-as-code using a new domain specific language called [Bicep](https://github.com/Azure/bicep). The [OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro) is Linux Ubuntu 18.04 and is specially setup for data science with 150GB of goodies including native support for Python, R, Julia, SQL, C#, Java, Node.js, F#. If you don't know linux, don't worry: it autoruns a Jupyter Hub server giving you instant (secure HTTPS) access to Jhub from the browser of your local machine. Deploying in seconds, you will have access to beast VMs with up to 416 cores, 11000+ GB RAM, 32TB SSD disks, and 1800+ MBit/s internet speeds. Pricing for VMs ranges from 1 cent to 120 $USD/hr and a free trial gets you $200 USD of credit for 30 days, with some important caveats.
+This is an example of deploying cloud infrastructure-as-code using a new domain specific language called [Bicep](https://github.com/Azure/bicep). The [OS image](https://docs.microsoft.com/en-us/azure/machine-learning/data-science-virtual-machine/dsvm-ubuntu-intro) is Linux Ubuntu 18.04 and is specially setup for data science with 150GB of goodies including native support for Python, R, Julia, SQL, C#, Java, Node.js, F#. If you don't know linux, don't worry: it autoruns a Jupyter Hub server giving you instant (secure HTTPS) access to Jhub from the browser of your local machine. Deploying in seconds, you will have access to beast VMs with up to 416 cores, 11000+ GB RAM, 32TB SSD disks, Nvidia Tesla T4/M60/V100 and AMD MI25 GPU/TPUS, and 1800+ MBit/s internet speeds. Pricing for VMs ranges from 1 cent to 120 $USD/hr and a free trial gets you $200 USD of credit for 30 days, with some important caveats.
 
-This is designed for one-off time-constrained tasks where you need a dedicated beefy VM to run for a few hours or days to get the job done. You can then export any data, and tear the whole resource down when you're finished. 
+This is designed for one-off time-constrained tasks where you need a dedicated beefy VM to run for several hours or days to get the job done. You can then export any data, and tear the whole resource down when you're finished. 
 
-**Use case: when you need more hardware than your local machine or the notebook-as-a-service platforms like Google Colab can provide; When you want to say "Just call me bad ass..."**
+**Use case: when you need better specs than your local machine or the notebook-as-a-service platforms like Google Colab can provide; When you want to say "Just call me bad ass..."**
 
 ## Quickstart
 
@@ -213,7 +213,7 @@ From within the Azure CLI latest version it is basically:
 ### 4. Clone this repo
 Copy this project repo to your local machine either from Github over browser as a straight download, or via `git clone` etc. If you are not familiar with github and git, really, you just need to get the `vmtemplate.bicep` file to your local machine where you can access it from within the Azure CLI.
 
-### 5. Configure VM specs and access (the fun part)
+### 5. Configure VM specs (the fun part)
 
 Open the `vmtemplate.bicep` file in visual studio code. 
 
@@ -348,6 +348,8 @@ If it has worked, you will see the Jhub session that looks like this.
 
 #### And you are IN. At this point you can start playing with notebooks or collaborate with buddies to datascience it up!
 
+<br>
+
 # NERD SECTION
 
 For some more advanced security options and cool stuff, read on.
@@ -425,6 +427,7 @@ First you need to generate a root certificate for the VPN, and export it's publi
 I've tested this Bicep template is working and can ssh to the private data science machine once connected to the VPN. JHub does not work out of the box in your browser on the private ip but I do believe with some routing magic and editing of `/etc/hosts` files it can be done. This is beyond my skill level though.
 
 https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-about-vpn-gateway-settings
+
 https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-certificates-point-to-site for generating root and client certificates
 
 
