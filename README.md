@@ -296,7 +296,9 @@ Open a terminal from the Jupyter Hub main screen (new -> terminal)
 
 **Check no. processors, ram, and uptime with `htop`**
 
+![htop](https://user-images.githubusercontent.com/12868840/112565126-6c085280-8dd4-11eb-8b92-4258cf0b3e25.PNG)
 
+Above: In this example we're running a E4s_v3 with 4 cores (visible top left) and 32GB RAM. This is a super handy way to real-time monitor your VM core and RAM load. You can also look at the running process tree and, most importantly, uptime which is what you are being charged for by the second when you are on PAYG.
 
 
 **Check available disk space with `df -h`**
