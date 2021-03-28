@@ -197,7 +197,7 @@ Open the `vmtemplate.bicep` file in visual studio code.
 
 At the beginning of the file I've summarised all the knobs and dials you might want to turn to tweak your VM settings. By default, I've chosen the toughest setup I could find within the limits of a Free Account (This is an E4s_v3 with 128GB RAM, and a 1TB Premium SSD OS Drive). But of course you can mix and match practically any VM up to 4 cores on the free account, and experiment with different HDD sizes and types. In brief, if you are on a free account, the default settings are optimised for the best 4 cores, most ram and best disk I could find. If you are on a PAYG account, you can go crazy.
 
-You can either modify the default vm spec values in the .bicep file itself, or overide the default values by passing the desired values in as paramaters in the build command. Totally up to you.
+You can either modify the default vm spec values in the .bicep file itself, or overide the default values by passing the desired values in as parameters in the build command. Totally up to you.
 
 **Key decision points:**
 - VM Model - This is critical as it determines the number of cores, RAM, temporary storage, and other limitations in relation to I/O. There are literally hundreds of options. Lookup what you want either on [Azure docs](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/) or on [azurenet](https://azureprice.net/). Modify the variable field as you need
@@ -269,7 +269,7 @@ Build using default VM specs in the .bicep file:
 
 `az deployment group create -f vmtemplate.bicep --resource-group beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3"`
 
-Build passing custom VM specs as paramaters:
+Build passing custom VM specs as parameters:
 
 `az deployment group create -f vmtemplate.bicep --resource-group beast --parameters adminUsername="jamesbond" adminPassword="G0|den3y3" vmModel="Standard_D2s_v3" osDiskSize=180 osDiskType="Premium_LRS" projectName="myproject"`
 
@@ -411,7 +411,7 @@ I've created a bicep file `vmtemplate_vpn.bicep` for advanced users that does th
 - dynamically creates private network ip address for the vm (usually 10.1.0.4)
 - creates the VM and all associated infrastructure with an additional subnet and premium VPN gateway (default tunnel encryption is IkeV2 and OpenVPN but you can change these)
 
-First you need to generate a root certificate for the VPN, and export it's public key in a particular way (ref links below) so you can copy the ASCII chars and use pass them in as paramaters at deployment. At deployment you pass 4 parameters: username / password / SSH public key / VPN root certificate public key. The VPN gateway takes about 45 minutes to create so you will have to be patient. Once it's up you should be able to navigate to it in Portal and see it has a public IP address. Assuming you already have the root and client certs installed on your local machine, you need to download the VPN client from Azure Portal (or via CLI) (ref links below), install, then connect. Once successfully connected to the VPN, you can directly ssh to your VM.
+First you need to generate a root certificate for the VPN, and export it's public key in a particular way (ref links below) so you can copy the ASCII chars and use pass them in as parameters at deployment. At deployment you pass 4 parameters: username / password / SSH public key / VPN root certificate public key. The VPN gateway takes about 45 minutes to create so you will have to be patient. Once it's up you should be able to navigate to it in Portal and see it has a public IP address. Assuming you already have the root and client certs installed on your local machine, you need to download the VPN client from Azure Portal (or via CLI) (ref links below), install, then connect. Once successfully connected to the VPN, you can directly ssh to your VM.
 
 I've tested this Bicep template is working and can ssh to the private data science machine once connected to the VPN. JHub does not work out of the box in your browser on the private ip but I do believe with some routing magic and editing of `/etc/hosts` files it can be done. This is beyond my skill level though.
 
