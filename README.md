@@ -108,7 +108,7 @@ The quick and dirty profile of machine types and what to care about for data sci
 | H      | High Performance Compute (supercomputing)          | -           | -            | -                | -             | Not suitable                                                                 |
 | [L](https://docs.microsoft.com/en-us/azure/virtual-machines/lsv2-series)      | High Thoughput (I/O optimised)                     | 8 - 80      | -            | 6 - 640          | 0.7 - 7       | Suitable                                                                     |
 | **[M](https://docs.microsoft.com/en-us/azure/virtual-machines/m-series)**  | **Absolute Beast**                                 | **8 - 416** | -            | **220 - 11,400** | **2 - 120**   | **Suitable for the brave**                                                   |
-| **[N](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-gpu?context=/azure/virtual-machines/context/context)**  | **GPU Optimised (fractional to multi GPU/TPU access)** | **4 - 64**  | **0.25 - 4** | **28 - 400**     | **1 - 20**    | **Highly suitable for deep learning and other M/L (Nvidia Tesla T4/M60/V100, AMD MI25)** |
+| **[N](https://docs.microsoft.com/en-us/azure/virtual-machines/sizes-gpu?context=/azure/virtual-machines/context/context)**  | **GPU Optimised (fractional to multi GPU/TPU access)** | **4 - 64**  | **0.25 - 4** | **28 - 400**     | **1 - 20**    | **Highly suitable for deep learning and other M/L (Nvidia Tesla T4/V100/M60, AMD Radeon MI25)** |
 
 More info [here](https://azure.microsoft.com/en-gb/pricing/details/virtual-machines/linux/). Useful website [azurepricenet](https://azureprice.net/) allows you to quickly find  the VM family and specific model you need, with pricing. 
 
