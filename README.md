@@ -57,14 +57,12 @@ For the Python JHub users, you might be used to running JHub from your local mac
 
 I've provided a quick snapshot comparison of the well known notebook tools vs dedicated cloud hardware. It's difficult to know exacts from Kaggle and Colab as many limitations are not exactly specified or published, so I've gone from accounts from others.
 
-| Platform               | Type                  | Cost           | Persistent Storage | Temporary Storage | Ram            | CPU           | GPU                            | Runtime      | Download speed     |
-|:----------------------:|:---------------------:|:--------------:|:------------------:|:-----------------:|:--------------:|:-------------:|:------------------------------:|:------------:|:------------------:|
-| Kaggle (Kernels)       | Notebook-as-a-service | free           | 5GB                | 17GB              | ~16GB          | ~2 - 4 cores  | Tesla P100                     | 6-9 hrs      | no data            |
-| Google Colab           | Notebook-as-a-service | free           | 15GB (Drive)       | 30-64GB           | ~12GB          | 2 cores       | Tesla K80                      | 12 hrs       | up to 130Mb/s      |
-| Google Colab Premium   | Notebook-as-a-service | ~10USD/month   | 15GB (Drive) ?     | 30-64GB           | ~24GB          | 2 cores       | Tesla P100                     | up to 24 hrs | up to 130Mb/s      |
-| Azure Notebooks        |                       | free tier      |                    |                   |                |               |                                |              |                    |
-| Azure Notebooks (PAYG) |                       | variable       |                    |                   |                |               |                                |              |                    |
-| Azure                  | Virtual Machine       | 0.1-120 USD/hr | 1 - 32000GB / disk | variable          | Up to 11,000GB | 1 - 416 cores | Tesla T4/M60/V100, Radeon MI25 | Unlimited    | 500 - 1800+ Mbit/s |
+| Platform             | Cost           | Persistent Storage | Temporary Storage | Ram            | CPU           | GPU                            | Runtime      | Download speed     |
+|:--------------------:|:--------------:|:------------------:|:-----------------:|:--------------:|:-------------:|:------------------------------:|:------------:|:------------------:|
+| Kaggle (Kernels)     | free           | 5GB                | 17GB              | ~16GB          | ~2 - 4 cores  | Tesla P100                     | 6-9 hrs      | no data            |
+| Google Colab         | free           | 15GB (Drive)       | 30-64GB           | ~12GB          | 2 cores       | Tesla K80                      | 12 hrs       | up to 130Mb/s      |
+| Google Colab Premium | ~10USD/month   | 15GB (Drive) ?     | 30-64GB           | ~24GB          | 2 cores       | Tesla P100                     | up to 24 hrs | up to 130Mb/s      |
+| Azure                | 0.1-120 USD/hr | 1 - 32000GB / disk | variable          | Up to 11,000GB | 1 - 416 cores | Tesla T4/M60/V100, Radeon MI25 | Unlimited    | 500 - 1800+ Mbit/s |
 
 ### Why virtual machines?
 - Scalability and choice: access hundreds of cores, thousands of GBs of RAM and massive storage.
