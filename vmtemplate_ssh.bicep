@@ -11,11 +11,11 @@ param projectName string = 'projectname'    // If this parameter is not passed i
 
 // advanced 
 param vmName_var string = '${projectName}-vm'
-var vmPort80 = 'Allow'      //'Allow' or 'Deny' (HTTP)
-var vmPort443 = 'Allow'     //'Allow' or 'Deny' (HTTPS)
-var vmPort22 = 'Allow'      //'Allow' or 'Deny' (SSH)
-var vmPort8000 = 'Allow'    //'Allow' or 'Deny' (JHUB SERVER)
-var vmPort8787 = 'Allow'    //'Allow' or 'Deny' (RSTUDIO SERVER)
+var vmPort80 = 'Deny'      //'Allow' or 'Deny' (HTTP)
+var vmPort443 = 'Deny'     //'Allow' or 'Deny' (HTTPS)
+var vmPort22 = 'Allow'     //'Allow' or 'Deny' (SSH)       ====== ALL PORTS SHUT EXCEPT SSH ======
+var vmPort8000 = 'Deny'    //'Allow' or 'Deny' (JHUB SERVER)
+var vmPort8787 = 'Deny'    //'Allow' or 'Deny' (RSTUDIO SERVER)
 var VnetName_var = '${projectName}-VNet'
 var vnetAddressPrefixes = '10.1.0.0/16' 
 var SubnetName = '${projectName}-subnet'
