@@ -39,7 +39,7 @@ Access directly over terminal: `ssh USERNAME@xxx.xxx.xxx.xxx`
 
 # Guide for Beginners
 
-If you are new to cloud infrastructure and scared at this point, worry not. Follow the crash course and step-by-step instructions below and you will be up and running in no time with a a fully dedicated VM. I've also published an article **INSERT LINK** that provides a full explanatory overview with much more detail and jokes. 
+If you are new to cloud infrastructure and scared at this point, worry not. Follow the crash course and step-by-step instructions below and you will be up and running in no time with a a fully dedicated VM. I've also published an [article in Towards Datascience](https://towardsdatascience.com/deploy-a-beast-virtual-machine-420b8756190e) that provides a full explanatory overview with much more detail and jokes. 
 
 Here's what you're going to do: in a single command you will compile a Bicep file (high level language describing the cloud infrastructure) into an Azure Resource Manager (ARM) template (a lower level abstraction in JSON format) and then build the resources needed in Azure. It takes about 2 mins to deploy and you can be running JHub notebooks over the internet on your remote vm. If you are new to Microsoft cloud, I'd recommend getting a [free Microsoft Azure account](https://azure.microsoft.com/en-gb/free/), so you can play around within the limitations of the trial at no cost.
 
